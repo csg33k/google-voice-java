@@ -36,11 +36,60 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
-	      
+	    
+	      System.out.println("Log into Google Voice and find the _rnr_se variable in the page Source. ");
+	      System.out.println("Enter rnr_se_ value:");
+	      String rnrSee = null;
 	      try {
-			Voice voice = new Voice(userName, pass, source);
+	    	  rnrSee = br.readLine();
+	      } catch (IOException ioe) {
+	         System.out.println("IO error trying to read your name!");
+	         System.exit(1);
+	      }
+	     
+	      try {
+	    	  
+			Voice voice = new Voice(userName, pass, source,rnrSee);
+			
+			try {
+				
+				Thread.sleep(2000);
+				System.out.println(voice.getInbox());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getMissed());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getPlaced());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getReceived());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getRecent());
+				System.out.println("**********************************");
+				System.out.println(voice.getRecorded());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getSMS());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getSpam());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				System.out.println(voice.getStarred());
+				Thread.sleep(2000);
+				System.out.println("**********************************");
+				
+		
+			} catch (InterruptedException e) {
+				
+				e.printStackTrace();
+			}
+			
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	      
