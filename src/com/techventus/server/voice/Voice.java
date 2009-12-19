@@ -80,6 +80,8 @@ public class Voice {
 				+ URLEncoder.encode(originNumber, "UTF-8");
 		calldata += "&" + URLEncoder.encode("subscriberNumber", "UTF-8") + "="
 				+ URLEncoder.encode("undefined", "UTF-8");
+		calldata += "&" + URLEncoder.encode("phoneType", "UTF-8") + "="
+		+ URLEncoder.encode("1", "UTF-8");
 		calldata += "&" + URLEncoder.encode("remember", "UTF-8") + "="
 				+ URLEncoder.encode("0", "UTF-8");
 		calldata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
