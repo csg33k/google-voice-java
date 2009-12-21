@@ -28,6 +28,7 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
+	      /*
 	      System.out.println("Enter A \"Source\" for the Log:");
 	      String source = null;
 	      try {
@@ -36,7 +37,7 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
-	    
+	   
 	      System.out.println("Log into Google Voice and find the _rnr_se variable in the page Source. ");
 	      System.out.println("Enter rnr_se_ value:");
 	      String rnrSee = null;
@@ -46,10 +47,10 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
-	     
+	     */
 	      try {
 	    	  
-			Voice voice = new Voice(userName, pass, source,rnrSee);
+			Voice voice = new Voice(userName, pass);
 			
 			try {
 				

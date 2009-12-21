@@ -10,11 +10,13 @@ import java.net.URLEncoder;
 
 public class Voice {
 
+	String general = null;
 	String rnrSEE = null;
 	String source = null;
 	String user = null;
 	String pass = null;
 	String authToken = null;
+	String generalURLString = "https://www.google.com/voice/";
 	String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
 	String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
 	String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
@@ -30,6 +32,10 @@ public class Voice {
 	public String getInbox() throws IOException{
 		return get(inboxURLString);
 	}
+	public String getGeneral() throws IOException{
+		return get(generalURLString);
+	}
+	
 	public String getStarred() throws IOException{
 		return get(starredURLString);
 	}
@@ -54,7 +60,7 @@ public class Voice {
 	public String getSMS() throws IOException{
 		return get(smsURLString);
 	}
-	
+	@Deprecated
 	public Voice(String user, String pass, String source, String rnrSee)
 			throws IOException {
 
@@ -65,10 +71,54 @@ public class Voice {
 
 		login();
 	}
+	public Voice(String user, String pass, String source)
+			throws IOException {
+		
+		this.user = user;
+		this.pass = pass;
+		//this.rnrSEE = rnrSee;
+		this.source = source;
+		
+		login();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		general = getGeneral();
+		setRNRSEE();
+	}
 	
+	public Voice(String user, String pass)
+			throws IOException {
 	
-	
+		this.user = user;
+		this.pass = pass;
+		//this.rnrSEE = rnrSee;
+		this.source = "GoogleVoiceJava";
+		
+		login();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		general = getGeneral();
+		setRNRSEE();
+	}
 
+	public void setRNRSEE(){
+		if(general!=null){
+			String p1 = general.split("'_rnr_se': '",2)[1];
+			rnrSEE = p1.split("',",2)[0];
+			p1=null;
+		}
+	}
+	
+	
+	
 	public String call(String originNumber, String destinationNumber)
 			throws IOException {
 		String out = "";
