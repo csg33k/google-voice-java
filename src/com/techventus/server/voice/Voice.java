@@ -29,6 +29,56 @@ public class Voice {
 	String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
 	String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
 
+
+	@Deprecated
+	public Voice(String user, String pass, String source, String rnrSee)
+			throws IOException {
+
+		this.user = user;
+		this.pass = pass;
+		this.rnrSEE = rnrSee;
+		this.source = source;
+
+		login();
+	}
+	public Voice(String user, String pass, String source)
+			throws IOException {
+		
+		this.user = user;
+		this.pass = pass;
+		//this.rnrSEE = rnrSee;
+		this.source = source;
+		
+		login();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+		general = getGeneral();
+		setRNRSEE();
+	}
+	
+	public Voice(String user, String pass)
+			throws IOException {
+	
+		this.user = user;
+		this.pass = pass;
+		//this.rnrSEE = rnrSee;
+		this.source = "GoogleVoiceJava";
+		
+		login();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+		general = getGeneral();
+		setRNRSEE();
+	}
+
 	public String getInbox() throws IOException{
 		return get(inboxURLString);
 	}
@@ -60,55 +110,9 @@ public class Voice {
 	public String getSMS() throws IOException{
 		return get(smsURLString);
 	}
-	@Deprecated
-	public Voice(String user, String pass, String source, String rnrSee)
-			throws IOException {
-
-		this.user = user;
-		this.pass = pass;
-		this.rnrSEE = rnrSee;
-		this.source = source;
-
-		login();
-	}
-	public Voice(String user, String pass, String source)
-			throws IOException {
-		
-		this.user = user;
-		this.pass = pass;
-		//this.rnrSEE = rnrSee;
-		this.source = source;
-		
-		login();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		general = getGeneral();
-		setRNRSEE();
-	}
 	
-	public Voice(String user, String pass)
-			throws IOException {
 	
-		this.user = user;
-		this.pass = pass;
-		//this.rnrSEE = rnrSee;
-		this.source = "GoogleVoiceJava";
-		
-		login();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		general = getGeneral();
-		setRNRSEE();
-	}
-
+	
 	public void setRNRSEE(){
 		if(general!=null){
 			String p1 = general.split("'_rnr_se': '",2)[1];
