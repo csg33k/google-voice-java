@@ -7,9 +7,12 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Voice {
 
+	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
 	String source = null;
@@ -28,7 +31,7 @@ public class Voice {
 	String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
 	String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
 	String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
-
+	String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
 
 	@Deprecated
 	public Voice(String user, String pass, String source, String rnrSee)
@@ -58,6 +61,7 @@ public class Voice {
 		}
 		general = getGeneral();
 		setRNRSEE();
+		setPhoneInfo();
 	}
 	
 	public Voice(String user, String pass)
@@ -77,6 +81,7 @@ public class Voice {
 		}
 		general = getGeneral();
 		setRNRSEE();
+		setPhoneInfo();
 	}
 
 	public String getInbox() throws IOException{
@@ -111,9 +116,8 @@ public class Voice {
 		return get(smsURLString);
 	}
 	
-	
-	
-	public void setRNRSEE(){
+
+	private void setRNRSEE(){
 		if(general!=null){
 			String p1 = general.split("'_rnr_se': '",2)[1];
 			rnrSEE = p1.split("',",2)[0];
@@ -121,9 +125,46 @@ public class Voice {
 		}
 	}
 	
+	private void setPhoneInfo(){
+		if(general!=null){
+			List<Phone> phoneList = new ArrayList<Phone>();
+			String p1 = general.split("'phones':",2)[1];
+			p1 = (p1.split("'_rnr_se'", 2))[0];
+			String[] a = p1.split("\\{\"id\"\\:");
+			//System.out.println(a[0]);
+			for(int i=1;i<a.length;i++){
+				Phone phone = new Phone();
+				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
+				phone.id = b[0].replaceAll("\"", "");
+				for(int j=0;j<b.length;j++){
+					if(b[j].contains("phoneNumber")){
+						phone.number = b[j].split("\\:")[1].replaceAll("\"", "");
+					}else if(b[j].contains("type")){
+						phone.type = b[j].split("\\:")[1].replaceAll("\"", "");
+					}else if(b[j].contains("name")){
+						phone.name = b[j].split("\\:")[1].replaceAll("\"", "");
+					
+					}else if(b[j].contains("formattedNumber")){
+						phone.formattedNumber = b[j].split("\\:")[1].replaceAll("\"", "");
+					}else if(b[j].contains("carrier")){
+						phone.carrier = b[j].split("\\:")[1].replaceAll("\"", "");
+					}else if(b[j].contains("\"verified")){
+						phone.verified = Boolean.parseBoolean(b[j].split("\\:")[1].replaceAll("\"", ""));
+					}
+				}
+				phoneList.add(phone);
+			}
+			
+			this.phoneList = phoneList;
+			
+		}
+	}
 	
 	
-	public String call(String originNumber, String destinationNumber)
+	
+	
+	
+	public String call(String originNumber, String destinationNumber, String phoneType)
 			throws IOException {
 		String out = "";
 		String calldata = URLEncoder.encode("auth", "UTF-8") + "="
@@ -135,7 +176,7 @@ public class Voice {
 		calldata += "&" + URLEncoder.encode("subscriberNumber", "UTF-8") + "="
 				+ URLEncoder.encode("undefined", "UTF-8");
 		calldata += "&" + URLEncoder.encode("phoneType", "UTF-8") + "="
-		+ URLEncoder.encode("1", "UTF-8");
+		+ URLEncoder.encode(phoneType, "UTF-8");
 		calldata += "&" + URLEncoder.encode("remember", "UTF-8") + "="
 				+ URLEncoder.encode("0", "UTF-8");
 		calldata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
@@ -173,6 +214,160 @@ public class Voice {
 
 	}
 
+	public String cancelCall(String originNumber, String destinationNumber, String phoneType)
+			throws IOException {
+		String out = "";
+		String calldata = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		calldata += "&" + URLEncoder.encode("outgoingNumber", "UTF-8") + "="
+				+ URLEncoder.encode("undefined", "UTF-8");
+		calldata += "&" + URLEncoder.encode("forwardingNumber", "UTF-8") + "="
+				+ URLEncoder.encode("undefined", "UTF-8");
+
+
+		calldata += "&" + URLEncoder.encode("cancelType", "UTF-8") + "="
+		+ URLEncoder.encode("C2C", "UTF-8");
+		calldata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		// POST /voice/call/connect/ outgoingNumber=[number to
+		// call]&forwardingNumber=[forwarding
+		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
+		// page]
+		URL callURL = new URL("https://www.google.com/voice/call/cancel/");
+
+		URLConnection callconn = callURL.openConnection();
+		callconn.setDoOutput(true);
+		OutputStreamWriter callwr = new OutputStreamWriter(callconn
+				.getOutputStream());
+		callwr.write(calldata);
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(
+				callconn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+
+	}
+
+	public String phoneDisable(int ID)
+			throws IOException {
+		String out = "";
+		
+		String disabledata = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		disabledata += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+				+ URLEncoder.encode("0", "UTF-8");
+		disabledata += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
+		disabledata+= "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+		+ URLEncoder.encode(rnrSEE, "UTF-8");
+		// POST /voice/call/connect/ outgoingNumber=[number to
+		// call]&forwardingNumber=[forwarding
+		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
+		// page]
+		
+		//
+		URL disableURL = new URL(phoneEnableURLString);
+
+		System.out.println(disabledata);
+		
+		URLConnection disableconn = disableURL.openConnection();
+		disableconn.setDoOutput(true);
+		disableconn.setDoInput(true);
+		
+		
+		
+		OutputStreamWriter callwr = new OutputStreamWriter(disableconn
+				.getOutputStream());
+		callwr.write(disabledata);
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(
+				disableconn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+
+	}
+	
+	public String phoneEnable(int ID)
+			throws IOException {
+		String out = "";
+		
+		String disabledata = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		disabledata += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+				+ URLEncoder.encode("1", "UTF-8");
+		disabledata += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
+		disabledata+= "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+		+ URLEncoder.encode(rnrSEE, "UTF-8");
+		// POST /voice/call/connect/ outgoingNumber=[number to
+		// call]&forwardingNumber=[forwarding
+		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
+		// page]
+		
+		//
+		URL disableURL = new URL(phoneEnableURLString);
+
+		System.out.println(disabledata);
+		
+		URLConnection disableconn = disableURL.openConnection();
+		disableconn.setDoOutput(true);
+		disableconn.setDoInput(true);
+		
+		
+		
+		OutputStreamWriter callwr = new OutputStreamWriter(disableconn
+				.getOutputStream());
+		callwr.write(disabledata);
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(
+				disableconn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+
+	}
+	
 	public String sendSMS(String destinationNumber, String txt) throws IOException {
 		String out = "";
 		String smsdata = URLEncoder.encode("auth", "UTF-8") + "="
@@ -183,10 +378,7 @@ public class Voice {
 		smsdata += "&"
 				+ URLEncoder.encode("text", "UTF-8")
 				+ "="
-				+ URLEncoder
-						.encode(
-								txt,
-								"UTF-8");
+				+ URLEncoder.encode(txt,"UTF-8");
 		smsdata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
 		URL smsurl = new URL("https://www.google.com/voice/sms/send/");
@@ -217,11 +409,6 @@ public class Voice {
 		return out;
 	}
 
-	
-
-	
-
-	
 	String get(String urlString) throws IOException{
 		URL url = new URL(urlString+"?auth="+URLEncoder.encode(authToken,"UTF-8"));
 		URLConnection conn = url.openConnection ();
