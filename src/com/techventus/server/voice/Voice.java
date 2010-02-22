@@ -84,6 +84,10 @@ public class Voice {
 		setPhoneInfo();
 	}
 
+	//public Voice(){
+	//	authToken = "abcde";
+	//}
+	
 	public String getInbox() throws IOException{
 		return get(inboxURLString);
 	}
@@ -188,6 +192,8 @@ public class Voice {
 		URL callURL = new URL("https://www.google.com/voice/call/connect/");
 
 		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
 		callconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(callconn
 				.getOutputStream());
@@ -236,6 +242,8 @@ public class Voice {
 		URL callURL = new URL("https://www.google.com/voice/call/cancel/");
 
 		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
 		callconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(callconn
 				.getOutputStream());
@@ -285,6 +293,8 @@ public class Voice {
 		System.out.println(disabledata);
 		
 		URLConnection disableconn = disableURL.openConnection();
+		disableconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
 		disableconn.setDoOutput(true);
 		disableconn.setDoInput(true);
 		
@@ -333,23 +343,25 @@ public class Voice {
 		// page]
 		
 		//
-		URL disableURL = new URL(phoneEnableURLString);
+		URL enableURL = new URL(phoneEnableURLString);
 
 		System.out.println(disabledata);
 		
-		URLConnection disableconn = disableURL.openConnection();
-		disableconn.setDoOutput(true);
-		disableconn.setDoInput(true);
+		URLConnection enableconn = enableURL.openConnection();
+		enableconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
+		enableconn.setDoOutput(true);
+		enableconn.setDoInput(true);
 		
 		
 		
-		OutputStreamWriter callwr = new OutputStreamWriter(disableconn
+		OutputStreamWriter callwr = new OutputStreamWriter(enableconn
 				.getOutputStream());
 		callwr.write(disabledata);
 		callwr.flush();
 
 		BufferedReader callrd = new BufferedReader(new InputStreamReader(
-				disableconn.getInputStream()));
+				enableconn.getInputStream()));
 
 		String line;
 		while ((line = callrd.readLine()) != null) {
@@ -384,6 +396,8 @@ public class Voice {
 		URL smsurl = new URL("https://www.google.com/voice/sms/send/");
 
 		URLConnection smsconn = smsurl.openConnection();
+		smsconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
 		smsconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(smsconn
 				.getOutputStream());
@@ -412,6 +426,7 @@ public class Voice {
 	String get(String urlString) throws IOException{
 		URL url = new URL(urlString+"?auth="+URLEncoder.encode(authToken,"UTF-8"));
 		URLConnection conn = url.openConnection ();
+		conn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
 
 		// Get the response
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -470,4 +485,26 @@ public class Voice {
 		}
 	}
 
+	
+	
+	public boolean isLoggedIn(){
+		String res;
+		try {
+			res = getRecent();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return false;
+		}
+		if(res.contains("<meta name=\"description\" content=\"Google Voice gives you one number") && 
+				res.contains("action=\"https://www.google.com/accounts/ServiceLoginAuth?service=grandcentral\"")){
+			return false;
+		}else{
+			if(res.contains("Enter a new or existing contact name") || res.contains("<json><![CDATA[")){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 }

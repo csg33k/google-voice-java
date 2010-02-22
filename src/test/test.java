@@ -51,16 +51,17 @@ public class test {
 	      try {
 	    	  
 			Voice voice = new Voice(userName, pass);
-			
-			try {
-				
-				Thread.sleep(2000);
+			//Voice voice = new Voice();
+			//try {
+				System.out.println(voice.isLoggedIn());
+				//Thread.sleep(2000);
 				if(voice.phoneList!=null && voice.phoneList.size()>0)
 				for(int i=0;i<voice.phoneList.size();i++){
 					System.out.println(voice.phoneList.get(i).toString());
 				}
-				Thread.sleep(2000);
-				//System.out.println(voice.getSMS());
+			//	Thread.sleep(2000);
+				
+				System.out.println(voice.getSMS());
 				/*
 				System.out.println(voice.getInbox());
 				Thread.sleep(2000);
@@ -79,7 +80,7 @@ public class test {
 				System.out.println(voice.getReceived());
 				Thread.sleep(2000);
 				System.out.println("**********************************");
-				System.out.println(voice.getRecent());
+				
 				System.out.println("**********************************");
 				System.out.println(voice.getRecorded());
 				Thread.sleep(2000);
@@ -95,10 +96,10 @@ public class test {
 				System.out.println("**********************************");
 				*/
 		
-			} catch (InterruptedException e) {
+			//} catch (InterruptedException e) {
 				
-				e.printStackTrace();
-			}
+			//	e.printStackTrace();
+			//}
 			
 			
 		} catch (IOException e) {
