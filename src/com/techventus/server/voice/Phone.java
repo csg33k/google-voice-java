@@ -2,13 +2,13 @@ package com.techventus.server.voice;
 
 public class Phone {
 	
-	protected String id;
-	protected String number;
-	protected String formattedNumber;
-	protected String type;
-	protected String name;
-	protected String carrier;
-	protected Boolean verified;
+	public String id;
+	public String number;
+	public String formattedNumber;
+	public String type;
+	public String name;
+	public String carrier;
+	public Boolean verified;
 	
 	public Phone(){
 		
