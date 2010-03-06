@@ -1,6 +1,10 @@
 package com.techventus.server.voice;
 
 /**
+ * One Element in a Transscript - normally a word.
+ * Each Element has a ReccognitionLevel indicating how sure google is 
+ * that the word is recognised correctly.
+ * 
  * @author Tobias Eisentraeger
  *
  */
@@ -22,6 +26,12 @@ public class TransscriptElement {
 		}
 	}
 	
+	/**
+	 * Standard constructor
+	 * @param text
+	 * @param id
+	 * @param level
+	 */
 	public TransscriptElement(String text, String id, RecognitionLevel level) {
 		this.text = text;
 		this.id = id;
@@ -29,7 +39,7 @@ public class TransscriptElement {
 	}
 	
 	/**
-	 * Creates the element based on the html, for example:
+	 * Creates a TransscriptElement based on the html, for example:
 	 * <span id="0-33" class="gc-word-med1">Hello World!</span>
 	 * @param html
 	 */
@@ -102,14 +112,14 @@ public class TransscriptElement {
 	}
 
 	/**
-	 * @return the level
+	 * @return the level of recognition - How sure is it that the word is recognized correctly
 	 */
 	public RecognitionLevel getLevel() {
 		return level;
 	}
 
 	/**
-	 * @param level the level to set
+	 * @param level  of recognition - How sure is it that the word is recognized correctly - usage: RecognitionLevel.MED1
 	 */
 	public void setLevel(RecognitionLevel level) {
 		this.level = level;
