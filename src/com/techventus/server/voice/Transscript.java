@@ -14,17 +14,35 @@ import com.techventus.server.voice.TransscriptElement.RecognitionLevel;
 public class Transscript {
 	private List<TransscriptElement> elements;
 
+	/**
+	 * Creates a Transscript out of a List of Elements - usage:
+	 * 
+	    List<TransscriptElement> transElementList = new ArrayList<TransscriptElement>();
+		// go through the array and create transscript elments
+		for (int i = 0; i < transElementsAsString.length; i++) {
+			transElementList.add(TransscriptElement.extractTransscriptElement("<span"+transElementsAsString[i]));
+		}
+		trans = new Transscript(transElementList);
+	 * 
+	 * @param elements
+	 */
 	public Transscript(List<TransscriptElement> elements) {
 		super();
 		this.elements = elements;
 	}
-	
+	/**
+	 * Creates a transcripts with only Text, with RecognitionLevel.UNKNOWN
+	 * @param simpleTransscript
+	 */
 	public Transscript(String simpleTransscript) {
 		super();
 		this.elements = new ArrayList<TransscriptElement>();
 		elements.add(new TransscriptElement(simpleTransscript, null, RecognitionLevel.UNKNOWN));
 	}
 
+	/**
+	 * returns a simple String representation
+	 */
 	public String toString() {
 		String ret="";
 		for (Iterator<TransscriptElement> iter = elements.iterator(); iter.hasNext();) {
