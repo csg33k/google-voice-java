@@ -24,13 +24,16 @@ public abstract class Record {
 	protected Date date;
 	/** The Contact of this Record, like who called in  **/
 	protected Contact contact;
+	/** true if the message is read, false if not **/
+	protected boolean read;
 	
-	public Record(String id, String title, Date date, Contact contact) {
+	public Record(String id, String title, Date date, Contact contact, boolean read) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.date = date;
 		this.contact = contact;
+		this.read = read;
 	}
 	
 	/**
@@ -85,5 +88,27 @@ public abstract class Record {
 	}
 	/** Returns a String representation **/
 	public abstract String toString();
+	
+	public boolean isVoicemail() {
+		if(this instanceof Voicemail) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean isCall() {
+		if(this instanceof Call) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean isShortMessage() {
+		if(this instanceof ShortMessage) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 }

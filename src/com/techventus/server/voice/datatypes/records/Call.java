@@ -16,8 +16,8 @@ public class Call extends Record {
 	 * @param date
 	 * @param contact
 	 */
-	public Call(String id, String title, Date date, Contact contact) {
-		super(id, title, date, contact);
+	public Call(String id, String title, Date date, Contact contact, boolean read) {
+		super(id, title, date, contact, read);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -36,6 +36,7 @@ public class Call extends Record {
 		if(contact!=null){
 			ret+="contact="+contact+";";
 		}
+		ret+="read="+read+";";
 		return ret;
 	}
 

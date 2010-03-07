@@ -23,12 +23,17 @@ public class Voicemail extends Record {
 	 * @param date
 	 * @param contact
 	 * @param transcript
-	 * @param mp3Url
 	 */
-	public Voicemail(String id, String title, Date date, Contact contact, Transscript transcript, String mp3Url) {
-		super(id, title, date, contact);
+	public Voicemail(String id, String title, Date date, Contact contact, Transscript transcript, boolean read) {
+		super(id, title, date, contact, read);
 		this.transscript = transcript;
-		this.mp3Url = mp3Url;
+		this.mp3Url = "https://www.google.com/voice/media/send_voicemail/"+id;
+	}
+	
+	@Override
+	public void setId(String id) {
+		this.id = id;
+		this.mp3Url = "https://www.google.com/voice/media/send_voicemail/"+id;
 	}
 
 	/**
@@ -81,6 +86,7 @@ public class Voicemail extends Record {
 		if(mp3Url!=null){
 			ret+="mp3Url="+mp3Url+";";
 		}
+		ret+="read="+read+";";
 		return ret;
 	}
 	

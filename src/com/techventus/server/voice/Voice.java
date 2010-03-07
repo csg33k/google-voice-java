@@ -14,7 +14,7 @@ import com.techventus.server.voice.datatypes.Phone;
 
 public class Voice {
 
-	public static boolean PRINT_TO_CONSOLE = true;
+	public boolean PRINT_TO_CONSOLE = true;
 	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
@@ -69,7 +69,7 @@ public class Voice {
 	
 	public Voice(String user, String pass)
 			throws IOException {
-	
+	    this.PRINT_TO_CONSOLE = false;
 		this.user = user;
 		this.pass = pass;
 		//this.rnrSEE = rnrSee;
@@ -86,6 +86,26 @@ public class Voice {
 		setRNRSEE();
 		setPhoneInfo();
 	}
+	
+	public Voice(String user, String pass, boolean printDebugIntoToSystemOut)
+			throws IOException {
+		this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
+		this.user = user;
+		this.pass = pass;
+		//this.rnrSEE = rnrSee;
+		this.source = "GoogleVoiceJava";
+		
+		login();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		
+			e.printStackTrace();
+		}
+		general = getGeneral();
+		setRNRSEE();
+		setPhoneInfo();
+		}
 
 	//public Voice(){
 	//	authToken = "abcde";
@@ -142,7 +162,7 @@ public class Voice {
 			for(int i=1;i<a.length;i++){
 				Phone phone = new Phone();
 				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
-				phone.id = b[0].replaceAll("\"", "");
+				phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
 				for(int j=0;j<b.length;j++){
 					if(b[j].contains("phoneNumber")){
 						phone.number = b[j].split("\\:")[1].replaceAll("\"", "");

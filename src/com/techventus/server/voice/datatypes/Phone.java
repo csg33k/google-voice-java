@@ -2,7 +2,7 @@ package com.techventus.server.voice.datatypes;
 
 public class Phone {
 	
-	public String id;
+	public int id;
 	public String number;
 	public String formattedNumber;
 	public String type;
@@ -17,9 +17,7 @@ public class Phone {
 	
 	public String toString(){
 		String ret = "";
-		if(id!=null){
-			ret+="id="+id+";";
-		}
+		ret+="id="+id+";";
 		if(number!=null){
 			ret+="number="+number+";";
 		}

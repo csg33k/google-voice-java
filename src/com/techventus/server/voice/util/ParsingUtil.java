@@ -57,4 +57,15 @@ public abstract class ParsingUtil {
 		return ret;
 	}
 	
+	/**
+	 * Replaces some speciel htmlEntities with a corresponding String
+	 * //TODO use Apache commons StringEscapeUtils.unescapeHTML() ?
+	 * @param s
+	 * @return
+	 */
+	public static String htmlEntitiesDecode(String s) {
+		s=s.replaceAll("&#39;", "'"); 
+		return s;
+	}
+	
 }

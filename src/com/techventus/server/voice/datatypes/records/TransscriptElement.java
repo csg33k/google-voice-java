@@ -15,17 +15,10 @@ public class TransscriptElement {
 	private String id;
 	private RecognitionLevel level;
 	public enum RecognitionLevel {
-		MED1 ("med1"),
-		MED2 ("med2"),
-		HIGH ("high"),
-		UNKNOWN ("unknown");
-		private final String text;
-		RecognitionLevel(String text) {
-			this.text = text;
-		}
-		public String getText() {
-			return text;
-		}
+		MED1,
+		MED2,
+		HIGH,
+		UNKNOWN;
 	}
 	
 	/**
@@ -63,6 +56,7 @@ public class TransscriptElement {
 		String ltext;
 		try {
 			ltext = ParsingUtil.removeUninterestingParts(html,">","</span>",false); 
+			ltext = ParsingUtil.htmlEntitiesDecode(ltext);
 		} catch (Exception e) {
 			ltext = "";
 		}
