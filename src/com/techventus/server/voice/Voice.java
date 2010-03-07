@@ -22,19 +22,19 @@ public class Voice {
 	String user = null;
 	String pass = null;
 	String authToken = null;
-	String generalURLString = "https://www.google.com/voice/";
-	String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
-	String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
-	String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
-	String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
-	String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
-	String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
-	String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
-	String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
-	String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
-	String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
+	static String generalURLString = "https://www.google.com/voice/";
+	static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
+	static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
+	static String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
+	static String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
+	static String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
+	static String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
+	static String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
+	static String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
+	static String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
+	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
+	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
+	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
 
 	@Deprecated
 	public Voice(String user, String pass, String source, String rnrSee)
