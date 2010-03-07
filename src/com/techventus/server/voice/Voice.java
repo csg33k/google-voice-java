@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.techventus.server.voice.datatypes.Phone;
+
 public class Voice {
 
 	public List<Phone> phoneList = null;

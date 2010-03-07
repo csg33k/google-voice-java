@@ -1,4 +1,4 @@
-package com.techventus.server.voice;
+package com.techventus.server.voice.datatypes;
 
 public class Phone {
 	

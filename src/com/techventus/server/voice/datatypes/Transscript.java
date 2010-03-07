@@ -1,10 +1,10 @@
-package com.techventus.server.voice;
+package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.techventus.server.voice.TransscriptElement.RecognitionLevel;
+import com.techventus.server.voice.datatypes.TransscriptElement.RecognitionLevel;
 
 /**
  * A Transscript of a voicemail
@@ -47,9 +47,9 @@ public class Transscript {
 		String ret="";
 		for (Iterator<TransscriptElement> iter = elements.iterator(); iter.hasNext();) {
 			TransscriptElement element = (TransscriptElement) iter.next();
-			if(iter.hasNext()) {
+			if(iter.hasNext()&&element!=null) {
 				ret = ret + element.getText() + " ";
-			} else {
+			} else if(element!=null) {
 				ret = ret + element.getText();
 			}
 		}

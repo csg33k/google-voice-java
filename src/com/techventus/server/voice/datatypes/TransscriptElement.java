@@ -1,4 +1,6 @@
-package com.techventus.server.voice;
+package com.techventus.server.voice.datatypes;
+
+import com.techventus.server.voice.util.ParsingUtil;
 
 /**
  * One Element in a Transscript - normally a word.
@@ -46,41 +48,38 @@ public class TransscriptElement {
 	public static TransscriptElement extractTransscriptElement(String html) {
 		String lId;
 		try {
-			lId=html.substring(
-				html.indexOf("id=\"") + 4, 
-				html.indexOf("\""));
+			lId = ParsingUtil.removeUninterestingParts(html,"id=\"","\"",false);  
 		} catch (Exception e) {
 			lId = "";
 		}
 		
 		String levelSt;
 		try {
-			levelSt=	html.substring(
-							html.indexOf("class=\"gc-word-") + 15, 
-							html.indexOf("\""));
+			levelSt = ParsingUtil.removeUninterestingParts(html,"class=\"gc-word-","\"",false); 	
 		} catch (Exception e) {
 			levelSt = "";
 		}
 		
 		String ltext;
 		try {
-			ltext=html.substring(
-				  html.indexOf(">") + 1, 
-				  html.indexOf("</span>"));
+			ltext = ParsingUtil.removeUninterestingParts(html,">","</span>",false); 
 		} catch (Exception e) {
 			ltext = "";
 		}
 		
-		if(levelSt.equals("med1")) {
-			return new TransscriptElement(ltext, lId, RecognitionLevel.MED1);
-		} else if(levelSt.equals("med2")) {
-			return new TransscriptElement(ltext, lId, RecognitionLevel.MED2);
-		} else if(levelSt.equals("high")) {
-			return new TransscriptElement(ltext, lId, RecognitionLevel.HIGH);
+		if(levelSt!=null) {
+			if(levelSt.equals("med1")) {
+				return new TransscriptElement(ltext, lId, RecognitionLevel.MED1);
+			} else if(levelSt.equals("med2")) {
+				return new TransscriptElement(ltext, lId, RecognitionLevel.MED2);
+			} else if(levelSt.equals("high")) {
+				return new TransscriptElement(ltext, lId, RecognitionLevel.HIGH);
+			} else {
+				return new TransscriptElement(ltext, lId, RecognitionLevel.UNKNOWN);
+			}
 		} else {
-			return new TransscriptElement(ltext, lId, RecognitionLevel.UNKNOWN);
+			return null;
 		}
-
 	}
 
 	/**
