@@ -1,10 +1,10 @@
-package com.techventus.server.voice.datatypes;
+package com.techventus.server.voice.datatypes.records;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.techventus.server.voice.datatypes.TransscriptElement.RecognitionLevel;
+import com.techventus.server.voice.datatypes.records.TransscriptElement.RecognitionLevel;
 
 /**
  * A Transscript of a voicemail

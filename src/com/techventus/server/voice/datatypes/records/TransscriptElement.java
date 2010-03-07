@@ -1,4 +1,4 @@
-package com.techventus.server.voice.datatypes;
+package com.techventus.server.voice.datatypes.records;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
