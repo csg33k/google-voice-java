@@ -14,7 +14,7 @@ import com.techventus.server.voice.datatypes.Phone;
 
 public class Voice {
 
-	public boolean PRINT_TO_CONSOLE = true;
+	public boolean PRINT_TO_CONSOLE;
 	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
@@ -22,19 +22,19 @@ public class Voice {
 	String user = null;
 	String pass = null;
 	String authToken = null;
-	static String generalURLString = "https://www.google.com/voice/";
-	static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
-	static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
-	static String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
-	static String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	static String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	static String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
-	static String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
-	static String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
-	static String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
-	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
-	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
-	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
+	static String generalURLString 		= "https://www.google.com/voice/";
+	static String inboxURLString 		= "https://www.google.com/voice/inbox/recent/inbox/";
+	static String starredURLString 		= "https://www.google.com/voice/inbox/recent/starred/";
+	static String recentAllURLString 	= "https://www.google.com/voice/inbox/recent/all/";
+	static String spamURLString 		= "https://www.google.com/voice/inbox/recent/spam/";
+	static String trashURLString 		= "https://www.google.com/voice/inbox/recent/spam/";
+	static String voicemailURLString 	= "https://www.google.com/voice/inbox/recent/voicemail/";
+	static String smsURLString 			= "https://www.google.com/voice/inbox/recent/sms/";
+	static String recordedURLString 	= "https://www.google.com/voice/inbox/recent/recorded/";
+	static String placedURLString 		= "https://www.google.com/voice/inbox/recent/placed/";
+	static String receivedURLString 	= "https://www.google.com/voice/inbox/recent/received/";
+	static String missedURLString 		= "https://www.google.com/voice/inbox/recent/missed/";
+	static String phoneEnableURLString 	= "https://www.google.com/voice/settings/editDefaultForwarding/";
 
 	@Deprecated
 	public Voice(String user, String pass, String source, String rnrSee)
@@ -47,33 +47,34 @@ public class Voice {
 
 		login();
 	}
+	
 	public Voice(String user, String pass, String source)
 			throws IOException {
+		init(user,pass,source, true);
 		
-		this.user = user;
-		this.pass = pass;
-		//this.rnrSEE = rnrSee;
-		this.source = source;
-		
-		login();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-
-			e.printStackTrace();
-		}
-		general = getGeneral();
-		setRNRSEE();
-		setPhoneInfo();
 	}
 	
 	public Voice(String user, String pass)
 			throws IOException {
-	    this.PRINT_TO_CONSOLE = false;
+		init(user,pass,null,true);
+	}
+	
+	public Voice(String user, String pass, String source, boolean printDebugIntoToSystemOut)
+			throws IOException {
+		init(user,pass,source,printDebugIntoToSystemOut);
+	}
+	
+	private void init(String user, String pass, String source, boolean printDebugIntoToSystemOut) 
+		throws IOException {
+		this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
 		this.user = user;
 		this.pass = pass;
 		//this.rnrSEE = rnrSee;
-		this.source = "GoogleVoiceJava";
+		if(source!=null) {
+			this.source = source;
+		} else {
+			this.source="GoogleVoiceJava";
+		}
 		
 		login();
 		try {
@@ -86,26 +87,6 @@ public class Voice {
 		setRNRSEE();
 		setPhoneInfo();
 	}
-	
-	public Voice(String user, String pass, boolean printDebugIntoToSystemOut)
-			throws IOException {
-		this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
-		this.user = user;
-		this.pass = pass;
-		//this.rnrSEE = rnrSee;
-		this.source = "GoogleVoiceJava";
-		
-		login();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		
-			e.printStackTrace();
-		}
-		general = getGeneral();
-		setRNRSEE();
-		setPhoneInfo();
-		}
 
 	//public Voice(){
 	//	authToken = "abcde";
