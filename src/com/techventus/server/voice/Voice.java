@@ -14,6 +14,7 @@ import com.techventus.server.voice.datatypes.Phone;
 
 public class Voice {
 
+	public static boolean PRINT_TO_CONSOLE = true;
 	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
@@ -137,7 +138,7 @@ public class Voice {
 			String p1 = general.split("'phones':",2)[1];
 			p1 = (p1.split("'_rnr_se'", 2))[0];
 			String[] a = p1.split("\\{\"id\"\\:");
-			//System.out.println(a[0]);
+			//if(PRINT_TO_CONSOLE) System.out.println(a[0]);
 			for(int i=1;i<a.length;i++){
 				Phone phone = new Phone();
 				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
@@ -292,7 +293,7 @@ public class Voice {
 		//
 		URL disableURL = new URL(phoneEnableURLString);
 
-		System.out.println(disabledata);
+		if(PRINT_TO_CONSOLE) System.out.println(disabledata);
 		
 		URLConnection disableconn = disableURL.openConnection();
 		disableconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
@@ -347,7 +348,7 @@ public class Voice {
 		//
 		URL enableURL = new URL(phoneEnableURLString);
 
-		System.out.println(disabledata);
+		if(PRINT_TO_CONSOLE) System.out.println(disabledata);
 		
 		URLConnection enableconn = enableURL.openConnection();
 		enableconn.setRequestProperty("User-agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
@@ -473,10 +474,10 @@ public class Voice {
 
 		//String AuthToken = null;
 		while ((line = rd.readLine()) != null) {
-			// System.out.println(line);
+			// if(PRINT_TO_CONSOLE) System.out.println(line);
 			if (line.contains("Auth=")) {
 				this.authToken = line.split("=", 2)[1].trim();
-				System.out.println("AUTH TOKEN =" + this.authToken);
+				if(PRINT_TO_CONSOLE) System.out.println("AUTH TOKEN =" + this.authToken);
 			}
 		}
 		wr.close();
