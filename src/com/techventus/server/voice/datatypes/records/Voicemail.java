@@ -13,7 +13,7 @@ import java.util.Date;
 public class Voicemail extends Record {
 
 	/** The transcript of the voicemail **/
-	private Transscript transscript;
+	private Transcript transcript;
 	/** The url of the mp3 file with the voicemail **/
 	private String mp3Url;
 	
@@ -24,9 +24,9 @@ public class Voicemail extends Record {
 	 * @param contact
 	 * @param transcript
 	 */
-	public Voicemail(String id, String title, Date date, Contact contact, Transscript transcript, boolean read) {
+	public Voicemail(String id, String title, Date date, Contact contact, Transcript transcript, boolean read) {
 		super(id, title, date, contact, read);
-		this.transscript = transcript;
+		this.transcript = transcript;
 		this.mp3Url = "https://www.google.com/voice/media/send_voicemail/"+id;
 	}
 	
@@ -39,15 +39,15 @@ public class Voicemail extends Record {
 	/**
 	 * @return the transcript
 	 */
-	public Transscript getTransscript() {
-		return transscript;
+	public Transcript getTransscript() {
+		return transcript;
 	}
 
 	/**
 	 * @param transcript the transcript to set
 	 */
-	public void setTransscript(Transscript transcript) {
-		this.transscript = transcript;
+	public void setTransscript(Transcript transcript) {
+		this.transcript = transcript;
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class Voicemail extends Record {
 		if(contact!=null){
 			ret+="contact="+contact+";";
 		}
-		if(transscript!=null){
-			ret+="transcript="+transscript+";";
+		if(transcript!=null){
+			ret+="transcript="+transcript+";";
 		}
 		if(mp3Url!=null){
 			ret+="mp3Url="+mp3Url+";";
