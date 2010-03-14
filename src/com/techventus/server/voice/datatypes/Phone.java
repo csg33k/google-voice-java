@@ -77,6 +77,9 @@ public class Phone {
 		if(verified!=null){
 			ret+="verified="+verified+";";
 		}
+		if(enabled!=null){
+			ret+="enabled="+enabled+";";
+		}
 		if(formattedNumber!=null){
 			ret+="formattedNumber="+formattedNumber+";";
 		}
