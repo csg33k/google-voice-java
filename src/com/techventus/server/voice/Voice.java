@@ -48,6 +48,10 @@ import com.techventus.server.voice.datatypes.Phone;
 public class Voice {
 
 	public boolean PRINT_TO_CONSOLE;
+	/** Can we change the phoneList to private, and only use the 
+	 * lazy getPhoneList(boolean forceUpdate) and then take the phonelist out of the init() ? 
+	**/
+	@Deprecated
 	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
@@ -178,15 +182,37 @@ public class Voice {
 		}
 
 		login();
+		/** remove the below from init() to set the PhoneList lazy ? **/
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 
 			e.printStackTrace();
 		}
-		general = getGeneral();
-		setRNRSEE();
-		setPhoneInfo();
+		getPhoneList(true);
+		/** end remove ? **/
+	}
+	
+	/**
+	 * Returns the phone list - Lazy
+	 * @param refresh - set to true to force a List update from the server
+	 * @return List of Phone objects
+	 * @throws IOException
+	 */
+	public List<Phone> getPhoneList(boolean forceUpdate) throws IOException {
+		if(phoneList==null || forceUpdate) {
+			login();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+
+				e.printStackTrace();
+			}
+			general = getGeneral();
+			setRNRSEE();
+			setPhoneInfo();
+		}
+		return phoneList;
 	}
 
 	// public Voice(){
