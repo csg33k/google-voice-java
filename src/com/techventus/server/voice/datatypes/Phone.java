@@ -10,6 +10,7 @@ public class Phone {
 	public String name;
 	public String carrier;
 	public Boolean verified;
+	public Boolean enabled;
 	
 	/**
 	 * Instantiates a new empty Phone object.  This method is deprecated.
@@ -50,6 +51,12 @@ public class Phone {
 	}
 	public void setFormattedNumber(String formattedNumber){
 		this.formattedNumber = formattedNumber;
+	}
+	public String getType(){
+		return this.type;
+	}
+	public void setType(String type){
+		this.type = type;
 	}
 	
 	public String toString(){

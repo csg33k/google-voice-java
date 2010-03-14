@@ -203,6 +203,10 @@ public class Voice {
 	public String getInbox() throws IOException {
 		return get(inboxURLString);
 	}
+	
+	public String getInboxPage(int page) throws IOException {
+		return get(inboxURLString,page);
+	}
 
 	/**
 	 * Fetches the page Source Code for the Voice homepage. This file contains
@@ -216,6 +220,10 @@ public class Voice {
 	public String getGeneral() throws IOException {
 		return get(generalURLString);
 	}
+	
+	public String getGeneralPage(int page) throws IOException {
+		return get(generalURLString,page);
+	}
 
 	/**
 	 * Gets the raw page source code for the starred items.
@@ -226,6 +234,10 @@ public class Voice {
 	 */
 	public String getStarred() throws IOException {
 		return get(starredURLString);
+	}
+	
+	public String getStarredPage(int page) throws IOException {
+		return get(starredURLString,page);
 	}
 
 	/**
@@ -238,6 +250,10 @@ public class Voice {
 	public String getRecent() throws IOException {
 		return get(recentAllURLString);
 	}
+	
+	public String getRecentPage(int page) throws IOException {
+		return get(recentAllURLString,page);
+	}
 
 	/**
 	 * Gets the page source for the spam.
@@ -248,6 +264,10 @@ public class Voice {
 	 */
 	public String getSpam() throws IOException {
 		return get(spamURLString);
+	}
+	
+	public String getSpamPage(int page) throws IOException {
+		return get(spamURLString,page);
 	}
 
 	/**
@@ -260,6 +280,10 @@ public class Voice {
 	public String getRecorded() throws IOException {
 		return get(recordedURLString);
 	}
+	
+	public String getRecordedPage(int page) throws IOException {
+		return get(recordedURLString,page);
+	}
 
 	/**
 	 * Gets the raw source code for the placed calls page.
@@ -270,6 +294,10 @@ public class Voice {
 	 */
 	public String getPlaced() throws IOException {
 		return get(placedURLString);
+	}
+	
+	public String getPlacedPage(int page) throws IOException {
+		return get(placedURLString,page);
 	}
 
 	/**
@@ -282,6 +310,10 @@ public class Voice {
 	public String getReceived() throws IOException {
 		return get(receivedURLString);
 	}
+	
+	public String getReceivedPage(int page) throws IOException {
+		return get(receivedURLString,page);
+	}
 
 	/**
 	 * Gets the missed calls source code.
@@ -293,6 +325,10 @@ public class Voice {
 	public String getMissed() throws IOException {
 		return get(missedURLString);
 	}
+	
+	public String getMissedPage(int page) throws IOException {
+		return get(missedURLString,page);
+	}
 
 	/**
 	 * Gets the SMS page raw source code.
@@ -303,6 +339,10 @@ public class Voice {
 	 */
 	public String getSMS() throws IOException {
 		return get(smsURLString);
+	}
+	
+	public String getSMSPage(int page) throws IOException {
+		return get(smsURLString,page);
 	}
 
 	/**
@@ -329,31 +369,53 @@ public class Voice {
 			String[] a = p1.split("\\{\"id\"\\:");
 			// if(PRINT_TO_CONSOLE) System.out.println(a[0]);
 			for (int i = 1; i < a.length; i++) {
-				Phone phone = new Phone();
+				//Phone phone = new Phone();
 				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
-				phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
+				//phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
+				int id = Integer.parseInt(b[0].replaceAll("\"", ""));
+				String number = "";
+				String type = "";
+				String name = "";
+				String formattedNumber="";
+				String carrier = "";
+				Boolean verified = false;
 				for (int j = 0; j < b.length; j++) {
 					if (b[j].contains("phoneNumber")) {
-						phone.number = b[j].split("\\:")[1]
-								.replaceAll("\"", "");
+						//phone.number = b[j].split("\\:")[1]
+						//		.replaceAll("\"", "");
+						number  = b[j].split("\\:")[1]
+						   .replaceAll("\"", "");
 					} else if (b[j].contains("type")) {
-						phone.type = b[j].split("\\:")[1].replaceAll("\"", "");
+						//phone.type = b[j].split("\\:")[1].replaceAll("\"", "");
+						type = b[j].split("\\:")[1].replaceAll("\"", "");
 					} else if (b[j].contains("name")) {
-						phone.name = b[j].split("\\:")[1].replaceAll("\"", "");
-
+						//phone.name = b[j].split("\\:")[1].replaceAll("\"", "");
+						name = b[j].split("\\:")[1].replaceAll("\"", "");
 					} else if (b[j].contains("formattedNumber")) {
-						phone.formattedNumber = b[j].split("\\:")[1]
-								.replaceAll("\"", "");
+						//phone.formattedNumber = b[j].split("\\:")[1]
+						//		.replaceAll("\"", "");
+						formattedNumber = b[j].split("\\:")[1]
+						    								.replaceAll("\"", "");
 					} else if (b[j].contains("carrier")) {
-						phone.carrier = b[j].split("\\:")[1].replaceAll("\"",
-								"");
+						//phone.carrier = b[j].split("\\:")[1].replaceAll("\"",
+						//		"");
+						carrier = b[j].split("\\:")[1].replaceAll("\"",
+							"");
 					} else if (b[j].contains("\"verified")) {
-						phone.verified = Boolean
-								.parseBoolean(b[j].split("\\:")[1].replaceAll(
-										"\"", ""));
+						//phone.verified = Boolean
+						//		.parseBoolean(b[j].split("\\:")[1].replaceAll(
+						//				"\"", ""));
+						verified = Boolean
+						.parseBoolean(b[j].split("\\:")[1].replaceAll(
+								"\"", ""));
 					}
 				}
-				phoneList.add(phone);
+				if(id!=0 && !number.equals("")&&!formattedNumber.equals("")&&!type.equals("")&&!name.equals("")){
+					Phone phone = new Phone(id, number, formattedNumber, type, name, carrier, verified);
+					phoneList.add(phone);
+				}else{
+					System.out.println("Error in phone object creation.");
+				}
 			}
 
 			this.phoneList = phoneList;
@@ -369,7 +431,7 @@ public class Voice {
 	 * @param destinationNumber
 	 *            the destination number
 	 * @param phoneType
-	 *            the phone type
+	 *            the phone type, this is a number such as 1,2,7 formatted as a String
 	 * @return the raw response string received from Google Voice.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -697,6 +759,41 @@ public class Voice {
 	String get(String urlString) throws IOException {
 		URL url = new URL(urlString + "?auth="
 				+ URLEncoder.encode(authToken, "UTF-8"));
+		URLConnection conn = url.openConnection();
+		conn
+				.setRequestProperty(
+						"User-agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+
+		// Get the response
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
+				.getInputStream()));
+		StringBuffer sb = new StringBuffer();
+		String line;
+		while ((line = rd.readLine()) != null) {
+			sb.append(line + "\n\r");
+		}
+		rd.close();
+		String result = sb.toString();
+
+		return result;
+	}
+	
+	
+	/**
+	 * HTML GET request for a given URL String and a given page number
+	 * 
+	 * 
+	 * @param urlString the url string
+	 * @param page number must be a natural number
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	String get(String urlString,int page) throws IOException {
+		URL url = new URL(urlString + "?page=p"+page+"&auth="
+				+ URLEncoder.encode(authToken, "UTF-8")
+				);
+		//url+="&page="+page;
 		URLConnection conn = url.openConnection();
 		conn
 				.setRequestProperty(
