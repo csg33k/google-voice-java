@@ -72,6 +72,7 @@ public class Voice {
 	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
 	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
 	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
+	static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -489,7 +490,7 @@ public class Voice {
 		callconn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		callconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(callconn
@@ -554,7 +555,7 @@ public class Voice {
 		callconn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		callconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(callconn
@@ -730,7 +731,7 @@ public class Voice {
 		conn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		conn.setDoOutput(true);
 		conn.setDoInput(true);
@@ -790,7 +791,7 @@ public class Voice {
 		smsconn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		smsconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(smsconn
@@ -833,7 +834,7 @@ public class Voice {
 		conn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		// Get the response
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
@@ -868,7 +869,7 @@ public class Voice {
 		conn
 				.setRequestProperty(
 						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+						USER_AGENT);
 
 		// Get the response
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
