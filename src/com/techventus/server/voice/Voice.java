@@ -555,6 +555,103 @@ public class Voice {
 		return out;
 
 	}
+	
+	/** 
+	 * Enables multiple phones in one post 
+	 *  
+	 * TODO Test this with multiple phones in an account
+	 * 		Best would be to be able to construct a url which can switch multiple phones at a time
+	 * 
+	 * @param IDs Array of Phones to enable
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public void phonesEnable(int[] IDs) throws IOException {
+
+		if(IDs.length<1) {
+			return;
+		} else if(IDs.length==1) {
+			//launch single (no thread overhead)	
+			phoneEnable(IDs[0]);
+		} else {
+			for (int i = 0; i < IDs.length; i++) {
+				//TODO spawn threads!
+				int j = IDs[i];
+				String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+				paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+						+ URLEncoder.encode("1", "UTF-8");
+				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
+				paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+					+ URLEncoder.encode(rnrSEE, "UTF-8");
+			
+				phonesEnableDisableApply(paraString);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Enables one of the the phones attached to the account from ringing.
+	 * Requires the internal ID for that phone, as an integer, usually 1,2,3,
+	 * etc.
+	 * 
+	 * @param ID
+	 *            the iD
+	 * @return the raw response of the enable action.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String phoneEnable(int ID) throws IOException {
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+				+ URLEncoder.encode("1", "UTF-8");
+		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		return phonesEnableDisableApply(paraString);
+	}
+	
+	/** 
+	 * Disables multiple phones in one post
+	 * 
+	 * TODO Test this with multiple phones in an account
+	 * 		Make faster - spawn threads
+	 *      Best would be to be able to construct a url which can switch multiple phones at a time
+	 * 
+	 * @param IDs Array of Phones to disable
+	 * @return the raw response of the disable action.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public void phonesDisable(int[] IDs) throws IOException {
+		
+		if(IDs.length<1) {
+			return;
+		} else if(IDs.length==1) {
+			//launch single (no thread overhead)	
+			phoneDisable(IDs[0]);
+		} else {
+			for (int i = 0; i < IDs.length; i++) {
+				//TODO spawn threads!
+				int j = IDs[i];
+				String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+				paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+						+ URLEncoder.encode("0", "UTF-8");
+				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
+				paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+					+ URLEncoder.encode(rnrSEE, "UTF-8");
+			
+				phonesEnableDisableApply(paraString);
+			}
+		}
+
+	}
 
 	/**
 	 * Disable one of the the phones attached to the account from ringing.
@@ -568,110 +665,57 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public String phoneDisable(int ID) throws IOException {
-		String out = "";
-
-		String disabledata = URLEncoder.encode("auth", "UTF-8") + "="
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
 				+ URLEncoder.encode(authToken, "UTF-8");
-		disabledata += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+		paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
 				+ URLEncoder.encode("0", "UTF-8");
-		disabledata += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
+		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
 				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
-		disabledata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
-		// POST /voice/call/connect/ outgoingNumber=[number to
-		// call]&forwardingNumber=[forwarding
-		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
-		// page]
-
-		//
-		URL disableURL = new URL(phoneEnableURLString);
-
-		if (PRINT_TO_CONSOLE)
-			System.out.println(disabledata);
-
-		URLConnection disableconn = disableURL.openConnection();
-		disableconn
-				.setRequestProperty(
-						"User-agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
-
-		disableconn.setDoOutput(true);
-		disableconn.setDoInput(true);
-
-		OutputStreamWriter callwr = new OutputStreamWriter(disableconn
-				.getOutputStream());
-		callwr.write(disabledata);
-		callwr.flush();
-
-		BufferedReader callrd = new BufferedReader(new InputStreamReader(
-				disableconn.getInputStream()));
-
-		String line;
-		while ((line = callrd.readLine()) != null) {
-			out += line + "\n\r";
-
-		}
-
-		callwr.close();
-		callrd.close();
-
-		if (out.equals("")) {
-			throw new IOException("No Response Data Received.");
-		}
-
-		return out;
-
+		return phonesEnableDisableApply(paraString);
 	}
 
 	/**
-	 * Enable one of the the phones attached to the account from ringing.
-	 * Requires the internal ID for that phone, as an integer, usually 1,2,3,
-	 * etc.
+	 * Executes the enable/disable action with the provided url params
 	 * 
-	 * @param ID
-	 *            the iD
-	 * @return the string
+	 * @param paraString
+	 *            the URL Parameters (encoded), ie ?auth=3248sdf7234&enable=0&phoneId=1&enable=1&phoneId=2&_rnr_se=734682ghdsf
+	 * @return the raw response of the disable action.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public String phoneEnable(int ID) throws IOException {
+	private String phonesEnableDisableApply(String paraString) throws IOException {
 		String out = "";
 
-		String disabledata = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		disabledata += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
-				+ URLEncoder.encode("1", "UTF-8");
-		disabledata += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
-				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
-		disabledata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		
 		// POST /voice/call/connect/ outgoingNumber=[number to
 		// call]&forwardingNumber=[forwarding
 		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
 		// page]
 
 		//
-		URL enableURL = new URL(phoneEnableURLString);
+		URL requestURL = new URL(phoneEnableURLString);
 
 		if (PRINT_TO_CONSOLE)
-			System.out.println(disabledata);
+			System.out.println(paraString);
 
-		URLConnection enableconn = enableURL.openConnection();
-		enableconn
+		URLConnection conn = requestURL.openConnection();
+		conn
 				.setRequestProperty(
 						"User-agent",
 						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
 
-		enableconn.setDoOutput(true);
-		enableconn.setDoInput(true);
+		conn.setDoOutput(true);
+		conn.setDoInput(true);
 
-		OutputStreamWriter callwr = new OutputStreamWriter(enableconn
+		OutputStreamWriter callwr = new OutputStreamWriter(conn
 				.getOutputStream());
-		callwr.write(disabledata);
+		callwr.write(paraString);
 		callwr.flush();
 
 		BufferedReader callrd = new BufferedReader(new InputStreamReader(
-				enableconn.getInputStream()));
+				conn.getInputStream()));
 
 		String line;
 		while ((line = callrd.readLine()) != null) {
