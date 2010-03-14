@@ -108,6 +108,7 @@ public class Voice {
 	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
 	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
 	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
+	static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
 	
 
 	/**
@@ -795,6 +796,125 @@ public class Voice {
 
 		return out;
 
+	}
+	
+	/**
+	 * Enables/disables the call Announcement setting (general for all phones)
+	 * 
+	 * @param announceCaller <br/>
+	 *            true Announces caller's name and gives answering options <br/>
+	 *            false Directly connects calls when phones are answered
+	 * @return the raw response of the disable action.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String setCallPresentation(boolean announceCaller) throws IOException {
+		String out = "";
+
+		URL requestURL = new URL(generalSettingsURLString);
+		/** 0 for enable, 1 for disable **/
+		String announceCallerStr="";
+
+		if(announceCaller) {
+			announceCallerStr = "0";
+			if (PRINT_TO_CONSOLE) System.out.println("Turning caller announcement on.");
+		}
+		else {
+			announceCallerStr = "1";
+			if (PRINT_TO_CONSOLE) System.out.println("Turning caller announcement off.");
+		}
+		
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += "&" + URLEncoder.encode("directConnect", "UTF-8") + "="
+				+ URLEncoder.encode(announceCallerStr, "UTF-8");
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+
+
+		URLConnection conn = requestURL.openConnection();
+		conn.setRequestProperty("User-agent",
+								USER_AGENT);
+
+		conn.setDoOutput(true);
+		conn.setDoInput(true);
+
+		OutputStreamWriter callwr = new OutputStreamWriter(conn.getOutputStream());
+		callwr.write(paraString);
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+	}
+	
+	/**
+	 * This is the general voicemail greeting callers hear
+	 * 
+	 * TODO does not work yet
+	 * @deprecated does not work yet
+	 * @param greetingToSet <br/>
+	 *            number of the greeting to choose
+	 * @return the raw response of the disable action.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Deprecated
+	public String setVoicemailGreetingId(int greetingToSet) throws IOException {
+		String out = "";
+
+		URL requestURL = new URL(generalSettingsURLString);
+
+		if (PRINT_TO_CONSOLE) System.out.println("Activating Greeting#"+greetingToSet);
+
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += "&" + URLEncoder.encode("defaultGreetingId", "UTF-8") + "="
+				+ URLEncoder.encode(greetingToSet+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+
+
+		URLConnection conn = requestURL.openConnection();
+		conn.setRequestProperty("User-agent",
+								USER_AGENT);
+
+		conn.setDoOutput(true);
+		conn.setDoInput(true);
+
+		OutputStreamWriter callwr = new OutputStreamWriter(conn.getOutputStream());
+		callwr.write(paraString);
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+		
+		if(PRINT_TO_CONSOLE) System.out.println(out);
+
+		return out;
 	}
 
 	/**

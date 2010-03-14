@@ -85,6 +85,8 @@ public class test {
 		System.out.println("0: Exit");  
 		System.out.println("1: Multi phone enable / disable");
 		System.out.println("2: Inbox paging");
+		System.out.println("3: Call Announcement Settings (Presentation)");
+		System.out.println("4: Set Default Voicemail Greeting");
 
 		int testNr = 0;
 		try {
@@ -162,6 +164,36 @@ public class test {
 							System.out.println("******** Starting Test "+testNr+" ********");
 							Thread.sleep(2000);
 							System.out.println(voice.getInboxPage(1000));
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 3: // 3: Call Announcement settings (Presentation)
+							System.out.println("******** Starting Test "+testNr+" ********");
+							System.out.println("Type 'true' for enable, 'false' for disable");
+							boolean choice = false;
+							try {
+								choice = Boolean.parseBoolean(br.readLine());
+							} catch (Exception e) {
+								System.out.println("Error trying to read the choice!"+e.getMessage());
+								System.exit(1);
+							}
+							Thread.sleep(2000);
+							System.out.println(voice.setCallPresentation(choice));
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 4: // 4: Caller ID in
+							System.out.println("******** Starting Test "+testNr+" ********");
+							System.out.println("Choose the id of the voicemail greeting to use. ie '0' or '1'");
+							int voicemailNr = 0;
+							try {
+								voicemailNr = Integer.parseInt(br.readLine());
+							} catch (Exception e) {
+								System.out.println("Error trying to read the choice!"+e.getMessage());
+								System.exit(1);
+							}
+							Thread.sleep(2000);
+							voice.setVoicemailGreetingId(voicemailNr);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 	
