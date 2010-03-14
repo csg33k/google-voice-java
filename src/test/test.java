@@ -3,8 +3,10 @@ package test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 
 import com.techventus.server.voice.Voice;
+import com.techventus.server.voice.datatypes.Phone;
 
 public class test {
 	public static void main(String[] args){
@@ -56,9 +58,42 @@ public class test {
 			try {
 				System.out.println(voice.isLoggedIn());
 				//Thread.sleep(2000);
-				if(voice.phoneList!=null && voice.phoneList.size()>0)
-				for(int i=0;i<voice.phoneList.size();i++){
-					System.out.println(voice.phoneList.get(i).toString());
+				if(voice.phoneList!=null && voice.phoneList.size()>0) {
+					for(int i=0;i<voice.phoneList.size();i++){
+						System.out.println(voice.phoneList.get(i).toString());
+					}
+					Thread.sleep(2000);
+					
+					// create int Array from all phone ids
+					int[] phonesToChangeStatus = new int[voice.phoneList.size()];
+					int i=0;
+					
+					for (Iterator<Phone> iterator = voice.phoneList.iterator(); iterator
+							.hasNext();) {
+						Phone type = (Phone) iterator.next();
+						phonesToChangeStatus[i] = type.id;
+						i++;
+					}
+					
+					//Disable all phones with one call
+					voice.phonesDisable(phonesToChangeStatus);
+					
+					// Output
+					System.out.println("After deactivate multi.");
+					voice = new Voice(userName, pass);
+					for(int ii=0;i<voice.phoneList.size();ii++){
+						System.out.println(voice.phoneList.get(ii).toString());
+					}
+					
+					//Enable all phones with one call
+					voice.phonesEnable(phonesToChangeStatus);
+					
+					// Output
+					System.out.println("After activate multi.");
+					voice = new Voice(userName, pass);
+					for(int ii=0;i<voice.phoneList.size();ii++){
+						System.out.println(voice.phoneList.get(ii).toString());
+					}
 				}
 				Thread.sleep(2000);
 				
