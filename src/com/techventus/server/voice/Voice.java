@@ -55,10 +55,46 @@ public class Voice {
 	public List<Phone> phoneList = null;
 	String general = null;
 	String rnrSEE = null;
+	/**
+	 * Short string identifying your application, for logging purposes. This string should take the form:
+	 * "companyName-applicationName-versionID". See: http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request
+	 */
 	String source = null;
+	/**
+	 * User's full email address. It must include the domain (i.e. johndoe@gmail.com).
+	 */
 	String user = null;
+	/**
+	 * User's password.
+	 */
 	String pass = null;
+	/**
+	 * Once the login information has been successfully authenticated, Google returns a token, which your 
+	 * application will reference each time it requests access to the user's account.
+	 * This token must be included in all subsequent requests to the Google service for this account. 
+	 * Authorization tokens should be closely guarded and should not be given to any other application, 
+	 * as they represent access to the user's account. The time limit on the token varies depending on 
+	 * which service issued it.
+	 */
 	String authToken = null;
+	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
+	/**
+	 * Type of account to request authorization for. Possible values are: <br/><br/>
+	 * -<b>GOOGLE</b> (get authorization for a Google account only) <br/>
+	 * -<b>HOSTED</b> (get authorization for a hosted account only) <br/>
+	 * -<b>HOSTED_OR_GOOGLE</b> (get authorization first for a hosted account; if attempt fails, get 
+	 * authorization for a Google account)<br/><br/>		
+	 * Use <b>HOSTED_OR_GOOGLE</b> if you're not sure which type of account you want authorization for. 
+	 * If the user information matches both a hosted and a Google account, only the hosted account is authorized.
+	 */
+	final static String ACCOUNT_TYPE = "GOOGLE"; //TODO Should we change this to HOSTED_OR_GOOGLE or add a custom Constructor?
+	/**
+	 * Name of the Google service you're requesting authorization for. Each service using the Authorization 
+	 * service is assigned a name value; for example, the name associated with Google Calendar is 'cl'. 
+	 * This parameter is required when accessing services based on Google Data APIs. For specific service 
+	 * names, refer to the service documentation.
+	 */
+	final static String SERVICE = "grandcentral";
 	static String generalURLString = "https://www.google.com/voice/";
 	static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
 	static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
@@ -72,7 +108,7 @@ public class Voice {
 	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
 	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
 	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
-	static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
+	
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -103,15 +139,15 @@ public class Voice {
 	}
 
 	/**
-	 * A constructor which which allows a custom source. The purpose of the
-	 * source variable is currently unknown.
+	 * A constructor which which allows a custom source.
 	 * 
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
 	 *            the password
 	 * @param source
-	 *            the source
+	 *            Short string identifying your application, for logging purposes. This string should take the form:
+					"companyName-applicationName-versionID". See: http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
@@ -894,13 +930,13 @@ public class Voice {
 	public void login() throws IOException {
 
 		String data = URLEncoder.encode("accountType", "UTF-8") + "="
-				+ URLEncoder.encode("GOOGLE", "UTF-8");
+				+ URLEncoder.encode(ACCOUNT_TYPE, "UTF-8");
 		data += "&" + URLEncoder.encode("Email", "UTF-8") + "="
 				+ URLEncoder.encode(user, "UTF-8");
 		data += "&" + URLEncoder.encode("Passwd", "UTF-8") + "="
 				+ URLEncoder.encode(pass, "UTF-8");
 		data += "&" + URLEncoder.encode("service", "UTF-8") + "="
-				+ URLEncoder.encode("grandcentral", "UTF-8");
+				+ URLEncoder.encode(SERVICE, "UTF-8");
 		data += "&" + URLEncoder.encode("source", "UTF-8") + "="
 				+ URLEncoder.encode(source, "UTF-8");
 
@@ -954,7 +990,7 @@ public class Voice {
 		if (res
 				.contains("<meta name=\"description\" content=\"Google Voice gives you one number")
 				&& res
-						.contains("action=\"https://www.google.com/accounts/ServiceLoginAuth?service=grandcentral\"")) {
+						.contains("action=\"https://www.google.com/accounts/ServiceLoginAuth?service="+SERVICE+"\"")) {
 			return false;
 		} else {
 			if (res.contains("Enter a new or existing contact name")
