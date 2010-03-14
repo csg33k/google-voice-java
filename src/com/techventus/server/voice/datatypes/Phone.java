@@ -3,14 +3,23 @@ package com.techventus.server.voice.datatypes;
 public class Phone {
 	
 	
+	/*Use Getters and Setters - Need to make these variables private*/
+	@Deprecated
 	public int id;
+	@Deprecated
 	public String number;
+	@Deprecated
 	public String formattedNumber;
+	@Deprecated
 	public String type;
+	@Deprecated
 	public String name;
+	@Deprecated
 	public String carrier;
-	public Boolean verified;
-	public Boolean enabled;
+	@Deprecated 
+	public boolean verified;
+	@Deprecated
+	public boolean enabled;
 	
 	/**
 	 * Instantiates a new empty Phone object.  This method is deprecated.
@@ -21,7 +30,7 @@ public class Phone {
 		
 	}
 	
-	public Phone(int id,String number,String formattedNumber,String type,String name,String carrier, Boolean verified){
+	public Phone(int id,String number,String formattedNumber,String type,String name,String carrier, boolean verified, boolean enabled){
 		this.id = id;
 		this.number = number;
 		this.formattedNumber = formattedNumber;
@@ -29,6 +38,7 @@ public class Phone {
 		this.name = name;
 		this.carrier = carrier;
 		this.verified = verified;
+		this.enabled = enabled;
 	}
 	
 	public int getId(){
@@ -58,6 +68,30 @@ public class Phone {
 	public void setType(String type){
 		this.type = type;
 	}
+	public String getName(){
+		return this.name;
+	}
+	public void setName(String name){
+		this.name = name;
+	}
+	public String getCarrier(){
+		return this.carrier;
+	}
+	public void setCarrier(String carrier){
+		this.carrier = carrier;
+	}
+	public boolean getVerified(){
+		return this.verified;
+	}
+	public void setVerified(boolean verified){
+		this.verified = verified;
+	}
+	public boolean getEnabled(){
+		return this.enabled;
+	}
+	public void setEnabled(boolean enabled){
+		this.enabled = enabled;
+	}
 	
 	public String toString(){
 		String ret = "";
@@ -74,12 +108,12 @@ public class Phone {
 		if(type!=null){
 			ret+="type="+type+";";
 		}
-		if(verified!=null){
+		//if(verified!=null){
 			ret+="verified="+verified+";";
-		}
-		if(enabled!=null){
+		//}
+		//if(enabled!=null){
 			ret+="enabled="+enabled+";";
-		}
+		//}
 		if(formattedNumber!=null){
 			ret+="formattedNumber="+formattedNumber+";";
 		}
