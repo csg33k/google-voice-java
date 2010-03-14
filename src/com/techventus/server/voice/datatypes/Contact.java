@@ -68,12 +68,27 @@ public class Contact {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		String ret = "{";
+		if(id!=null){
+			ret+="id="+id+";";
+		}
 		if(name!=null){
 			ret+="name="+name+";";
 		}
