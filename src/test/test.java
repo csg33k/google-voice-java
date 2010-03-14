@@ -1,17 +1,11 @@
 package test;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.Phone;
@@ -113,7 +107,7 @@ public class test {
 	    	  
 			Voice voice = new Voice(userName, pass);
 			//Voice voice = new Voice();
-			try {
+//			try {
 				System.out.println(voice.isLoggedIn());
 				//Thread.sleep(2000);
 
@@ -131,10 +125,9 @@ public class test {
 							}
 							
 							System.out.println("Current phone status:");
-							if(voice.getPhoneList(false)!=null && voice.getPhoneList(false).size()>0) {
-								for(int ii=0;ii<voice.getPhoneList(false).size();ii++){
-									System.out.println(voice.getPhoneList(false).get(ii).toString());
-								}
+							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+								Phone type = (Phone) iterator.next();
+								System.out.println(type.toString());
 							}
 							
 							//Disable all phones with one call
@@ -142,9 +135,9 @@ public class test {
 							
 							// Output
 							System.out.println("After deactivate multi:");
-							voice.getPhoneList(true);
-							for(int ii=0;i<voice.getPhoneList(false).size();ii++){
-								System.out.println(voice.getPhoneList(false).get(ii).toString());
+							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+								Phone type = (Phone) iterator.next();
+								System.out.println(type.toString());
 							}
 							
 							//Enable all phones with one call
@@ -152,9 +145,9 @@ public class test {
 							
 							// Output
 							System.out.println("After activate multi:");
-							voice.getPhoneList(true);
-							for(int ii=0;i<voice.getPhoneList(false).size();ii++){
-								System.out.println(voice.getPhoneList(false).get(ii).toString());
+							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+								Phone type = (Phone) iterator.next();
+								System.out.println(type.toString());
 							}
 							
 							System.out.println("******** Finished Test "+testNr+" ********");
@@ -162,7 +155,7 @@ public class test {
 							
 						case 2: // 2: Inbox paging
 							System.out.println("******** Starting Test "+testNr+" ********");
-							Thread.sleep(2000);
+//							Thread.sleep(2000);
 							System.out.println(voice.getInboxPage(1000));
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
@@ -177,7 +170,7 @@ public class test {
 								System.out.println("Error trying to read the choice!"+e.getMessage());
 								System.exit(1);
 							}
-							Thread.sleep(2000);
+//							Thread.sleep(2000);
 							System.out.println(voice.setCallPresentation(choice));
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
@@ -192,7 +185,7 @@ public class test {
 								System.out.println("Error trying to read the choice!"+e.getMessage());
 								System.exit(1);
 							}
-							Thread.sleep(2000);
+//							Thread.sleep(2000);
 							voice.setVoicemailGreetingId(voicemailNr);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
@@ -244,9 +237,9 @@ public class test {
 				System.out.println("**********************************");
 				*/
 		
-			} catch (InterruptedException e) {			
-				e.printStackTrace();
-			}		
+//			} catch (InterruptedException e) {			
+//				e.printStackTrace();
+//			}		
 		} catch (IOException e) {	
 			e.printStackTrace();
 		}

@@ -1,8 +1,8 @@
 package com.techventus.server.voice.datatypes.records;
 
-import com.techventus.server.voice.datatypes.Contact;
-
 import java.util.Date;
+
+import com.techventus.server.voice.datatypes.Contact;
 
 
 /**

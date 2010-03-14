@@ -66,6 +66,7 @@ public class Voice {
 	String user = null;
 	/**
 	 * User's password.
+	 * TODO make private?
 	 */
 	String pass = null;
 	/**
@@ -75,6 +76,7 @@ public class Voice {
 	 * Authorization tokens should be closely guarded and should not be given to any other application, 
 	 * as they represent access to the user's account. The time limit on the token varies depending on 
 	 * which service issued it.
+	 * TODO make private?
 	 */
 	String authToken = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
@@ -95,20 +97,21 @@ public class Voice {
 	 * names, refer to the service documentation.
 	 */
 	final static String SERVICE = "grandcentral";
-	static String generalURLString = "https://www.google.com/voice/";
-	static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
-	static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
-	static String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
-	static String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	static String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	static String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
-	static String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
-	static String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
-	static String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
-	static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
-	static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
-	static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
-	static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
+	final static String generalURLString = "https://www.google.com/voice/";
+	final static String loginURLString = "https://www.google.com/accounts/ClientLogin";
+	final static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
+	final static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
+	final static String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
+	final static String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
+	final static String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
+	final static String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
+	final static String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
+	final static String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
+	final static String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
+	final static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
+	final static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
+	final static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
+	final static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
 	
 
 	/**
@@ -1061,7 +1064,7 @@ public class Voice {
 				+ URLEncoder.encode(source, "UTF-8");
 
 		// Send data
-		URL url = new URL("https://www.google.com/accounts/ClientLogin");
+		URL url = new URL(loginURLString);
 		URLConnection conn = url.openConnection();
 		conn.setDoOutput(true);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
