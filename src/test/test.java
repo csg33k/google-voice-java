@@ -1,9 +1,17 @@
 package test;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.Phone;
@@ -13,31 +21,39 @@ public class test {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static String userName = null;
 	static String pass = null;
+	static Properties testProps = null;
 	
 	public static void main(String[] args){
-		System.out.println("Enter Your Google Voice Username, eg user@gmail.com:");
 		
-    
-	      try {
-	         userName = br.readLine();
-	      } catch (IOException ioe) {
-	         System.out.println("IO error trying to read your name!");
-	         System.exit(1);
-	      }
-	      
-	      System.out.println("Enter Your Password:");
-	      
-	      
-	      try {
-	         pass = br.readLine();
-	      } catch (IOException ioe) {
-	         System.out.println("IO error trying to read your name!");
-	         System.exit(1);
-	      }
-	      
-	      listTests();
-	      
-	      /*
+		try {
+			testProps = load("test/privateTestData.properties");
+			userName = testProps.getProperty("username");
+			pass = testProps.getProperty("password");
+		} catch (Exception e) {
+			System.out.println("Could not read the testProps, falling back to input. ("+e.getMessage()+")");
+			System.out.println("Enter Your Google Voice Username, eg user@gmail.com:");
+
+			try {
+				userName = br.readLine();
+			} catch (IOException ioe) {
+				System.out.println("IO error trying to read your name!");
+				System.exit(1);
+			}
+
+			System.out.println("Enter Your Password:");
+
+
+			try {
+				pass = br.readLine();
+			} catch (IOException ioe) {
+				System.out.println("IO error trying to read your name!");
+				System.exit(1);
+			}
+		}
+
+		listTests();
+
+		/*
 	      System.out.println("Enter A \"Source\" for the Log:");
 	      String source = null;
 	      try {
@@ -46,7 +62,7 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
-	   
+
 	      System.out.println("Log into Google Voice and find the _rnr_se variable in the page Source. ");
 	      System.out.println("Enter rnr_se_ value:");
 	      String rnrSee = null;
@@ -56,8 +72,8 @@ public class test {
 	         System.out.println("IO error trying to read your name!");
 	         System.exit(1);
 	      }
-	     */
-	      
+		 */
+
 
 	}
 
@@ -65,7 +81,7 @@ public class test {
 	 * Lets the Tester choose the Test to run
 	 */
 	private static void listTests() {
-		System.out.println("Availible Tests:");
+		System.out.println("Availible Tests for "+userName);
 		System.out.println("0: Exit");  
 		System.out.println("1: Multi phone enable / disable");
 		System.out.println("2: Inbox paging");
@@ -103,19 +119,19 @@ public class test {
 						case 1: // 1: Multi phone enable / disable 
 							System.out.println("******** Starting Test "+testNr+" ********");
 							// create int Array from all phone ids
-							int[] phonesToChangeStatus = new int[voice.phoneList.size()];
+							int[] phonesToChangeStatus = new int[voice.getPhoneList(true).size()];
 							int i=0;
 							
-							for (Iterator<Phone> iterator = voice.phoneList.iterator(); iterator.hasNext();) {
+							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
 								Phone type = (Phone) iterator.next();
 								phonesToChangeStatus[i] = type.id;
 								i++;
 							}
 							
 							System.out.println("Current phone status:");
-							if(voice.phoneList!=null && voice.phoneList.size()>0) {
-								for(int ii=0;ii<voice.phoneList.size();ii++){
-									System.out.println(voice.phoneList.get(ii).toString());
+							if(voice.getPhoneList(false)!=null && voice.getPhoneList(false).size()>0) {
+								for(int ii=0;ii<voice.getPhoneList(false).size();ii++){
+									System.out.println(voice.getPhoneList(false).get(ii).toString());
 								}
 							}
 							
@@ -124,9 +140,9 @@ public class test {
 							
 							// Output
 							System.out.println("After deactivate multi:");
-							voice = new Voice(userName, pass);
-							for(int ii=0;i<voice.phoneList.size();ii++){
-								System.out.println(voice.phoneList.get(ii).toString());
+							voice.getPhoneList(true);
+							for(int ii=0;i<voice.getPhoneList(false).size();ii++){
+								System.out.println(voice.getPhoneList(false).get(ii).toString());
 							}
 							
 							//Enable all phones with one call
@@ -134,9 +150,9 @@ public class test {
 							
 							// Output
 							System.out.println("After activate multi:");
-							voice = new Voice(userName, pass);
-							for(int ii=0;i<voice.phoneList.size();ii++){
-								System.out.println(voice.phoneList.get(ii).toString());
+							voice.getPhoneList(true);
+							for(int ii=0;i<voice.getPhoneList(false).size();ii++){
+								System.out.println(voice.getPhoneList(false).get(ii).toString());
 							}
 							
 							System.out.println("******** Finished Test "+testNr+" ********");
@@ -204,5 +220,42 @@ public class test {
 		}
 		listTests(); // List the Tests again
 	}
+	
+	/**
+     * Load a Properties File
+     * @param propsFile
+     * @return Properties
+     * @throws IOException
+     */
+    private static Properties load(String propsFile) throws IOException {
+//        Properties props = new Properties();
+//
+//        ResourceBundle.getBundle(propsFile);
+//        final ResourceBundle rb = ResourceBundle.getBundle(propsFile, Locale.getDefault (), ClassLoader.getSystemClassLoader());
+//        for (Enumeration keys = rb.getKeys (); keys.hasMoreElements ();)
+//        {
+//            final String key = (String) keys.nextElement ();
+//            final String value = rb.getString (key);
+//            
+//            props.put (key, value);
+//        } 
+//        return props;
+    	
+    	Properties result = null;
+        InputStream in = null;
+         
+         if (! propsFile.endsWith (".properties"))
+        	 propsFile = propsFile.concat (".properties");
+                         
+         // Returns null on lookup failures:
+         in = ClassLoader.getSystemClassLoader().getResourceAsStream (propsFile);
+         if (in != null)
+         {
+             result = new Properties ();
+             result.load (in); // Can throw IOException
+         }
+         testProps = result;
+         return result;
+    }
 	
 }
