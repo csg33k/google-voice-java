@@ -50,10 +50,13 @@ public class Voice {
 	public boolean PRINT_TO_CONSOLE;
 	/** Can we change the phoneList to private, and only use the 
 	 * lazy getPhoneList(boolean forceUpdate) and then take the phonelist out of the init() ? 
+	 * 
+	 * YES!!!!!!!!!!!!!!!!
 	**/
 	@Deprecated
 	public List<Phone> phoneList = null;
 	String general = null;
+	String phonesInfo = null;
 	String rnrSEE = null;
 	/**
 	 * Short string identifying your application, for logging purposes. This string should take the form:
@@ -63,12 +66,11 @@ public class Voice {
 	/**
 	 * User's full email address. It must include the domain (i.e. johndoe@gmail.com).
 	 */
-	String user = null;
+	private String user = null;
 	/**
 	 * User's password.
-	 * TODO make private?
 	 */
-	String pass = null;
+	private String pass = null;
 	/**
 	 * Once the login information has been successfully authenticated, Google returns a token, which your 
 	 * application will reference each time it requests access to the user's account.
@@ -78,7 +80,7 @@ public class Voice {
 	 * which service issued it.
 	 * TODO make private?
 	 */
-	String authToken = null;
+	private String authToken = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 	/**
 	 * Type of account to request authorization for. Possible values are: <br/><br/>
@@ -114,6 +116,7 @@ public class Voice {
 	final static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
 	
 
+	final static String phonesInfoURLString = "https://www.google.com/voice/settings/tab/phones";
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
 	 * Voice(String user, String pass) which automatically determines rnrSee and
@@ -249,7 +252,8 @@ public class Voice {
 
 				e.printStackTrace();
 			}
-			general = getGeneral();
+			this.general = getGeneral();
+			this.phonesInfo = this.getRawPhonesInfo();
 			setRNRSEE();
 			setPhoneInfo();
 		}
@@ -336,6 +340,9 @@ public class Voice {
 	public String getSpamPage(int page) throws IOException {
 		return get(spamURLString,page);
 	}
+	
+	
+
 
 	/**
 	 * Gets the page source for the recorded calls.
@@ -425,11 +432,39 @@ public class Voice {
 		}
 	}
 
+	//TODO Combine with or replace setPhoneInfo
+	public String getRawPhonesInfo() throws IOException{
+		return get(phonesInfoURLString);
+	}
+	
+	
+
 	/**
 	 * Reads raw account info, and creates the phoneList of Phone objects.
 	 */
 	private void setPhoneInfo() {
-		if (general != null) {
+		if (general != null && phonesInfo!=null) {
+			
+			List<Integer> disabledList = new ArrayList<Integer>();
+			
+			String f1 = phonesInfo.substring(phonesInfo.indexOf("disabledIdMap\":{"));
+			f1=f1.substring(16);
+			f1 = f1.substring(0,f1.indexOf("},\""));
+			String[] rawslice = f1.split(",");
+			
+			for(int i=0;i<rawslice.length;i++){
+				if(rawslice[i].contains("true")){
+					//System.out.println(rawslice[i]);
+					rawslice[i] = rawslice[i].replace("\":true", "");
+					rawslice[i] =rawslice[i].replace("\"", "");
+					//System.out.println(rawslice[i]);
+					Integer z = Integer.parseInt(rawslice[i]);
+					disabledList.add(z);
+				}
+			}
+			
+			
+			
 			List<Phone> phoneList = new ArrayList<Phone>();
 			String p1 = general.split("'phones':", 2)[1];
 			p1 = (p1.split("'_rnr_se'", 2))[0];
@@ -478,7 +513,17 @@ public class Voice {
 					}
 				}
 				if(id!=0 && !number.equals("")&&!formattedNumber.equals("")&&!type.equals("")&&!name.equals("")){
-					Phone phone = new Phone(id, number, formattedNumber, type, name, carrier, verified);
+					
+					boolean enabled;
+					
+					if(disabledList.contains(new Integer(id))){
+						enabled = false;
+					}else{
+						enabled = true;
+					}
+					
+					Phone phone = new Phone(id, number, formattedNumber, type, name, carrier, verified,enabled);
+											
 					phoneList.add(phone);
 				}else{
 					System.out.println("Error in phone object creation.");
@@ -1123,5 +1168,4 @@ public class Voice {
 		}
 		return false;
 	}
-
 }
