@@ -125,7 +125,7 @@ public class test {
 							}
 							
 							System.out.println("Current phone status:");
-							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+							for (Iterator<Phone> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
 								Phone type = (Phone) iterator.next();
 								System.out.println(type.toString());
 							}
@@ -135,7 +135,7 @@ public class test {
 							
 							// Output
 							System.out.println("After deactivate multi:");
-							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+							for (Iterator<Phone> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
 								Phone type = (Phone) iterator.next();
 								System.out.println(type.toString());
 							}

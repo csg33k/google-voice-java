@@ -48,13 +48,10 @@ import com.techventus.server.voice.datatypes.Phone;
 public class Voice {
 
 	public boolean PRINT_TO_CONSOLE;
-	/** Can we change the phoneList to private, and only use the 
-	 * lazy getPhoneList(boolean forceUpdate) and then take the phonelist out of the init() ? 
-	 * 
-	 * YES!!!!!!!!!!!!!!!!
-	**/
-	@Deprecated
-	public List<Phone> phoneList = null;
+	/** 
+	 * keeps the list of phones - lazy
+	*/
+	private List<Phone> phoneList = null;
 	String general = null;
 	String phonesInfo = null;
 	String rnrSEE = null;
@@ -78,7 +75,6 @@ public class Voice {
 	 * Authorization tokens should be closely guarded and should not be given to any other application, 
 	 * as they represent access to the user's account. The time limit on the token varies depending on 
 	 * which service issued it.
-	 * TODO make private?
 	 */
 	private String authToken = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
@@ -114,9 +110,8 @@ public class Voice {
 	final static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
 	final static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
 	final static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
-	
-
 	final static String phonesInfoURLString = "https://www.google.com/voice/settings/tab/phones";
+
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
 	 * Voice(String user, String pass) which automatically determines rnrSee and
@@ -226,15 +221,6 @@ public class Voice {
 		}
 
 		login();
-		/** remove the below from init() to set the PhoneList lazy ? **/
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-
-			e.printStackTrace();
-		}
-		getPhoneList(true);
-		/** end remove ? **/
 	}
 	
 	/**
@@ -340,9 +326,6 @@ public class Voice {
 	public String getSpamPage(int page) throws IOException {
 		return get(spamURLString,page);
 	}
-	
-	
-
 
 	/**
 	 * Gets the page source for the recorded calls.
@@ -809,9 +792,6 @@ public class Voice {
 		//
 		URL requestURL = new URL(phoneEnableURLString);
 
-		if (PRINT_TO_CONSOLE)
-			System.out.println(paraString);
-
 		URLConnection conn = requestURL.openConnection();
 		conn
 				.setRequestProperty(
@@ -1127,7 +1107,7 @@ public class Voice {
 			if (line.contains("Auth=")) {
 				this.authToken = line.split("=", 2)[1].trim();
 				if (PRINT_TO_CONSOLE)
-					System.out.println("AUTH TOKEN =" + this.authToken);
+					System.out.println("Login success - auth token received.");
 			}
 		}
 		wr.close();
