@@ -219,8 +219,10 @@ public class Voice {
 		} else {
 			this.source = "GoogleVoiceJava";
 		}
-
+		
 		login();
+		this.general = getGeneral();
+		setRNRSEE();
 	}
 	
 	/**
@@ -238,9 +240,8 @@ public class Voice {
 
 				e.printStackTrace();
 			}
-			this.general = getGeneral();
+			
 			this.phonesInfo = this.getRawPhonesInfo();
-			setRNRSEE();
 			setPhoneInfo();
 		}
 		return phoneList;

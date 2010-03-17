@@ -81,6 +81,7 @@ public class test {
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
 		System.out.println("4: Set Default Voicemail Greeting");
+		System.out.println("5: Temp tests");
 
 		int testNr = 0;
 		try {
@@ -187,6 +188,13 @@ public class test {
 							}
 //							Thread.sleep(2000);
 							voice.setVoicemailGreetingId(voicemailNr);
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 5: // 5: Temp Tests
+							System.out.println("******** Starting Test "+testNr+" ********");
+							voice.phoneEnable(1);
+							voice.phoneEnable(2);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 	
