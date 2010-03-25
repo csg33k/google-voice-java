@@ -6,37 +6,140 @@ package com.techventus.server.voice.datatypes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
 /**
  * Holds all settings of the gVoice account and can return it as String, as lists or as json-string
+ * Most Lists also have a .toJson() method
  *
  */
 public class Settings {
+	private JSONObject jsonObject = null;
 	private List<Phone> mPhoneList = null;
+	private List<String> mPhoneListSimple = null;
 	private List<Greeting> mVoicemailGreetingsList = null;
-	private List<Group> mGroupSettingsList = null;
-	private List<DisabledId> mDisabledIdList = null;
-	private List<String> mActiveForwardingList = null;
+	private List<Group> mGroupList = null;
+	
+	
 	private List<WebCallButton> mWebCallButtonList = null;
-	private String mDefaultGreetingId;
-	private List<String> mGroupList = null;
-	private List<EmailAddress> mEmailAddressList = null;
-	private String mBaseUrl = null;
+	private List<String> mGroupListSimple = null;
+	
+	
+	// Settings in order of the json
+	private List<String> mActiveForwardingList = null;
+	private String baseUrl;
+	private int credits;
+	private int defaultGreetingId;
+	private List<String> mDidInfos = null;
+    private boolean directConnect;
+    private List<DisabledId> mDisabledIdList = null;
+    private boolean doNotDisturb;
+    private List<EmailAddress> mEmailAddressList = null;
+    private boolean emailNotificationActive;
+    private String emailNotificationAddress;
+	private String language;
+	private String primaryDid;
+	private int screenBehavior;
+	private boolean showTranscripts;
+	private String smsNotifications;
+	private boolean smsToEmailActive;
+	private boolean smsToEmailSubject;
+	private int spam;
+	private String timezone;
+	private boolean useDidAsCallerId;
+	private boolean useDidAsSource;
 
-	public Settings(String json) {
+	public Settings(String json, boolean useJSONParser) {
 		super();
-		mPhoneList = getPhoneListFromJson(json);
-		mVoicemailGreetingsList = getGreetingsListFromJson(json);
-		mGroupSettingsList = getGroupSettingsListFromJson(json);
+		if(useJSONParser) {
+			try {
+				// remove html overhead
+				json = ParsingUtil.removeUninterestingParts(json, "<json><![CDATA[", "]]></json>", false);
+				jsonObject = new JSONObject(json); 
+				
+				// root objects = [phoneList, settings, phones]
+				
+				if(jsonObject.has("phoneList")) {
+					JSONArray phoneListJSON = (JSONArray) jsonObject.get("phoneList");
+					mPhoneListSimple = new ArrayList<String>();
+					for (int i = 0; i < phoneListJSON.length(); i++) {
+						mPhoneListSimple.add(phoneListJSON.getString(i));
+					}
+				}
+				
+				if(jsonObject.has("settings")) {
+					JSONObject settingsJSON = jsonObject.getJSONObject("settings");
+					if(settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
+					if(settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");
+					if(settingsJSON.has("credits")) credits = settingsJSON.getInt("credits");
+					if(settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
+					if(settingsJSON.has("didInfos")) mDidInfos = jsonStringArrayToStringList(settingsJSON,mDidInfos,"didInfos");
+					if(settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
+					if(settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createListFromJsonObject(settingsJSON);
+					if(settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
+					if(settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
+					if(settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
+					if(settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
+					//TODO greetings
+					//TODO groupList
+					//TODO groups
+					if(settingsJSON.has("language")) language = settingsJSON.getString("language");
+					if(settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
+					if(settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
+					if(settingsJSON.has("showTranscripts")) showTranscripts = settingsJSON.getBoolean("showTranscripts");
+					if(settingsJSON.has("smsNotifications")) smsNotifications = settingsJSON.getString("smsNotifications"); //TODO correct?
+					if(settingsJSON.has("smsToEmailActive")) smsToEmailActive =  settingsJSON.getBoolean("smsToEmailActive");
+					if(settingsJSON.has("smsToEmailSubject")) smsToEmailSubject = settingsJSON.getBoolean("smsToEmailSubject");
+					if(settingsJSON.has("spam")) spam = settingsJSON.getInt("spam");
+					if(settingsJSON.has("timezone")) timezone = settingsJSON.getString("timezone");
+					if(settingsJSON.has("useDidAsCallerId")) useDidAsCallerId = settingsJSON.getBoolean("useDidAsCallerId");
+					if(settingsJSON.has("useDidAsSource")) useDidAsSource = settingsJSON.getBoolean("useDidAsSource");
+					//TODO webCallButtons
+				}
+				
+				if(jsonObject.has("phones")) {
+					//TODO implement phones
+				}
+				
+
+			} catch (JSONException e) {
+				System.out.println("Error in json Parsing:"+e.getLocalizedMessage());
+			}
+		} else {
+			mPhoneList = getPhoneListFromJson(json);
+			mVoicemailGreetingsList = getGreetingsListFromJson(json);
+			mGroupList = getGroupListFromJson(json);
+			mEmailAddressList = getEmailAddressListFromJson(json);
+			mDisabledIdList = getDisabledIdListFromJson(json);
+		}
+	}
+
+	/**
+	 * 
+	 * @param settingsJSON
+	 * @param stringList
+	 * @param key
+	 * @return
+	 * @throws JSONException
+	 */
+	private List<String> jsonStringArrayToStringList(JSONObject settingsJSON, List<String> stringList, String key) throws JSONException {
+		stringList = new ArrayList<String>();
+		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
+			stringList.add(((JSONArray) settingsJSON.get(key)).getString(i));
+		}
+		return stringList;
 	}
 	
 	public String toJson() {
 		String ret="<json><![CDATA[{";
 
-		if(mPhoneList.size()>0) {
+		// "phones":{"1":{"id":1,"name":.....},,"2":{"id":2....}
+		if(mPhoneList!=null) {
 			ret+="\"phones\":{";
 			for (Iterator<Phone> iterator = mPhoneList.iterator(); iterator.hasNext();) {
 				Phone element = (Phone) iterator.next();
@@ -45,10 +148,11 @@ public class Settings {
 					ret+=",";
 				}
 			}
-			ret+=""; //Nothing - error in gvoice json data
+			ret+="}";
 		}
 		
-		if(mVoicemailGreetingsList.size()>0) {
+		// "greetings":[{"id":"0","name":"System Standard","jobberName":""},{"id":2,"name":"Testgreeting 1","jobberName":""}
+		if(mVoicemailGreetingsList!=null) {
 			ret+=",\"greetings\":[";
 			for (Iterator<Greeting> iterator = mVoicemailGreetingsList.iterator(); iterator.hasNext();) {
 				Greeting element = (Greeting) iterator.next();
@@ -60,10 +164,37 @@ public class Settings {
 			ret+="]";
 		}
 		
-		if(mGroupSettingsList.size()>0) {
+		// "groups":{"15":{......}
+		if(mGroupList!=null) {
 			ret+=",\"groups\":{";
-			for (Iterator<Group> iterator = mGroupSettingsList.iterator(); iterator.hasNext();) {
+			for (Iterator<Group> iterator = mGroupList.iterator(); iterator.hasNext();) {
 				Group element = (Group) iterator.next();
+				ret+=element.toJson();
+				if(iterator.hasNext()) {
+					ret+=",";
+				}
+			}
+			ret+="}";
+		}
+		
+		// "emailAddresses":["user@gmail.com"]
+		if(mEmailAddressList!=null) {
+			ret+=",\"emailAddresses\":[";
+			for (Iterator<EmailAddress> iterator = mEmailAddressList.iterator(); iterator.hasNext();) {
+				EmailAddress element = (EmailAddress) iterator.next();
+				ret+=element.toJson();
+				if(iterator.hasNext()) {
+					ret+=",";
+				}
+			}
+			ret+="]";
+		}
+		
+		// "disabledIdMap":{"6":true},
+		if(mDisabledIdList!=null) {
+			ret+=",\"disabledIdMap\":{";
+			for (Iterator<DisabledId> iterator = mDisabledIdList.iterator(); iterator.hasNext();) {
+				DisabledId element = (DisabledId) iterator.next();
 				ret+=element.toJson();
 				if(iterator.hasNext()) {
 					ret+=",";
@@ -103,9 +234,9 @@ public class Settings {
 			ret+="]\n";
 		}
 		
-		if(mGroupSettingsList.size()>0) {
+		if(mGroupList.size()>0) {
 			ret+=",\"groups\":{";
-			for (Iterator<Group> iterator = mGroupSettingsList.iterator(); iterator.hasNext();) {
+			for (Iterator<Group> iterator = mGroupList.iterator(); iterator.hasNext();) {
 				Group element = (Group) iterator.next();
 				ret+=element.toString();
 				if(iterator.hasNext()) {
@@ -123,7 +254,7 @@ public class Settings {
 	 * @param json
 	 * @return
 	 */
-	private List<Group> getGroupSettingsListFromJson(String json) {
+	private List<Group> getGroupListFromJson(String json) {
 		List<Group> result = new ArrayList<Group>();
 		try {
 			result = Group.createGroupSettingsFromJsonResponse(json);
@@ -132,6 +263,33 @@ public class Settings {
 		}
 		return result;
 	}
+	
+	/**
+	 * @return the mGroupListSimple
+	 */
+	public List<String> getGroupListSimple() {
+		if(mGroupListSimple==null && mGroupList!=null) {
+			mGroupListSimple = new ArrayList<String>();
+			for (Group groupSetting : mGroupList) {
+				mGroupListSimple.add(groupSetting.getId());
+			}
+		}
+		return mGroupListSimple;
+	}
+	
+	/**
+	 * @return the mPhoneListSimple
+	 */
+	public List<String> getPhoneListSimple() {
+		if(mPhoneListSimple==null && mPhoneList!=null) {
+			mPhoneListSimple = new ArrayList<String>();
+			for (Phone phoneSetting : mPhoneList) {
+				mPhoneListSimple.add(phoneSetting.getId()+"");
+			}
+		}
+		return mPhoneListSimple;
+	}
+	
 	
 	/**
 	 * Return the List of Voicemail Greetings from json
@@ -143,6 +301,26 @@ public class Settings {
 			result = Greeting.createGroupSettingsFromJsonResponse(json);
 		} catch (Exception e) {
 			System.out.println("Error in GreetingSetting object creation.");
+		}
+		return result;
+	}
+	
+	private List<EmailAddress> getEmailAddressListFromJson(String json) {
+		List<EmailAddress> result = new ArrayList<EmailAddress>();
+		try {
+			result = EmailAddress.createEmailAddressListFromJsonPartResponse(json);
+		} catch (Exception e) {
+			System.out.println("Error in EmailAddress object creation.");
+		}
+		return result;
+	}
+	
+	private List<DisabledId> getDisabledIdListFromJson(String json) {
+		List<DisabledId> result = new ArrayList<DisabledId>();
+		try {
+			result = DisabledId.createDisabledIdListFromJsonPartResponse(json);
+		} catch (Exception e) {
+			System.out.println("Error in DisabledId object creation.");
 		}
 		return result;
 	}
@@ -259,10 +437,10 @@ public class Settings {
 	}
 
 	/**
-	 * @return the mGroupSettingsList
+	 * @return the mGroupList
 	 */
 	public List<Group> getGroupSettingsList() {
-		return mGroupSettingsList;
+		return mGroupList;
 	}
 
 	/**
@@ -282,15 +460,8 @@ public class Settings {
 	/**
 	 * @return the mDefaultGreetingId
 	 */
-	public String getDefaultGreetingId() {
-		return mDefaultGreetingId;
-	}
-
-	/**
-	 * @return the mGroupList
-	 */
-	public List<String> getGroupList() {
-		return mGroupList;
+	public int getDefaultGreetingId() {
+		return defaultGreetingId;
 	}
 
 	/**
@@ -304,7 +475,7 @@ public class Settings {
 	 * @return the mBaseUrl
 	 */
 	public String getBaseUrl() {
-		return mBaseUrl;
+		return baseUrl;
 	}
 
 	/**
