@@ -134,7 +134,6 @@ public class Settings {
 	
 	/**
 	 * Return the List of Voicemail Greetings from json
-	 * TODO add static method in Greeting, to parse the json static, look at Group.createGroupSettingsFromJsonResponse(json)
 	 * 
 	 */
 	private List<Greeting> getGreetingsListFromJson(String json) {
