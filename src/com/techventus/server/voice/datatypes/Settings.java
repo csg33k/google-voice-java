@@ -80,31 +80,31 @@ public class Settings {
 				
 				if(!saveMode || saveMode && jsonObject.has("settings")) {
 					JSONObject settingsJSON = jsonObject.getJSONObject("settings");
-					if(!saveMode || saveMode&&settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
-					if(!saveMode || saveMode&&settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");
-					if(!saveMode || saveMode&&settingsJSON.has("credits")) credits = settingsJSON.getInt("credits");
-					if(!saveMode || saveMode&&settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
-					if(!saveMode || saveMode&&settingsJSON.has("didInfos")) mDidInfos = jsonStringArrayToStringList(settingsJSON,mDidInfos,"didInfos");
-					if(!saveMode || saveMode&&settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
-					if(!saveMode || saveMode&&settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createListFromJsonObject(settingsJSON);
-					if(!saveMode || saveMode&&settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
-					if(!saveMode || saveMode&&settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
-					if(!saveMode || saveMode&&settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
-					if(!saveMode || saveMode&&settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
+					if(!saveMode || saveMode && settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
+					if(!saveMode || saveMode && settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");
+					if(!saveMode || saveMode && settingsJSON.has("credits")) credits = settingsJSON.getInt("credits");
+					if(!saveMode || saveMode && settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
+					if(!saveMode || saveMode && settingsJSON.has("didInfos")) mDidInfos = jsonStringArrayToStringList(settingsJSON,mDidInfos,"didInfos");
+					if(!saveMode || saveMode && settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
+					if(!saveMode || saveMode && settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createListFromJsonObject(settingsJSON);
+					if(!saveMode || saveMode && settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
+					if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
+					if(!saveMode || saveMode && settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
+					if(!saveMode || saveMode && settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
 					//TODO greetings
 					//TODO groupList
 					//TODO groups
-					if(!saveMode || saveMode&&settingsJSON.has("language")) language = settingsJSON.getString("language");
-					if(!saveMode || saveMode&&settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
-					if(!saveMode || saveMode&&settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
-					if(!saveMode || saveMode&&settingsJSON.has("showTranscripts")) showTranscripts = settingsJSON.getBoolean("showTranscripts");
-					if(!saveMode || saveMode&&settingsJSON.has("smsNotifications")) smsNotifications = settingsJSON.getString("smsNotifications"); //TODO correct?
-					if(!saveMode || saveMode&&settingsJSON.has("smsToEmailActive")) smsToEmailActive =  settingsJSON.getBoolean("smsToEmailActive");
-					if(!saveMode || saveMode&&settingsJSON.has("smsToEmailSubject")) smsToEmailSubject = settingsJSON.getBoolean("smsToEmailSubject");
-					if(!saveMode || saveMode&&settingsJSON.has("spam")) spam = settingsJSON.getInt("spam");
-					if(!saveMode || saveMode&&settingsJSON.has("timezone")) timezone = settingsJSON.getString("timezone");
-					if(!saveMode || saveMode&&settingsJSON.has("useDidAsCallerId")) useDidAsCallerId = settingsJSON.getBoolean("useDidAsCallerId");
-					if(!saveMode || saveMode&&settingsJSON.has("useDidAsSource")) useDidAsSource = settingsJSON.getBoolean("useDidAsSource");
+					if(!saveMode || saveMode && settingsJSON.has("language")) language = settingsJSON.getString("language");
+					if(!saveMode || saveMode && settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
+					if(!saveMode || saveMode && settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
+					if(!saveMode || saveMode && settingsJSON.has("showTranscripts")) showTranscripts = settingsJSON.getBoolean("showTranscripts");
+					if(!saveMode || saveMode && settingsJSON.has("smsNotifications")) smsNotifications = settingsJSON.getString("smsNotifications"); //TODO correct?
+					if(!saveMode || saveMode && settingsJSON.has("smsToEmailActive")) smsToEmailActive =  settingsJSON.getBoolean("smsToEmailActive");
+					if(!saveMode || saveMode && settingsJSON.has("smsToEmailSubject")) smsToEmailSubject = settingsJSON.getBoolean("smsToEmailSubject");
+					if(!saveMode || saveMode && settingsJSON.has("spam")) spam = settingsJSON.getInt("spam");
+					if(!saveMode || saveMode && settingsJSON.has("timezone")) timezone = settingsJSON.getString("timezone");
+					if(!saveMode || saveMode && settingsJSON.has("useDidAsCallerId")) useDidAsCallerId = settingsJSON.getBoolean("useDidAsCallerId");
+					if(!saveMode || saveMode && settingsJSON.has("useDidAsSource")) useDidAsSource = settingsJSON.getBoolean("useDidAsSource");
 					//TODO webCallButtons
 				}
 				
