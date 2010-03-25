@@ -19,6 +19,7 @@ public class Settings {
 	private List<Greeting> mVoicemailGreetingsList = null;
 	private List<Group> mGroupSettingsList = null;
 	private List<DisabledId> mDisabledIdList = null;
+	private List<String> mActiveForwardingList = null;
 	private List<WebCallButton> mWebCallButtonList = null;
 	private String mDefaultGreetingId;
 	private List<String> mGroupList = null;
@@ -304,6 +305,13 @@ public class Settings {
 	 */
 	public String getBaseUrl() {
 		return mBaseUrl;
+	}
+
+	/**
+	 * @return the mActiveForwardingList
+	 */
+	public List<String> getActiveForwardingList() {
+		return mActiveForwardingList;
 	}
 	
 	
