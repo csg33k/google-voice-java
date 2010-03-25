@@ -24,17 +24,9 @@ public class Settings {
 	private List<String> mGroupList = null;
 	private List<EmailAddress> mEmailAddressList = null;
 	private String mBaseUrl = null;
-	
-	public Settings(List<Phone> pPhoneList,
-			List<Greeting> pVoicemailGreetingsList,
-			List<Group> pGroupSettingsList) {
-		super();
-		mPhoneList = pPhoneList;
-		mVoicemailGreetingsList = pVoicemailGreetingsList;
-		mGroupSettingsList = pGroupSettingsList;
-	}
-	
+
 	public Settings(String json) {
+		super();
 		mPhoneList = getPhoneListFromJson(json);
 		mVoicemailGreetingsList = getVoicemailGreetingsListFromJson(json);
 		mGroupSettingsList = getGroupSettingsListFromJson(json);
@@ -99,6 +91,7 @@ public class Settings {
 	
 	/**
 	 * Return the List of Voicemail Greetings from json
+	 * TODO add static method in Greeting, to parse the json static, look at Group.createGroupSettingsFromJsonResponse(json)
 	 * 
 	 */
 	private List<Greeting> getVoicemailGreetingsListFromJson(String json) {
@@ -118,6 +111,7 @@ public class Settings {
 	
 	/**
 	 * Return the List of Phones from json
+	 * TODO implement correctly
 	 */
 	private List<Phone> getPhoneListFromJson(String phonesInfoJson) {
 		List<Phone> phoneList = new ArrayList<Phone>();
@@ -231,6 +225,48 @@ public class Settings {
 	 */
 	public List<Group> getGroupSettingsList() {
 		return mGroupSettingsList;
+	}
+
+	/**
+	 * @return the mDisabledIdList
+	 */
+	public List<DisabledId> getDisabledIdList() {
+		return mDisabledIdList;
+	}
+
+	/**
+	 * @return the mWebCallButtonList
+	 */
+	public List<WebCallButton> getWebCallButtonList() {
+		return mWebCallButtonList;
+	}
+
+	/**
+	 * @return the mDefaultGreetingId
+	 */
+	public String getDefaultGreetingId() {
+		return mDefaultGreetingId;
+	}
+
+	/**
+	 * @return the mGroupList
+	 */
+	public List<String> getGroupList() {
+		return mGroupList;
+	}
+
+	/**
+	 * @return the mEmailAddressList
+	 */
+	public List<EmailAddress> getEmailAddressList() {
+		return mEmailAddressList;
+	}
+
+	/**
+	 * @return the mBaseUrl
+	 */
+	public String getBaseUrl() {
+		return mBaseUrl;
 	}
 	
 	
