@@ -18,6 +18,12 @@ public class Settings {
 	private List<Phone> mPhoneList = null;
 	private List<Greeting> mVoicemailGreetingsList = null;
 	private List<Group> mGroupSettingsList = null;
+	private List<DisabledId> mDisabledIdList = null;
+	private List<WebCallButton> mWebCallButtonList = null;
+	private String mDefaultGreetingId;
+	private List<String> mGroupList = null;
+	private List<EmailAddress> mEmailAddressList = null;
+	private String mBaseUrl = null;
 	
 	public Settings(List<Phone> pPhoneList,
 			List<Greeting> pVoicemailGreetingsList,
