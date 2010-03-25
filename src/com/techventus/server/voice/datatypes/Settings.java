@@ -28,7 +28,7 @@ public class Settings {
 	public Settings(String json) {
 		super();
 		mPhoneList = getPhoneListFromJson(json);
-		mVoicemailGreetingsList = getVoicemailGreetingsListFromJson(json);
+		mVoicemailGreetingsList = getGreetingsListFromJson(json);
 		mGroupSettingsList = getGroupSettingsListFromJson(json);
 	}
 	
@@ -73,6 +73,49 @@ public class Settings {
 		
 		return ret;
 	}
+	
+	@Override
+	public String toString() {
+		String ret="";
+
+		if(mPhoneList.size()>0) {
+			ret+="\"phones\":{";
+			for (Iterator<Phone> iterator = mPhoneList.iterator(); iterator.hasNext();) {
+				Phone element = (Phone) iterator.next();
+				ret+=element.toString(); //TODO change to toJson when implemented
+				if(iterator.hasNext()) {
+					ret+=",";
+				}
+			}
+			ret+="\n"; 
+		}
+		
+		if(mVoicemailGreetingsList.size()>0) {
+			ret+=",\"greetings\":[";
+			for (Iterator<Greeting> iterator = mVoicemailGreetingsList.iterator(); iterator.hasNext();) {
+				Greeting element = (Greeting) iterator.next();
+				ret+=element.toString();
+				if(iterator.hasNext()) {
+					ret+=",";
+				}
+			}
+			ret+="]\n";
+		}
+		
+		if(mGroupSettingsList.size()>0) {
+			ret+=",\"groups\":{";
+			for (Iterator<Group> iterator = mGroupSettingsList.iterator(); iterator.hasNext();) {
+				Group element = (Group) iterator.next();
+				ret+=element.toString();
+				if(iterator.hasNext()) {
+					ret+=",";
+				}
+			}
+			ret+="}\n";
+		}
+		
+		return ret;
+	}
 
 	/**
 	 * Return the List of Group from json
@@ -94,17 +137,12 @@ public class Settings {
 	 * TODO add static method in Greeting, to parse the json static, look at Group.createGroupSettingsFromJsonResponse(json)
 	 * 
 	 */
-	private List<Greeting> getVoicemailGreetingsListFromJson(String json) {
+	private List<Greeting> getGreetingsListFromJson(String json) {
 		List<Greeting> result = new ArrayList<Greeting>();
-		json = ParsingUtil.removeUninterestingParts(json, "\"greetings\":[", "],", false);
-		String[] greetingsStrings = json.split(Pattern.quote("},{"));
-		// Add System standard greeting
-		result.add(new Greeting("0", "System Standard"));
-		for (int i = 1; i < greetingsStrings.length; i++) {
-			String lId =   ParsingUtil.removeUninterestingParts(greetingsStrings[i]  , "\"id\":"  , ",", false);
-			String lName = ParsingUtil.removeUninterestingParts(greetingsStrings[i], "\"name\":\"", "\",\"", false);
-			Greeting lGreeting = new Greeting(lId, lName);
-			result.add(lGreeting);
+		try {
+			result = Greeting.createGroupSettingsFromJsonResponse(json);
+		} catch (Exception e) {
+			System.out.println("Error in GreetingSetting object creation.");
 		}
 		return result;
 	}
