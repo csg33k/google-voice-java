@@ -13,7 +13,7 @@ import com.techventus.server.voice.util.ParsingUtil;
  * @author Tobias Eisentraeger
  *
  */
-public class GroupSettings {
+public class Group {
 	
 	private String id;
 	private String name;
@@ -24,7 +24,7 @@ public class GroupSettings {
 	private boolean isCustomGreeting;
 	private String greetingId;
 	
-	public GroupSettings(String id, String name, boolean isCustomForwarding,
+	public Group(String id, String name, boolean isCustomForwarding,
 			List<DisabledForwardingId> disabledForwardingIds,
 			boolean isCustomDirectConnect, boolean directConnect,
 			boolean isCustomGreeting, String greetingId) {
@@ -43,8 +43,8 @@ public class GroupSettings {
 	 * Constructs an Object from the json Resonse
 	 * @param json
 	 */
-	public final static List<GroupSettings> createGroupSettingsFromJsonResponse(String json) {
-		List<GroupSettings> result = new ArrayList<GroupSettings>();
+	public final static List<Group> createGroupSettingsFromJsonResponse(String json) {
+		List<Group> result = new ArrayList<Group>();
 		
 		json = ParsingUtil.removeUninterestingParts(json, "\"groups\":{", ",\"groupList\"", false);
 		json = json.replaceAll("\\},\"isCustomForwarding\"", "!,\"isCustomForwarding\"");
@@ -66,7 +66,7 @@ public class GroupSettings {
 				disabledForwardingIds = DisabledForwardingId.createDisabledForwardingIdListFromJsonPartResponse(disabledForwardingIdsStr);
 			}
 			
-			result.add(new GroupSettings(id, name, isCustomForwarding, disabledForwardingIds, isCustomDirectConnect, directConnect, isCustomGreeting, greetingId));
+			result.add(new Group(id, name, isCustomForwarding, disabledForwardingIds, isCustomDirectConnect, directConnect, isCustomGreeting, greetingId));
 		}
 		
 		return result;
@@ -123,14 +123,14 @@ public class GroupSettings {
 	}
 	
 	/**
-	 * Creates a complete json of a list of GroupSettings
+	 * Creates a complete json of a list of Group
 	 "groups":{"15":{..details of group id 15..},"12":{..details of group id 12..}}
 	 * @return
 	 */
-	public static String listToJson(List<GroupSettings> pGroupSettings) {
+	public static String listToJson(List<Group> pGroupSettings) {
 		String ret = "\"groups\":{";
-		for (Iterator<GroupSettings> iterator = pGroupSettings.iterator(); iterator.hasNext();) {
-			GroupSettings setting = (GroupSettings) iterator.next();
+		for (Iterator<Group> iterator = pGroupSettings.iterator(); iterator.hasNext();) {
+			Group setting = (Group) iterator.next();
 			ret+=setting.toJson();
 			if(iterator.hasNext()) {
 				ret+=",";

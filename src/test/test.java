@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import com.techventus.server.voice.Voice;
-import com.techventus.server.voice.datatypes.GroupSettings;
+import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
-import com.techventus.server.voice.datatypes.VoicemailGreeting;
+import com.techventus.server.voice.datatypes.Greeting;
 
 public class test {
 	
@@ -190,8 +190,8 @@ public class test {
 							
 						case 4: // 4: Caller ID in
 							System.out.println("******** Starting Test "+testNr+" ********");
-							for (Iterator<VoicemailGreeting> iterator = voice.getVoicemailList(true).iterator(); iterator.hasNext();) {
-								VoicemailGreeting type = (VoicemailGreeting) iterator.next();
+							for (Iterator<Greeting> iterator = voice.getVoicemailList(true).iterator(); iterator.hasNext();) {
+								Greeting type = (Greeting) iterator.next();
 								System.out.println(type.toString());
 							}
 							System.out.println("Choose the id of the voicemail greeting to use. ie '0' system standard or '1','2'");
@@ -223,7 +223,7 @@ public class test {
 							
 						case 6: // 6: Group settings
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("All to json:"+GroupSettings.listToJson(voice.getSettings(false).getGroupSettingsList()));
+							System.out.println("All to json:"+Group.listToJson(voice.getSettings(false).getGroupSettingsList()));
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							

@@ -6,14 +6,14 @@ package com.techventus.server.voice.datatypes;
  * @author Tobias Eisentraeger
  *
  */
-public class VoicemailGreeting {
+public class Greeting {
 	
 	
 	private String id;
 	private String name;
 	private String jobberName;
 
-	public VoicemailGreeting(String id,String name){
+	public Greeting(String id,String name){
 		this.id = id;
 		this.name = name;
 		this.jobberName = "";

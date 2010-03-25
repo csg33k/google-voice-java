@@ -36,10 +36,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.techventus.server.voice.datatypes.GroupSettings;
+import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Settings;
-import com.techventus.server.voice.datatypes.VoicemailGreeting;
+import com.techventus.server.voice.datatypes.Greeting;
 
 /**
  * The Class Voice. This class is the basis of the entire API and contains all
@@ -268,22 +268,22 @@ public class Voice {
 	}
 	
 	/**
-	 * Returns the VoicemailGreeting list - Lazy
+	 * Returns the Greeting list - Lazy
 	 * @param refresh - set to true to force a List update from the server
-	 * @return List of VoicemailGreeting objects
+	 * @return List of Greeting objects
 	 * @throws IOException
 	 */
-	public List<VoicemailGreeting> getVoicemailList(boolean forceUpdate) throws IOException {
+	public List<Greeting> getVoicemailList(boolean forceUpdate) throws IOException {
 		return getSettings(forceUpdate).getVoicemailGreetingsList();
 	}
 	
 	/**
-	 * Returns the GroupSettings list - Lazy
+	 * Returns the Group list - Lazy
 	 * @param refresh - set to true to force a List update from the server
-	 * @return List of VoicemailGreeting objects
+	 * @return List of Greeting objects
 	 * @throws IOException
 	 */
-	public List<GroupSettings> getGroupSettingsList(boolean forceUpdate) throws IOException {
+	public List<Group> getGroupSettingsList(boolean forceUpdate) throws IOException {
 		return getSettings(forceUpdate).getGroupSettingsList();
 	}
 	

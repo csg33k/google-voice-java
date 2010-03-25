@@ -16,12 +16,12 @@ import com.techventus.server.voice.util.ParsingUtil;
  */
 public class Settings {
 	private List<Phone> mPhoneList = null;
-	private List<VoicemailGreeting> mVoicemailGreetingsList = null;
-	private List<GroupSettings> mGroupSettingsList = null;
+	private List<Greeting> mVoicemailGreetingsList = null;
+	private List<Group> mGroupSettingsList = null;
 	
 	public Settings(List<Phone> pPhoneList,
-			List<VoicemailGreeting> pVoicemailGreetingsList,
-			List<GroupSettings> pGroupSettingsList) {
+			List<Greeting> pVoicemailGreetingsList,
+			List<Group> pGroupSettingsList) {
 		super();
 		mPhoneList = pPhoneList;
 		mVoicemailGreetingsList = pVoicemailGreetingsList;
@@ -51,8 +51,8 @@ public class Settings {
 		
 		if(mVoicemailGreetingsList.size()>0) {
 			ret+=",\"greetings\":[";
-			for (Iterator<VoicemailGreeting> iterator = mVoicemailGreetingsList.iterator(); iterator.hasNext();) {
-				VoicemailGreeting element = (VoicemailGreeting) iterator.next();
+			for (Iterator<Greeting> iterator = mVoicemailGreetingsList.iterator(); iterator.hasNext();) {
+				Greeting element = (Greeting) iterator.next();
 				ret+=element.toJson();
 				if(iterator.hasNext()) {
 					ret+=",";
@@ -63,8 +63,8 @@ public class Settings {
 		
 		if(mGroupSettingsList.size()>0) {
 			ret+=",\"groups\":{";
-			for (Iterator<GroupSettings> iterator = mGroupSettingsList.iterator(); iterator.hasNext();) {
-				GroupSettings element = (GroupSettings) iterator.next();
+			for (Iterator<Group> iterator = mGroupSettingsList.iterator(); iterator.hasNext();) {
+				Group element = (Group) iterator.next();
 				ret+=element.toJson();
 				if(iterator.hasNext()) {
 					ret+=",";
@@ -77,14 +77,14 @@ public class Settings {
 	}
 
 	/**
-	 * Return the List of GroupSettings from json
+	 * Return the List of Group from json
 	 * @param json
 	 * @return
 	 */
-	private List<GroupSettings> getGroupSettingsListFromJson(String json) {
-		List<GroupSettings> result = new ArrayList<GroupSettings>();
+	private List<Group> getGroupSettingsListFromJson(String json) {
+		List<Group> result = new ArrayList<Group>();
 		try {
-			result = GroupSettings.createGroupSettingsFromJsonResponse(json);
+			result = Group.createGroupSettingsFromJsonResponse(json);
 		} catch (Exception e) {
 			System.out.println("Error in groupSetting object creation.");
 		}
@@ -95,16 +95,16 @@ public class Settings {
 	 * Return the List of Voicemail Greetings from json
 	 * 
 	 */
-	private List<VoicemailGreeting> getVoicemailGreetingsListFromJson(String json) {
-		List<VoicemailGreeting> result = new ArrayList<VoicemailGreeting>();
+	private List<Greeting> getVoicemailGreetingsListFromJson(String json) {
+		List<Greeting> result = new ArrayList<Greeting>();
 		json = ParsingUtil.removeUninterestingParts(json, "\"greetings\":[", "],", false);
 		String[] greetingsStrings = json.split(Pattern.quote("},{"));
 		// Add System standard greeting
-		result.add(new VoicemailGreeting("0", "System Standard"));
+		result.add(new Greeting("0", "System Standard"));
 		for (int i = 1; i < greetingsStrings.length; i++) {
 			String lId =   ParsingUtil.removeUninterestingParts(greetingsStrings[i]  , "\"id\":"  , ",", false);
 			String lName = ParsingUtil.removeUninterestingParts(greetingsStrings[i], "\"name\":\"", "\",\"", false);
-			VoicemailGreeting lGreeting = new VoicemailGreeting(lId, lName);
+			Greeting lGreeting = new Greeting(lId, lName);
 			result.add(lGreeting);
 		}
 		return result;
@@ -216,14 +216,14 @@ public class Settings {
 	/**
 	 * @return the mVoicemailGreetingsList
 	 */
-	public List<VoicemailGreeting> getVoicemailGreetingsList() {
+	public List<Greeting> getVoicemailGreetingsList() {
 		return mVoicemailGreetingsList;
 	}
 
 	/**
 	 * @return the mGroupSettingsList
 	 */
-	public List<GroupSettings> getGroupSettingsList() {
+	public List<Group> getGroupSettingsList() {
 		return mGroupSettingsList;
 	}
 	
