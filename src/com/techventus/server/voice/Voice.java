@@ -36,7 +36,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.techventus.server.voice.datatypes.GroupSettings;
 import com.techventus.server.voice.datatypes.Phone;
+import com.techventus.server.voice.datatypes.Settings;
+import com.techventus.server.voice.datatypes.VoicemailGreeting;
 
 /**
  * The Class Voice. This class is the basis of the entire API and contains all
@@ -52,6 +55,7 @@ public class Voice {
 	 * keeps the list of phones - lazy
 	*/
 	private List<Phone> phoneList = null;
+	private Settings settings;
 	String general = null;
 	String phonesInfo = null;
 	String rnrSEE = null;
@@ -111,6 +115,9 @@ public class Voice {
 	final static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
 	final static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
 	final static String phonesInfoURLString = "https://www.google.com/voice/settings/tab/phones";
+	final static String groupsInfoURLString = "https://www.google.com/voice/settings/tab/groups";
+	final static String voicemailInfoURLString = "https://www.google.com/voice/settings/tab/voicemailsettings";
+	final static String groupsSettingsURLString = "https://www.google.com/voice/settings/editGroup/";
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -227,24 +234,80 @@ public class Voice {
 	
 	/**
 	 * Returns the phone list - Lazy
+	 * TODO move this function in the Settings class
 	 * @param refresh - set to true to force a List update from the server
 	 * @return List of Phone objects
 	 * @throws IOException
 	 */
 	public List<Phone> getPhoneList(boolean forceUpdate) throws IOException {
 		if(phoneList==null || forceUpdate) {
-			login();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+			if(isLoggedIn()==false || forceUpdate) {
+				login();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
 
-				e.printStackTrace();
+					e.printStackTrace();
+				}
 			}
 			
 			this.phonesInfo = this.getRawPhonesInfo();
 			setPhoneInfo();
 		}
 		return phoneList;
+	}
+	
+	/**
+	 * Returns the phone list - Lazy
+	 * @param refresh - set to true to force a List update from the server
+	 * @return List of Phone objects
+	 * @throws IOException
+	 */
+	public List<Phone> getPhoneListNew(boolean forceUpdate) throws IOException {
+		return getSettings(forceUpdate).getPhoneList();
+	}
+	
+	/**
+	 * Returns the VoicemailGreeting list - Lazy
+	 * @param refresh - set to true to force a List update from the server
+	 * @return List of VoicemailGreeting objects
+	 * @throws IOException
+	 */
+	public List<VoicemailGreeting> getVoicemailList(boolean forceUpdate) throws IOException {
+		return getSettings(forceUpdate).getVoicemailGreetingsList();
+	}
+	
+	/**
+	 * Returns the GroupSettings list - Lazy
+	 * @param refresh - set to true to force a List update from the server
+	 * @return List of VoicemailGreeting objects
+	 * @throws IOException
+	 */
+	public List<GroupSettings> getGroupSettingsList(boolean forceUpdate) throws IOException {
+		return getSettings(forceUpdate).getGroupSettingsList();
+	}
+	
+	/**
+	 * returns all users settings - lazy
+	 * @param forceUpdate
+	 * @return
+	 * @throws IOException
+	 */
+	public Settings getSettings(boolean forceUpdate) throws IOException {
+		if(settings==null || forceUpdate) {
+			if(isLoggedIn()==false || forceUpdate) {
+				login();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+
+					e.printStackTrace();
+				}
+			}
+			if(PRINT_TO_CONSOLE) System.out.println("Fetching Settings.");
+			settings = new Settings(get(groupsInfoURLString));
+		}
+		return settings;
 	}
 
 	// public Voice(){
@@ -892,17 +955,13 @@ public class Voice {
 	/**
 	 * This is the general voicemail greeting callers hear
 	 * 
-	 * TODO does not work yet
-	 * @deprecated does not work yet
 	 * @param greetingToSet <br/>
 	 *            number of the greeting to choose
 	 * @return the raw response of the disable action.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Deprecated
-	public String setVoicemailGreetingId(int greetingToSet) throws IOException {
-		String out = "";
+	public String setVoicemailGreetingId(String greetingToSet) throws IOException {
 
 		URL requestURL = new URL(generalSettingsURLString);
 
@@ -910,12 +969,58 @@ public class Voice {
 
 		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
 				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("defaultGreetingId", "UTF-8") + "="
+		paraString += "&" + URLEncoder.encode("greetingId", "UTF-8") + "="
 				+ URLEncoder.encode(greetingToSet+"", "UTF-8");
 		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
 
 
+		return postSettings(requestURL, paraString);
+	}
+	
+	/**
+	 * Activated or deactivated the Do Not disturb function.<br>
+	 * Enable this to send to voicemail all calls made to your Google number.
+	 * @param dndEnabled true to enable dnd, false to disable it
+	 * @return
+	 * @throws IOException
+	 */
+	public String setDoNotDisturb(boolean dndEnabled) throws IOException {
+
+		URL requestURL = new URL(generalSettingsURLString);
+		
+		String enabled;
+
+		if(dndEnabled) {
+			if (PRINT_TO_CONSOLE) System.out.println("Enabling dnd");
+			enabled = "1";
+		} else {
+			if (PRINT_TO_CONSOLE) System.out.println("Disabling dnd");
+			enabled = "0";
+		}
+
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+				+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += "&" + URLEncoder.encode("doNotDisturb", "UTF-8") + "="
+				+ URLEncoder.encode(enabled+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+
+
+		return postSettings(requestURL, paraString);
+	}
+
+	/**
+	 * Posts a settings change
+	 * 
+	 * @param requestURL
+	 * @param paraString
+	 * @return
+	 * @throws IOException
+	 */
+	private String postSettings(URL requestURL, String paraString)
+			throws IOException {
+		String out = "";
 		URLConnection conn = requestURL.openConnection();
 		conn.setRequestProperty("User-agent",
 								USER_AGENT);
