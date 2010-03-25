@@ -8,7 +8,9 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import com.techventus.server.voice.Voice;
+import com.techventus.server.voice.datatypes.GroupSettings;
 import com.techventus.server.voice.datatypes.Phone;
+import com.techventus.server.voice.datatypes.VoicemailGreeting;
 
 public class test {
 	
@@ -16,6 +18,7 @@ public class test {
 	static String userName = null;
 	static String pass = null;
 	static Properties testProps = null;
+	private static Voice voice;
 	
 	public static void main(String[] args){
 		
@@ -43,6 +46,12 @@ public class test {
 				System.out.println("IO error trying to read your name!");
 				System.exit(1);
 			}
+		}
+		
+		try {
+			voice = new Voice(userName, pass);
+		} catch (IOException e) {
+			System.out.println("IO error creating voice!"+e.getLocalizedMessage());
 		}
 
 		listTests();
@@ -81,7 +90,10 @@ public class test {
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
 		System.out.println("4: Set Default Voicemail Greeting");
-		System.out.println("5: Temp tests");
+		System.out.println("5: Change do not disturb setting.");
+		System.out.println("6: Change Group settings.");
+		System.out.println("7: Read all settings and print them (cached)");
+		System.out.println("8: Read all settings and print them (uncached)");
 
 		int testNr = 0;
 		try {
@@ -106,7 +118,7 @@ public class test {
 	    }
 		try {
 	    	  
-			Voice voice = new Voice(userName, pass);
+			
 			//Voice voice = new Voice();
 //			try {
 				System.out.println(voice.isLoggedIn());
@@ -178,10 +190,14 @@ public class test {
 							
 						case 4: // 4: Caller ID in
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("Choose the id of the voicemail greeting to use. ie '0' or '1'");
-							int voicemailNr = 0;
+							for (Iterator<VoicemailGreeting> iterator = voice.getVoicemailList(true).iterator(); iterator.hasNext();) {
+								VoicemailGreeting type = (VoicemailGreeting) iterator.next();
+								System.out.println(type.toString());
+							}
+							System.out.println("Choose the id of the voicemail greeting to use. ie '0' system standard or '1','2'");
+							String voicemailNr = "0";
 							try {
-								voicemailNr = Integer.parseInt(br.readLine());
+								voicemailNr = br.readLine();
 							} catch (Exception e) {
 								System.out.println("Error trying to read the choice!"+e.getMessage());
 								System.exit(1);
@@ -191,10 +207,35 @@ public class test {
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
-						case 5: // 5: Temp Tests
+						case 5: // 5: Do not disturb
 							System.out.println("******** Starting Test "+testNr+" ********");
-							voice.phoneEnable(1);
-							voice.phoneEnable(2);
+							System.out.println("Type 'true' for enable, 'false' for disable");
+							boolean dndChoice = false;
+							try {
+								dndChoice = Boolean.parseBoolean(br.readLine());
+							} catch (Exception e) {
+								System.out.println("Error trying to read the choice!"+e.getMessage());
+								System.exit(1);
+							}
+							voice.setDoNotDisturb(dndChoice);
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 6: // 6: Group settings
+							System.out.println("******** Starting Test "+testNr+" ********");
+							System.out.println("All to json:"+GroupSettings.listToJson(voice.getSettings(false).getGroupSettingsList()));
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 7: // 7: Read all settings - cached
+							System.out.println("******** Starting Test "+testNr+" ********");
+							System.out.println(voice.getSettings(false).toJson());
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 8: // 8: Read all settings - uncached
+							System.out.println("******** Starting Test "+testNr+" ********");
+							System.out.println(voice.getSettings(true).toJson());
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 	
