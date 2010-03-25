@@ -305,7 +305,7 @@ public class Voice {
 				}
 			}
 			if(PRINT_TO_CONSOLE) System.out.println("Fetching Settings.");
-			settings = new Settings(get(groupsInfoURLString),true);
+			settings = new Settings(get(groupsInfoURLString),true,false);
 		}
 		return settings;
 	}
