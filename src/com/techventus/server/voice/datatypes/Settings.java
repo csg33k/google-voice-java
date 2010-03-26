@@ -16,22 +16,22 @@ import com.techventus.server.voice.util.ParsingUtil;
 /**
  * Holds all settings of the gVoice account and can return it as String, as lists or as json-string
  * Most Lists also have a .toJson() method
- *
+ * @deprecated please use the class AllSettings which holds phoneList, phones and settings and for the settings, the class Setting
  */
+@Deprecated 
 public class Settings {
 	private JSONObject jsonObject = null;
-	private List<Phone> mPhoneList = null;
-	private List<String> mPhoneListSimple = null;
+	private List<PhoneOld> mPhoneList = null;
+	private int[] mPhoneListSimple;
 	private List<Greeting> mVoicemailGreetingsList = null;
 	private List<Group> mGroupList = null;
-	
+	private List<String> mGroupListSimple = null;
 	
 	private List<WebCallButton> mWebCallButtonList = null;
-	private List<String> mGroupListSimple = null;
 	
 	
 	// Settings in order of the json
-	private List<String> mActiveForwardingList = null;
+	private List<Integer> mActiveForwardingList = null;
 	private String baseUrl;
 	private int credits;
 	private int defaultGreetingId;
@@ -64,23 +64,18 @@ public class Settings {
 		super();
 		if(useJSONParser) {
 			try {
-				// remove html overhead
-				json = ParsingUtil.removeUninterestingParts(json, "<json><![CDATA[", "]]></json>", false);
+				
 				jsonObject = new JSONObject(json); 
 				
 				// root objects = [phoneList, settings, phones]
+				JSONObject settingsJSON = jsonObject.getJSONObject("settings");
 				
-				if(!saveMode || saveMode && jsonObject.has("phoneList")) {
-					JSONArray phoneListJSON = (JSONArray) jsonObject.get("phoneList");
-					mPhoneListSimple = new ArrayList<String>();
-					for (int i = 0; i < phoneListJSON.length(); i++) {
-						mPhoneListSimple.add(phoneListJSON.getString(i));
-					}
+				if(!saveMode || saveMode && jsonObject.has("phoneList")) {				
+					mPhoneListSimple = ParsingUtil.jsonIntArrayToIntArray(jsonObject.getJSONArray("phoneList"));
 				}
 				
 				if(!saveMode || saveMode && jsonObject.has("settings")) {
-					JSONObject settingsJSON = jsonObject.getJSONObject("settings");
-					if(!saveMode || saveMode && settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
+					if(!saveMode || saveMode && settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonIntArrayToIntegerList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
 					if(!saveMode || saveMode && settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");
 					if(!saveMode || saveMode && settingsJSON.has("credits")) credits = settingsJSON.getInt("credits");
 					if(!saveMode || saveMode && settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
@@ -91,8 +86,8 @@ public class Settings {
 					if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
 					if(!saveMode || saveMode && settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
 					if(!saveMode || saveMode && settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
-					//TODO greetings
-					//TODO groupList
+					if(!saveMode || saveMode && settingsJSON.has("greetings")) mVoicemailGreetingsList = Greeting.createListFromJsonObject(settingsJSON);
+					if(!saveMode || saveMode && settingsJSON.has("groupList")) mGroupListSimple = jsonStringArrayToStringList(settingsJSON,mGroupListSimple,"groupList");
 					//TODO groups
 					if(!saveMode || saveMode && settingsJSON.has("language")) language = settingsJSON.getString("language");
 					if(!saveMode || saveMode && settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
@@ -141,75 +136,102 @@ public class Settings {
 		return stringList;
 	}
 	
-	public String toJson() {
-		String ret="<json><![CDATA[{";
+	private List<Integer> jsonIntArrayToIntegerList(JSONObject settingsJSON, List<Integer> integerList, String key) throws JSONException {
+		integerList = new ArrayList<Integer>();
+		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
+			integerList.add(((JSONArray) settingsJSON.get(key)).getInt(i));
+		}
+		return integerList;
+	}
+	
+	private JSONArray stringListToJsonArray(List<String> stringList) throws JSONException {	
+		String[] lArray = (String[]) stringList.toArray(new String[stringList.size()]);
+		return new JSONArray(lArray);
+	}
 
-		// "phones":{"1":{"id":1,"name":.....},,"2":{"id":2....}
-		if(mPhoneList!=null) {
-			ret+="\"phones\":{";
-			for (Iterator<Phone> iterator = mPhoneList.iterator(); iterator.hasNext();) {
-				Phone element = (Phone) iterator.next();
-				ret+=element.toString(); //TODO change to toJson when implemented
-				if(iterator.hasNext()) {
-					ret+=",";
-				}
-			}
-			ret+="}";
+	
+	
+	/**
+	 * Make a prettyprinted JSON text of this JSONObject.
+    * <p>
+    * Warning: This method assumes that the data structure is acyclical.
+    * @param indentFactor The number of spaces to add to each level of
+    *  indentation.
+    * @return a printable, displayable, portable, transmittable
+    *  representation of the object, beginning
+    *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+    *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+    *  @throws JSONException if using identFactor > 0 and If the object contains an invalid number.
+    */
+	public String toJson(int indentFactor) throws JSONException {
+		//TODO instead of displaying the original object state we need to update the json with changed properties?
+		return jsonObject.toString(indentFactor);
+	}
+	
+	/**
+     * Make a JSON text of the Settings. For compactness, no whitespace
+     * is added. If this would not result in a syntactically correct JSON text,
+     * then null will be returned instead.
+     * <p>
+     * Warning: This method assumes that the data structure is acyclical.
+     *
+     * @return a printable, displayable, portable, transmittable
+     *  representation of the object, beginning
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+     */
+	public String toJson(){
+		JSONObject resultO = new JSONObject();
+		try { 
+			//phoneList
+			resultO.putOnce("phoneList", new JSONArray(mPhoneListSimple));
+			//settings
+			JSONObject settingsO = new JSONObject();
+
+			settingsO.putOnce("activeForwardingIds", mActiveForwardingList);
+			settingsO.putOnce("baseUrl", baseUrl);
+			settingsO.putOnce("credits", credits);
+			settingsO.putOnce("defaultGreetingId", defaultGreetingId);
+			settingsO.putOnce("didInfos", mDidInfos);
+			settingsO.putOnce("directConnect", directConnect);
+			settingsO.putOnce("disabledIdMap", mDisabledIdList);
+			settingsO.putOnce("baseUrl", baseUrl);
+			settingsO.putOnce("baseUrl", baseUrl);
+			settingsO.putOnce("baseUrl", baseUrl);
+			/*
+if(!saveMode || saveMode && settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
+if(!saveMode || saveMode && settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");
+if(!saveMode || saveMode && settingsJSON.has("credits")) credits = settingsJSON.getInt("credits");
+if(!saveMode || saveMode && settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
+if(!saveMode || saveMode && settingsJSON.has("didInfos")) mDidInfos = jsonStringArrayToStringList(settingsJSON,mDidInfos,"didInfos");
+if(!saveMode || saveMode && settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
+if(!saveMode || saveMode && settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createListFromJsonObject(settingsJSON);
+if(!saveMode || saveMode && settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
+if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
+if(!saveMode || saveMode && settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
+if(!saveMode || saveMode && settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
+if(!saveMode || saveMode && settingsJSON.has("greetings")) mVoicemailGreetingsList = Greeting.createListFromJsonObject(settingsJSON);
+if(!saveMode || saveMode && settingsJSON.has("groupList")) mGroupListSimple = jsonStringArrayToStringList(settingsJSON,mGroupListSimple,"groupList");
+//TODO groups
+if(!saveMode || saveMode && settingsJSON.has("language")) language = settingsJSON.getString("language");
+if(!saveMode || saveMode && settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
+if(!saveMode || saveMode && settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
+if(!saveMode || saveMode && settingsJSON.has("showTranscripts")) showTranscripts = settingsJSON.getBoolean("showTranscripts");
+if(!saveMode || saveMode && settingsJSON.has("smsNotifications")) smsNotifications = settingsJSON.getString("smsNotifications"); //TODO correct?
+if(!saveMode || saveMode && settingsJSON.has("smsToEmailActive")) smsToEmailActive =  settingsJSON.getBoolean("smsToEmailActive");
+if(!saveMode || saveMode && settingsJSON.has("smsToEmailSubject")) smsToEmailSubject = settingsJSON.getBoolean("smsToEmailSubject");
+if(!saveMode || saveMode && settingsJSON.has("spam")) spam = settingsJSON.getInt("spam");
+if(!saveMode || saveMode && settingsJSON.has("timezone")) timezone = settingsJSON.getString("timezone");
+if(!saveMode || saveMode && settingsJSON.has("useDidAsCallerId")) useDidAsCallerId = settingsJSON.getBoolean("useDidAsCallerId");
+if(!saveMode || saveMode && settingsJSON.has("useDidAsSource")) useDidAsSource = settingsJSON.getBoolean("useDidAsSource");
+//TODO webCallButtons
+			 */
+			resultO.put("settings", settingsO);
+		} catch (JSONException e) {
+			return null;
 		}
 		
-		// "greetings":[{"id":"0","name":"System Standard","jobberName":""},{"id":2,"name":"Testgreeting 1","jobberName":""}
-		if(mVoicemailGreetingsList!=null) {
-			ret+=",\"greetings\":[";
-			for (Iterator<Greeting> iterator = mVoicemailGreetingsList.iterator(); iterator.hasNext();) {
-				Greeting element = (Greeting) iterator.next();
-				ret+=element.toJson();
-				if(iterator.hasNext()) {
-					ret+=",";
-				}
-			}
-			ret+="]";
-		}
-		
-		// "groups":{"15":{......}
-		if(mGroupList!=null) {
-			ret+=",\"groups\":{";
-			for (Iterator<Group> iterator = mGroupList.iterator(); iterator.hasNext();) {
-				Group element = (Group) iterator.next();
-				ret+=element.toJson();
-				if(iterator.hasNext()) {
-					ret+=",";
-				}
-			}
-			ret+="}";
-		}
-		
-		// "emailAddresses":["user@gmail.com"]
-		if(mEmailAddressList!=null) {
-			ret+=",\"emailAddresses\":[";
-			for (Iterator<EmailAddress> iterator = mEmailAddressList.iterator(); iterator.hasNext();) {
-				EmailAddress element = (EmailAddress) iterator.next();
-				ret+=element.toJson();
-				if(iterator.hasNext()) {
-					ret+=",";
-				}
-			}
-			ret+="]";
-		}
-		
-		// "disabledIdMap":{"6":true},
-		if(mDisabledIdList!=null) {
-			ret+=",\"disabledIdMap\":{";
-			for (Iterator<DisabledId> iterator = mDisabledIdList.iterator(); iterator.hasNext();) {
-				DisabledId element = (DisabledId) iterator.next();
-				ret+=element.toJson();
-				if(iterator.hasNext()) {
-					ret+=",";
-				}
-			}
-			ret+="}";
-		}
-		
-		return ret;
+		return resultO.toString();
 	}
 	
 	@Override
@@ -218,8 +240,8 @@ public class Settings {
 
 		if(mPhoneList.size()>0) {
 			ret+="\"phones\":{";
-			for (Iterator<Phone> iterator = mPhoneList.iterator(); iterator.hasNext();) {
-				Phone element = (Phone) iterator.next();
+			for (Iterator<PhoneOld> iterator = mPhoneList.iterator(); iterator.hasNext();) {
+				PhoneOld element = (PhoneOld) iterator.next();
 				ret+=element.toString(); //TODO change to toJson when implemented
 				if(iterator.hasNext()) {
 					ret+=",";
@@ -286,13 +308,7 @@ public class Settings {
 	/**
 	 * @return the mPhoneListSimple
 	 */
-	public List<String> getPhoneListSimple() {
-		if(mPhoneListSimple==null && mPhoneList!=null) {
-			mPhoneListSimple = new ArrayList<String>();
-			for (Phone phoneSetting : mPhoneList) {
-				mPhoneListSimple.add(phoneSetting.getId()+"");
-			}
-		}
+	public int[] getPhoneListSimple() {
 		return mPhoneListSimple;
 	}
 	
@@ -335,8 +351,8 @@ public class Settings {
 	 * Return the List of Phones from json
 	 * TODO implement correctly
 	 */
-	private List<Phone> getPhoneListFromJson(String phonesInfoJson) {
-		List<Phone> phoneList = new ArrayList<Phone>();
+	private List<PhoneOld> getPhoneListFromJson(String phonesInfoJson) {
+		List<PhoneOld> phoneList = new ArrayList<PhoneOld>();
 		if (phonesInfoJson!=null) {
 			/*
 			 * TODO fix
@@ -364,7 +380,7 @@ public class Settings {
 			String[] a = phonesInfoJson.split("\\{\"id\"\\:");
 			// if(PRINT_TO_CONSOLE) System.out.println(a[0]);
 			for (int i = 1; i < a.length; i++) {
-				//Phone phone = new Phone();
+				//PhoneOld phone = new PhoneOld();
 				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
 				//phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
 				int id = Integer.parseInt(b[0].replaceAll("\"", ""));
@@ -415,7 +431,7 @@ public class Settings {
 						enabled = true;
 					}
 					
-					Phone phone = new Phone(id, number, formattedNumber, type, name, carrier, verified,enabled);
+					PhoneOld phone = new PhoneOld(id, number, formattedNumber, type, name, carrier, verified,enabled);
 											
 					phoneList.add(phone);
 				}
@@ -423,7 +439,7 @@ public class Settings {
 
 		} else{
 			System.out.println("Error in phone object creation.");
-			phoneList = new ArrayList<Phone>();
+			phoneList = new ArrayList<PhoneOld>();
 		}
 		return phoneList;
 	}
@@ -431,7 +447,7 @@ public class Settings {
 	/**
 	 * @return the mPhoneList
 	 */
-	public List<Phone> getPhoneList() {
+	public List<PhoneOld> getPhoneList() {
 		return mPhoneList;
 	}
 
@@ -487,7 +503,7 @@ public class Settings {
 	/**
 	 * @return the mActiveForwardingList
 	 */
-	public List<String> getActiveForwardingList() {
+	public List<Integer> getActiveForwardingList() {
 		return mActiveForwardingList;
 	}
 	

@@ -7,18 +7,24 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.json.JSONException;
+
 import com.techventus.server.voice.Voice;
+import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Group;
-import com.techventus.server.voice.datatypes.Phone;
+import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.datatypes.Settings;
 
 public class test {
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static String userName = null;
 	static String pass = null;
+	static boolean connectOnStartup = false;
 	static Properties testProps = null;
 	private static Voice voice;
+	private static String jsonData;
 	
 	public static void main(String[] args){
 		
@@ -26,6 +32,8 @@ public class test {
 			testProps = load("test/privateTestData.properties");
 			userName = testProps.getProperty("username");
 			pass = testProps.getProperty("password");
+			connectOnStartup = Boolean.parseBoolean(testProps.getProperty("connectOnStartup"));
+			jsonData = testProps.getProperty("jsonData");
 		} catch (Exception e) {
 			System.out.println("Could not read the testProps, falling back to input. ("+e.getMessage()+")");
 			System.out.println("Enter Your Google Voice Username, eg user@gmail.com:");
@@ -49,7 +57,7 @@ public class test {
 		}
 		
 		try {
-			voice = new Voice(userName, pass);
+			if(!connectOnStartup) voice = new Voice(userName, pass);
 		} catch (IOException e) {
 			System.out.println("IO error creating voice!"+e.getLocalizedMessage());
 		}
@@ -94,7 +102,8 @@ public class test {
 		System.out.println("6: Change Group settings.");
 		System.out.println("7: Read all settings and print them (cached)");
 		System.out.println("8: Read all settings and print them (uncached)");
-
+		System.out.println("9: JRead all settings - pure json driven - flat data");
+		
 		int testNr = 0;
 		try {
 			testNr = Integer.parseInt(br.readLine());
@@ -121,7 +130,7 @@ public class test {
 			
 			//Voice voice = new Voice();
 //			try {
-				System.out.println(voice.isLoggedIn());
+			if(!connectOnStartup) System.out.println(voice.isLoggedIn());
 				//Thread.sleep(2000);
 
 					switch (testNr) {
@@ -131,15 +140,15 @@ public class test {
 							int[] phonesToChangeStatus = new int[voice.getPhoneList(true).size()];
 							int i=0;
 							
-							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
-								Phone type = (Phone) iterator.next();
+							for (Iterator<PhoneOld> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+								PhoneOld type = (PhoneOld) iterator.next();
 								phonesToChangeStatus[i] = type.id;
 								i++;
 							}
 							
 							System.out.println("Current phone status:");
-							for (Iterator<Phone> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
-								Phone type = (Phone) iterator.next();
+							for (Iterator<PhoneOld> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
+								PhoneOld type = (PhoneOld) iterator.next();
 								System.out.println(type.toString());
 							}
 							
@@ -148,8 +157,8 @@ public class test {
 							
 							// Output
 							System.out.println("After deactivate multi:");
-							for (Iterator<Phone> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
-								Phone type = (Phone) iterator.next();
+							for (Iterator<PhoneOld> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
+								PhoneOld type = (PhoneOld) iterator.next();
 								System.out.println(type.toString());
 							}
 							
@@ -158,8 +167,8 @@ public class test {
 							
 							// Output
 							System.out.println("After activate multi:");
-							for (Iterator<Phone> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
-								Phone type = (Phone) iterator.next();
+							for (Iterator<PhoneOld> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
+								PhoneOld type = (PhoneOld) iterator.next();
 								System.out.println(type.toString());
 							}
 							
@@ -223,19 +232,31 @@ public class test {
 							
 						case 6: // 6: Group settings
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("All to json:"+Group.listToJson(voice.getSettings(false).getGroupSettingsList()));
+							System.out.println("All to json:"+voice.getSettings(false).getSettings().getGroups());
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
 						case 7: // 7: Read all settings - cached
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println(voice.getSettings(false).toJson());
+							System.out.println(voice.getSettings(false).getSettings().toJson());
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
 						case 8: // 8: Read all settings - uncached
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println(voice.getSettings(true).toJson());
+							System.out.println(voice.getSettings(true).getSettings().toJson());
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 9: // 9: Read all settings - pure json driven
+							System.out.println("******** Starting Test "+testNr+" ********");
+							try {
+								AllSettings settings2 = new AllSettings(jsonData);
+								System.out.println(settings2.toJsonObject().toString(4));
+							} catch (JSONException e) {
+								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+								e.printStackTrace();
+							}
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 	
@@ -290,6 +311,8 @@ public class test {
 //				e.printStackTrace();
 //			}		
 		} catch (IOException e) {	
+			e.printStackTrace();
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		listTests(); // List the Tests again

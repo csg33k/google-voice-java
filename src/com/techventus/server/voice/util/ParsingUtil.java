@@ -1,5 +1,12 @@
 package com.techventus.server.voice.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Collection of useful html parsing methods
  * 
@@ -67,5 +74,51 @@ public abstract class ParsingUtil {
 		s=s.replaceAll("&#39;", "'"); 
 		return s;
 	}
+	
+	public static final int[] jsonIntArrayToIntArray(JSONArray array) {
+		int[] result = new int[array.length()];
+		for (int i = 0; i < array.length(); i++) {
+			try {
+				result[i] = array.getInt(i);
+			} catch (JSONException e) {
+				return null;
+			}
+		}
+		return result;
+	}
+	
+	public static final String[] jsonStringArrayToStringArray(JSONArray array) {
+		String[] result = new String[array.length()];
+		for (int i = 0; i < array.length(); i++) {
+			try {
+				result[i] = array.getString(i);
+			} catch (JSONException e) {
+				return null;
+			}
+		}
+		return result;
+	}
+	
+	public static final List<String> jsonStringArrayToStringList(JSONObject settingsJSON, List<String> stringList, String key) throws JSONException {
+		stringList = new ArrayList<String>();
+		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
+			stringList.add(((JSONArray) settingsJSON.get(key)).getString(i));
+		}
+		return stringList;
+	}
+	
+	public static final List<Integer> jsonIntArrayToIntegerList(JSONObject settingsJSON, List<Integer> integerList, String key) throws JSONException {
+		integerList = new ArrayList<Integer>();
+		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
+			integerList.add(((JSONArray) settingsJSON.get(key)).getInt(i));
+		}
+		return integerList;
+	}
+	
+	public static final JSONArray stringListToJsonArray(List<String> stringList) throws JSONException {	
+		String[] lArray = (String[]) stringList.toArray(new String[stringList.size()]);
+		return new JSONArray(lArray);
+	}
+	
 	
 }

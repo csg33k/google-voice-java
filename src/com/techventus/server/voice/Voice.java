@@ -36,10 +36,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+
+import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Group;
-import com.techventus.server.voice.datatypes.Phone;
+import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Settings;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.util.ParsingUtil;
 
 /**
  * The Class Voice. This class is the basis of the entire API and contains all
@@ -54,8 +58,8 @@ public class Voice {
 	/** 
 	 * keeps the list of phones - lazy
 	*/
-	private List<Phone> phoneList = null;
-	private Settings settings;
+	private List<PhoneOld> phoneList = null;
+	private AllSettings settings;
 	String general = null;
 	String phonesInfo = null;
 	String rnrSEE = null;
@@ -236,10 +240,10 @@ public class Voice {
 	 * Returns the phone list - Lazy
 	 * TODO move this function in the Settings class
 	 * @param refresh - set to true to force a List update from the server
-	 * @return List of Phone objects
+	 * @return List of PhoneOld objects
 	 * @throws IOException
 	 */
-	public List<Phone> getPhoneList(boolean forceUpdate) throws IOException {
+	public List<PhoneOld> getPhoneList(boolean forceUpdate) throws IOException {
 		if(phoneList==null || forceUpdate) {
 			if(isLoggedIn()==false || forceUpdate) {
 				login();
@@ -257,24 +261,21 @@ public class Voice {
 		return phoneList;
 	}
 	
-	/**
-	 * Returns the phone list - Lazy
-	 * @param refresh - set to true to force a List update from the server
-	 * @return List of Phone objects
-	 * @throws IOException
-	 */
-	public List<Phone> getPhoneListNew(boolean forceUpdate) throws IOException {
-		return getSettings(forceUpdate).getPhoneList();
-	}
 	
 	/**
 	 * Returns the Greeting list - Lazy
 	 * @param refresh - set to true to force a List update from the server
 	 * @return List of Greeting objects
 	 * @throws IOException
+	 * @throws JSONException 
 	 */
-	public List<Greeting> getVoicemailList(boolean forceUpdate) throws IOException {
-		return getSettings(forceUpdate).getVoicemailGreetingsList();
+	public List<Greeting> getVoicemailList(boolean forceUpdate) throws IOException, JSONException {
+		List<Greeting> lGList = new ArrayList<Greeting>();
+		Greeting[] lGArray = getSettings(forceUpdate).getSettings().getGreetings();
+		for (int i = 0; i < lGArray.length; i++) {
+			lGList.add(lGArray[i]);
+		}
+		return lGList;
 	}
 	
 	/**
@@ -283,8 +284,16 @@ public class Voice {
 	 * @return List of Greeting objects
 	 * @throws IOException
 	 */
-	public List<Group> getGroupSettingsList(boolean forceUpdate) throws IOException {
-		return getSettings(forceUpdate).getGroupSettingsList();
+	public List<String> getGroupSettingsList(boolean forceUpdate) throws IOException {
+//		return getSettings(forceUpdate).getGroupSettingsList();
+//		List<String> lGList = new ArrayList<Group>();
+//		String[] lGArray = getSettings(forceUpdate).getSettings().getGroups().;
+//		for (int i = 0; i < lGArray.length; i++) {
+//			lGList.add(lGArray[i]);
+//		}
+//		return lGList;
+		//TODO implement getGroupSettingsList
+		return null;
 	}
 	
 	/**
@@ -292,8 +301,9 @@ public class Voice {
 	 * @param forceUpdate
 	 * @return
 	 * @throws IOException
+	 * @throws JSONException 
 	 */
-	public Settings getSettings(boolean forceUpdate) throws IOException {
+	public AllSettings getSettings(boolean forceUpdate) throws IOException, JSONException {
 		if(settings==null || forceUpdate) {
 			if(isLoggedIn()==false || forceUpdate) {
 				login();
@@ -305,7 +315,9 @@ public class Voice {
 				}
 			}
 			if(PRINT_TO_CONSOLE) System.out.println("Fetching Settings.");
-			settings = new Settings(get(groupsInfoURLString),true,false);
+			// remove html overhead
+			String lJson = ParsingUtil.removeUninterestingParts(get(groupsInfoURLString), "<json><![CDATA[", "]]></json>", false);
+			settings = new AllSettings(lJson);
 		}
 		return settings;
 	}
@@ -332,7 +344,7 @@ public class Voice {
 	/**
 	 * Fetches the page Source Code for the Voice homepage. This file contains
 	 * most of the useful information for the Google Voice Account such as
-	 * attached Phone info and Contacts.
+	 * attached PhoneOld info and Contacts.
 	 * 
 	 * @return the general
 	 * @throws IOException
@@ -487,7 +499,7 @@ public class Voice {
 	
 
 	/**
-	 * Reads raw account info, and creates the phoneList of Phone objects.
+	 * Reads raw account info, and creates the phoneList of PhoneOld objects.
 	 */
 	private void setPhoneInfo() {
 		if (general != null && phonesInfo!=null) {
@@ -512,13 +524,13 @@ public class Voice {
 			
 			
 			
-			List<Phone> phoneList = new ArrayList<Phone>();
+			List<PhoneOld> phoneList = new ArrayList<PhoneOld>();
 			String p1 = general.split("'phones':", 2)[1];
 			p1 = (p1.split("'_rnr_se'", 2))[0];
 			String[] a = p1.split("\\{\"id\"\\:");
 			// if(PRINT_TO_CONSOLE) System.out.println(a[0]);
 			for (int i = 1; i < a.length; i++) {
-				//Phone phone = new Phone();
+				//PhoneOld phone = new PhoneOld();
 				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
 				//phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
 				int id = Integer.parseInt(b[0].replaceAll("\"", ""));
@@ -569,9 +581,9 @@ public class Voice {
 						enabled = true;
 					}
 					
-					Phone phone = new Phone(id, number, formattedNumber, type, name, carrier, verified,enabled);
+					PhoneOld phoneOld = new PhoneOld(id, number, formattedNumber, type, name, carrier, verified,enabled);
 											
-					phoneList.add(phone);
+					phoneList.add(phoneOld);
 				}else{
 					System.out.println("Error in phone object creation.");
 				}

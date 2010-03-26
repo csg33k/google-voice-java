@@ -67,10 +67,22 @@ public class DisabledId {
 		
 		return disabledIds;
 	}
+	//TODO dotn create list first, direct transform
+	public final static DisabledId[] createArrayFromJsonObject(JSONObject settingsJSON) { 
+		List<DisabledId> tList = createListFromJsonObject(settingsJSON);
+		return (DisabledId[]) tList.toArray(new DisabledId[tList.size()]);
+	}
 	/**
 	 * @return "1":true
 	 */
 	public String toJson() {
 		return "\""+id+"\":"+disabled;
 	}
+	public String getId() {
+		return id;
+	}
+	public boolean isDisabled() {
+		return disabled;
+	}
+	
 }

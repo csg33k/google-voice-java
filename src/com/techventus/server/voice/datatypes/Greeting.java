@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.techventus.server.voice.util.ParsingUtil;
 
 /**
@@ -23,6 +27,12 @@ public class Greeting {
 		this.id = id;
 		this.name = name;
 		this.jobberName = "";
+	}
+	
+	public Greeting(String id,String jobberName, String name){
+		this.id = id;
+		this.name = name;
+		this.jobberName = jobberName;
 	}
 	
 	public String toString(){
@@ -60,6 +70,45 @@ public class Greeting {
 		}
 		return result;
 	}
+	
+	/*
+"greetings": [
+            {
+                "id": "0",
+                "jobberName": "",
+                "name": "System Standard"
+            },
+            {
+                "id": 2,
+                "jobberName": "",
+                "name": "Testgreeting 1"
+            },
+            {
+                "id": 3,
+                "jobberName": "47ee52c084.3.greeting.mulaw",
+                "name": "Testgreeting 2"
+            }
+        ],
+	 */
+	public final static List<Greeting> createListFromJsonObject(JSONObject settingsJSON) { 
+		List<Greeting> greetingss = new ArrayList<Greeting>();
+		if(settingsJSON.has("greetings")) {
+			try {
+				JSONArray lArray = (JSONArray) settingsJSON.getJSONArray("greetings");
+				for (int i = 0; i < lArray.length(); i++) {
+					String lId = lArray.getJSONObject(i).getString("id");
+					String lJobberName = lArray.getJSONObject(i).getString("jobberName");
+					String lName = lArray.getJSONObject(i).getString("name");
+					greetingss.add(new Greeting(lId,lJobberName,lName));
+				}
+			} catch (JSONException e1) {
+				// Nothing - will return empty List at exception
+			}
+
+		}
+		
+		return greetingss;
+	}
 
 	/**
 	 * @return the id
@@ -73,6 +122,12 @@ public class Greeting {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	//TODO dotn create list first, direct transform
+	public final static Greeting[] createArrayFromJsonObject(JSONObject settingsJSON) { 
+		List<Greeting> tList = createListFromJsonObject(settingsJSON);
+		return (Greeting[]) tList.toArray(new Greeting[tList.size()]);
 	}
 	
 	

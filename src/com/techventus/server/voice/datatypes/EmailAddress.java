@@ -63,4 +63,9 @@ public class EmailAddress {
 		
 		return emailAddresses;
 	}
+	//TODO dotn create list first, direct transform
+	public final static EmailAddress[] createArrayFromJsonObject(JSONObject settingsJSON) { 
+		List<EmailAddress> tList = createListFromJsonObject(settingsJSON);
+		return (EmailAddress[]) tList.toArray(new EmailAddress[tList.size()]);
+	}
 }

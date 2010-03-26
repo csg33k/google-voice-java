@@ -1,126 +1,100 @@
+
 package com.techventus.server.voice.datatypes;
 
-public class Phone {
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.techventus.server.voice.util.ParsingUtil;
+
+public class Phone{
+   	//TODO - implement
 	
+	private final static boolean saveMode = false;
 	
-	/*Use Getters and Setters - Need to make these variables private*/
-	@Deprecated
-	public int id;
-	@Deprecated
-	public String number;
-	@Deprecated
-	public String formattedNumber;
-	@Deprecated
-	public String type;
-	@Deprecated
-	public String name;
-	@Deprecated
-	public String carrier;
-	@Deprecated 
-	public boolean verified;
-	@Deprecated
-	public boolean enabled;
-	
-	/**
-	 * Instantiates a new empty Phone object.  This method is deprecated.
-	 * Consider using Phone(int id,String number,String formattedNumber,String type,String name,String carrier, Boolean verified)
-	 */
-	@Deprecated
-	public Phone(){
-		
-	}
-	
-	public Phone(int id,String number,String formattedNumber,String type,String name,String carrier, boolean verified, boolean enabled){
-		this.id = id;
-		this.number = number;
-		this.formattedNumber = formattedNumber;
-		this.type = type;
-		this.name = name;
-		this.carrier = carrier;
-		this.verified = verified;
-		this.enabled = enabled;
-	}
-	
-	public int getId(){
-		return this.id;
-	}
-	
-	public void setId(int id){
-		this.id = id;
-	}
-	
-	public String getNumber(){
-		return this.number;
-	}
-	
-	public void setNumber(String number){
-		this.number = number;
-	}
-	public String getFormattedNumber(){
-		return this.formattedNumber;
-	}
-	public void setFormattedNumber(String formattedNumber){
-		this.formattedNumber = formattedNumber;
-	}
-	public String getType(){
-		return this.type;
-	}
-	public void setType(String type){
-		this.type = type;
-	}
-	public String getName(){
-		return this.name;
-	}
-	public void setName(String name){
-		this.name = name;
-	}
-	public String getCarrier(){
-		return this.carrier;
-	}
-	public void setCarrier(String carrier){
-		this.carrier = carrier;
-	}
-	public boolean getVerified(){
-		return this.verified;
-	}
-	public void setVerified(boolean verified){
-		this.verified = verified;
-	}
-	public boolean getEnabled(){
-		return this.enabled;
-	}
-	public void setEnabled(boolean enabled){
-		this.enabled = enabled;
-	}
-	
-	public String toString(){
-		String ret = "";
-		ret+="id="+id+";";
-		if(number!=null){
-			ret+="number="+number+";";
+	private boolean active;
+   	private int behaviorOnRedirect;
+   	private String carrier;
+   	private int customOverrideState;
+   	private boolean dEPRECATEDDisabled;
+   	private boolean enabledForOthers;
+   	private String formattedNumber;
+   	private int id;
+   	private String incomingAccessNumber;
+   	private String name;
+   	private String phoneNumber;
+   	private int policyBitmask;
+   	private boolean redirectToVoicemail;
+   	private boolean scheduleSet;
+   	private boolean smsEnabled;
+   	private boolean telephonyVerified;
+   	private int type;
+   	private boolean verified;
+   	private boolean voicemailForwardingVerified;
+   	private Wd wd;
+   	private We we;
+   	private boolean weekdayAllDay;
+   	private String[] weekdayTimes;//Type correct??
+   	private boolean weekendAllDay;
+   	private String[] weekendTimes;//Type correct??
+   	
+   	public Phone(int id, String name, String phoneNumber) {
+   		this.id = id;
+   		this.name = name;
+   		this.phoneNumber = phoneNumber;
+   	}
+   	
+   	public Phone(JSONObject phonesJSON) throws JSONException {
+   		//TODO implement like Settings.java - FINISH
+		if(!saveMode || saveMode && phonesJSON.has("id")) id = phonesJSON.getInt("id");
+		if(!saveMode || saveMode && phonesJSON.has("name")) name = phonesJSON.getString("name");
+		if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
+   	}
+   	
+   	public static final Phone[] createArrayFromJsonObject(JSONObject phonesJSON) throws JSONException { 
+		String[] phoneNames = JSONObject.getNames(phonesJSON);
+		Phone[] result = new Phone[phoneNames.length];
+		for (int i = 0; i < phoneNames.length; i++) {
+			int lId = phonesJSON.getJSONObject(phoneNames[i]).getInt("id");
+			String lName = phonesJSON.getJSONObject(phoneNames[i]).getString("name");
+			String lPhoneNumber = phonesJSON.getJSONObject(phoneNames[i]).getString("phoneNumber");
+			result[i] = new Phone(lId,lName,lPhoneNumber);
 		}
-		if(name!=null){
-			ret+="name="+name+";";
-		}
-		if(carrier!=null){
-			ret+="carrier="+carrier+";";
-		}
-		if(type!=null){
-			ret+="type="+type+";";
-		}
-		//if(verified!=null){
-			ret+="verified="+verified+";";
-		//}
-		//if(enabled!=null){
-			ret+="enabled="+enabled+";";
-		//}
-		if(formattedNumber!=null){
-			ret+="formattedNumber="+formattedNumber+";";
+		return result;
+	}
+   	
+   	/**
+     * Make a JSON text of the Settings. For compactness, no whitespace
+     * is added. If this would not result in a syntactically correct JSON text,
+     * then null will be returned instead.
+     * <p>
+     * Warning: This method assumes that the data structure is acyclical.
+     *
+     * @return a printable, displayable, portable, transmittable
+     *  representation of the object, beginning
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+     */
+	public String toJson(){
+		JSONObject resultO = new JSONObject();
+		try { 
+			JSONObject phoneO = new JSONObject();
+
+			//TODO implement like Settings.java - FINISH
+			phoneO.putOnce("id", id);
+			phoneO.putOnce("name", name);
+			phoneO.putOnce("phoneNumber", phoneNumber);
+			
+			resultO.put("phones", phoneO);
+		} catch (JSONException e) {
+			return null;
 		}
 		
-		return ret;
-		
+		return resultO.toString();
 	}
-	
+   	
 	
 }
