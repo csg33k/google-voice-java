@@ -16,6 +16,7 @@ import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.datatypes.Settings;
+import com.techventus.server.voice.util.ParsingUtil;
 
 public class test {
 	
@@ -58,7 +59,7 @@ public class test {
 		}
 		
 		try {
-			if(!connectOnStartup) voice = new Voice(userName, pass);
+			if(connectOnStartup) voice = new Voice(userName, pass);
 		} catch (IOException e) {
 			System.out.println("IO error creating voice!"+e.getLocalizedMessage());
 		}
@@ -104,6 +105,7 @@ public class test {
 		System.out.println("7: Read all settings and print them (cached)");
 		System.out.println("8: Read all settings and print them (uncached)");
 		System.out.println("9: JRead all settings - pure json driven - flat data");
+		System.out.println("10: JRead all settings - pure json driven - actual account data");
 		
 		int testNr = 0;
 		try {
@@ -131,7 +133,7 @@ public class test {
 			
 			//Voice voice = new Voice();
 //			try {
-			if(!connectOnStartup) System.out.println(voice.isLoggedIn());
+			if(connectOnStartup) System.out.println(voice.isLoggedIn());
 				//Thread.sleep(2000);
 
 					switch (testNr) {
@@ -258,6 +260,24 @@ public class test {
 								
 								System.out.println("******* Parsed back and forth ******");
 								AllSettings settings2 = new AllSettings(jsonData);
+								System.out.println(settings2.toJsonObject().toString(4));
+							} catch (JSONException e) {
+								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+								e.printStackTrace();
+							}
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 10: // 10: Read all settings - pure json driven - account data
+							System.out.println("******** Starting Test "+testNr+" ********");
+							try {
+								System.out.println("******** Original JSON Data ********");
+								String lJson = ParsingUtil.removeUninterestingParts(voice.getONLYFORTEST("https://www.google.com/voice/settings/tab/groups"), "<json><![CDATA[", "]]></json>", false);
+								JSONObject origSettings = new JSONObject(lJson);
+								System.out.println(origSettings.toString(4));
+								
+								System.out.println("******* Parsed back and forth ******");
+								AllSettings settings2 = new AllSettings(lJson);
 								System.out.println(settings2.toJsonObject().toString(4));
 							} catch (JSONException e) {
 								System.out.println("Error displaying json:"+e.getLocalizedMessage());
