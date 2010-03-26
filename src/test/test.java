@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
@@ -251,6 +252,11 @@ public class test {
 						case 9: // 9: Read all settings - pure json driven
 							System.out.println("******** Starting Test "+testNr+" ********");
 							try {
+								System.out.println("******** Original JSON Data ********");
+								JSONObject origSettings = new JSONObject(jsonData);
+								System.out.println(origSettings.toString(4));
+								
+								System.out.println("******* Parsed back and forth ******");
 								AllSettings settings2 = new AllSettings(jsonData);
 								System.out.println(settings2.toJsonObject().toString(4));
 							} catch (JSONException e) {
