@@ -219,17 +219,17 @@ public class Group {
 	//TODO dotn create list first, direct transform
 	public final static Group[] createArrayFromJsonObject(JSONObject settingsJSON) throws JSONException { 
 		JSONObject lGroupsO = settingsJSON.getJSONObject("groups");
-		String[] lgroupNames = JSONObject.getNames(lGroupsO);
-		Group[] result = new Group[lgroupNames.length];
+		JSONArray lgroupNames = lGroupsO.names();
+		Group[] result = new Group[lgroupNames.length()];
 		
-		for (int i = 0; i < lgroupNames.length; i++) {
-			String id 						= lGroupsO.getJSONObject(lgroupNames[i]).getString("id");
-			String name 					= lGroupsO.getJSONObject(lgroupNames[i]).getString("name");
-			boolean isCustomForwarding 		= lGroupsO.getJSONObject(lgroupNames[i]).getBoolean("isCustomForwarding");
+		for (int i = 0; i < lgroupNames.length(); i++) {
+			String id 						= lGroupsO.getJSONObject(lgroupNames.getString(i)).getString("id");
+			String name 					= lGroupsO.getJSONObject(lgroupNames.getString(i)).getString("name");
+			boolean isCustomForwarding 		= lGroupsO.getJSONObject(lgroupNames.getString(i)).getBoolean("isCustomForwarding");
 			DisabledForwardingId[] disabledForwardingIdsNeu = new DisabledForwardingId[0];
 			if(isCustomForwarding) {
 				// "disabledForwardingIds":{"1":true}
-				JSONObject lCustomForwardingIds  = lGroupsO.getJSONObject(lgroupNames[i]).getJSONObject("disabledForwardingIds");
+				JSONObject lCustomForwardingIds  = lGroupsO.getJSONObject(lgroupNames.getString(i)).getJSONObject("disabledForwardingIds");
 				String[] lforwardingNames = JSONObject.getNames(lCustomForwardingIds);
 				disabledForwardingIdsNeu = new DisabledForwardingId[lforwardingNames.length];
 				for (int j = 0; j < lforwardingNames.length; j++) {
@@ -238,11 +238,11 @@ public class Group {
 					disabledForwardingIdsNeu[j] = new DisabledForwardingId(lFwdId,lFwdState);
 				}
 			}
-			boolean isCustomGreeting 		= lGroupsO.getJSONObject(lgroupNames[i]).getBoolean("isCustomGreeting");
-			boolean isCustomDirectConnect 	= lGroupsO.getJSONObject(lgroupNames[i]).getBoolean("isCustomDirectConnect");
-			boolean directConnect 			= lGroupsO.getJSONObject(lgroupNames[i]).getBoolean("directConnect");
-			String greetingId 				= lGroupsO.getJSONObject(lgroupNames[i]).getString("greetingId");
-			//?? String disabledForwardingIdsStr	= lGroupsO.getJSONObject(lgroupNames[i]).getString("disabledForwardingIds");
+			boolean isCustomGreeting 		= lGroupsO.getJSONObject(lgroupNames.getString(i)).getBoolean("isCustomGreeting");
+			boolean isCustomDirectConnect 	= lGroupsO.getJSONObject(lgroupNames.getString(i)).getBoolean("isCustomDirectConnect");
+			boolean directConnect 			= lGroupsO.getJSONObject(lgroupNames.getString(i)).getBoolean("directConnect");
+			String greetingId 				= lGroupsO.getJSONObject(lgroupNames.getString(i)).getString("greetingId");
+			//?? String disabledForwardingIdsStr	= lGroupsO.getJSONObject(lgroupNames.getString(i)).getString("disabledForwardingIds");
 			result[i] = new Group(id, name, isCustomForwarding, disabledForwardingIdsNeu, isCustomDirectConnect, directConnect, isCustomGreeting, greetingId);
 		}
 		return result;

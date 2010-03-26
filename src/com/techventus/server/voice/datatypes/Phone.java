@@ -1,6 +1,7 @@
 
 package com.techventus.server.voice.datatypes;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,10 +74,10 @@ public class Phone{
    	}
    	
    	public static final Phone[] createArrayFromJsonObject(JSONObject phonesJSON) throws JSONException { 
-		String[] phoneNames = JSONObject.getNames(phonesJSON);
-		Phone[] result = new Phone[phoneNames.length];
-		for (int i = 0; i < phoneNames.length; i++) {
-			result[i] = new Phone(phonesJSON.getJSONObject(phoneNames[i]));
+		JSONArray phoneNames = phonesJSON.names();
+		Phone[] result = new Phone[phoneNames.length()];
+		for (int i = 0; i < phoneNames.length(); i++) {
+			result[i] = new Phone(phonesJSON.getJSONObject(phoneNames.getString(i)));
 		}
 		return result;
 	}

@@ -1,5 +1,8 @@
 package com.techventus.server.voice.datatypes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +37,17 @@ public class AllSettings{
 	 */
 	public int[] getPhoneList() {
 		return phoneList;
+	}
+	
+	/**
+	 * @return the phoneList as List<Integer>
+	 */
+	public List<Integer> getPhoneListAsList() {
+		List<Integer> lresult = new ArrayList<Integer>();
+		for (int i = 0; i < phoneList.length; i++) {
+			lresult.add(phoneList[i]);
+		}
+		return lresult;
 	}
 
 	/**

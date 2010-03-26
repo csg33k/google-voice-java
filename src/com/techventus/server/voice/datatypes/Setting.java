@@ -1,5 +1,6 @@
 package com.techventus.server.voice.datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -108,11 +109,11 @@ public class Setting {
 			settingsO.putOpt("groupList", groupList);
 			
 			JSONObject groupObject = new JSONObject();
-			String[] groupNames = JSONObject.getNames(groups);
-			if(groupNames!=null && groupNames.length>0) {
-				for (int i = 0; i < groupNames.length; i++) {
+			JSONArray groupNames = groups.names();
+			if(groupNames!=null && groupNames.length()>0) {
+				for (int i = 0; i < groupNames.length(); i++) {
 					JSONObject oneGroupObject = groups;
-					groupObject.putOpt(groupNames[i], oneGroupObject);
+					groupObject.putOpt(groupNames.getString(i), oneGroupObject);
 				}
 			}
 			settingsO.putOpt("groups", groups);
@@ -228,12 +229,41 @@ public class Setting {
 	public String[] getGroupList() {
 		return groupList;
 	}
+	
+	/**
+	 * @return the groupList as List<String>
+	 */
+	public List<String> getGroupListAsList() {
+		List<String> lresult = new ArrayList<String>();
+		for (int i = 0; i < groupList.length; i++) {
+			lresult.add(groupList[i]);
+		}
+		return lresult;
+	}
 
 	/**
 	 * @return the groups
 	 */
 	public JSONObject getGroups() {
 		return groups;
+	}
+	
+	public Group[] getGroupsAsArray() {
+		try {
+			return Group.createArrayFromJsonObject(groups);
+		} catch (JSONException e) {
+			//nothing
+			return null;
+		}
+	}
+	
+	public List<Group> getGroupsAsList() {
+		List<Group> lresult = new ArrayList<Group>();
+		Group[] groupArray = getGroupsAsArray();
+		for (int i = 0; i < groupArray.length; i++) {
+			lresult.add(groupArray[i]);
+		}
+		return lresult;
 	}
 
 	/**

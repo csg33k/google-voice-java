@@ -47,10 +47,10 @@ public class DisabledId {
 			JSONObject lObject;
 			try {
 				lObject = (JSONObject) settingsJSON.get("disabledIdMap");
-				String[] objectNames = JSONObject.getNames(lObject);
+				JSONArray objectNames = lObject.names();
 				
-				for (int i = 0; i < objectNames.length; i++) {
-					String lId = objectNames[i];
+				for (int i = 0; i < objectNames.length(); i++) {
+					String lId = objectNames.getString(i);
 					boolean lDisabled;
 					try {
 						lDisabled = lObject.getBoolean(lId);
