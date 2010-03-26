@@ -19,17 +19,17 @@ import com.techventus.server.voice.util.ParsingUtil;
 public class Greeting {
 	
 	
-	private String id;
+	private int id;
 	private String name;
 	private String jobberName;
 
-	public Greeting(String id,String name){
+	public Greeting(int id,String name){
 		this.id = id;
 		this.name = name;
 		this.jobberName = "";
 	}
 	
-	public Greeting(String id,String jobberName, String name){
+	public Greeting(int id,String jobberName, String name){
 		this.id = id;
 		this.name = name;
 		this.jobberName = jobberName;
@@ -42,28 +42,15 @@ public class Greeting {
 		return ret;
 	}
 	
-	/**
-	 * Return a json representation of the object
-	 * {"id":"0","name":"System Standard","jobberName":""}
-	 * @return
-	 */
-	public String toJson() {
-		String ret="";
-		if(id.equals("0")) ret+="{\"id\":\""+id+"\","; //Error in gvoice json format, 0 has " "
-		else ret+="{\"id\":"+id+",";
-		ret+="\"name\":\""+name+"\",";
-		ret+="\"jobberName\":\""+jobberName+"\"}";
-		return ret;
-	}
 	
 	public final static List<Greeting> createGroupSettingsFromJsonResponse(String json) {
 		List<Greeting> result = new ArrayList<Greeting>();
 		json = ParsingUtil.removeUninterestingParts(json, "\"greetings\":[", "],", false);
 		String[] greetingsStrings = json.split(Pattern.quote("},{"));
 		// Add System standard greeting
-		result.add(new Greeting("0", "System Standard"));
+		result.add(new Greeting(0, "System Standard"));
 		for (int i = 1; i < greetingsStrings.length; i++) {
-			String lId =   ParsingUtil.removeUninterestingParts(greetingsStrings[i]  , "\"id\":"  , ",", false);
+			int lId =   Integer.parseInt(ParsingUtil.removeUninterestingParts(greetingsStrings[i]  , "\"id\":"  , ",", false));
 			String lName = ParsingUtil.removeUninterestingParts(greetingsStrings[i], "\"name\":\"", "\",\"", false);
 			Greeting lGreeting = new Greeting(lId, lName);
 			result.add(lGreeting);
@@ -96,7 +83,7 @@ public class Greeting {
 			try {
 				JSONArray lArray = (JSONArray) settingsJSON.getJSONArray("greetings");
 				for (int i = 0; i < lArray.length(); i++) {
-					String lId = lArray.getJSONObject(i).getString("id");
+					int lId = lArray.getJSONObject(i).getInt("id");
 					String lJobberName = lArray.getJSONObject(i).getString("jobberName");
 					String lName = lArray.getJSONObject(i).getString("name");
 					greetingss.add(new Greeting(lId,lJobberName,lName));
@@ -113,7 +100,7 @@ public class Greeting {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -122,6 +109,15 @@ public class Greeting {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	
+
+	/**
+	 * @return the jobberName
+	 */
+	public String getJobberName() {
+		return jobberName;
 	}
 
 	//TODO dotn create list first, direct transform

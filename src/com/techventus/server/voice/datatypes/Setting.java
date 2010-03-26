@@ -31,7 +31,7 @@ public class Setting {
 	private String primaryDid;
 	private int screenBehavior;
 	private boolean showTranscripts;
-	private String smsNotifications;
+	private String[] smsNotifications;
 	private boolean smsToEmailActive;
 	private boolean smsToEmailSubject;
 	private int spam;
@@ -58,7 +58,7 @@ public class Setting {
 		if(!saveMode || saveMode && settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
 		if(!saveMode || saveMode && settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
 		if(!saveMode || saveMode && settingsJSON.has("showTranscripts")) showTranscripts = settingsJSON.getBoolean("showTranscripts");
-		if(!saveMode || saveMode && settingsJSON.has("smsNotifications")) smsNotifications = settingsJSON.getString("smsNotifications"); //TODO correct?
+		if(!saveMode || saveMode && settingsJSON.has("smsNotifications")) smsNotifications = ParsingUtil.jsonStringArrayToStringArray(settingsJSON.getJSONArray("smsNotifications"));
 		if(!saveMode || saveMode && settingsJSON.has("smsToEmailActive")) smsToEmailActive =  settingsJSON.getBoolean("smsToEmailActive");
 		if(!saveMode || saveMode && settingsJSON.has("smsToEmailSubject")) smsToEmailSubject = settingsJSON.getBoolean("smsToEmailSubject");
 		if(!saveMode || saveMode && settingsJSON.has("spam")) spam = settingsJSON.getInt("spam");
@@ -85,53 +85,57 @@ public class Setting {
 	}
 	
 	public JSONObject toJsonObject(){ 
-		JSONObject resultO = new JSONObject();
+		JSONObject settingsO = new JSONObject();
 		try { 
-			JSONObject settingsO = new JSONObject();
+			//JSONObject settingsO = new JSONObject();
 
-			settingsO.putOnce("activeForwardingIds", mActiveForwardingList);
-			settingsO.putOnce("baseUrl", baseUrl);
-			settingsO.putOnce("credits", credits);
-			settingsO.putOnce("defaultGreetingId", defaultGreetingId);
-			settingsO.putOnce("didInfos", mDidInfos);
-			settingsO.putOnce("directConnect", directConnect);
-			settingsO.putOnce("disabledIdMap", mDisabledIdList);
-			settingsO.putOnce("doNotDisturb", doNotDisturb);
-			settingsO.putOnce("emailAddresses", emailAddresses);
-			settingsO.putOnce("emailNotificationActive", emailNotificationActive);
-			settingsO.putOnce("emailNotificationAddress", emailNotificationAddress);
-			settingsO.putOnce("greetings", greetings);
-			settingsO.putOnce("groupList", groupList);
+			settingsO.putOpt("activeForwardingIds", mActiveForwardingList);
+			settingsO.putOpt("baseUrl", baseUrl);
+			settingsO.putOpt("credits", credits);
+			settingsO.putOpt("defaultGreetingId", defaultGreetingId);
+			settingsO.putOpt("didInfos", mDidInfos);
+			settingsO.putOpt("directConnect", directConnect);
+			for (int i = 0; i < mDisabledIdList.length; i++) {
+				settingsO.accumulate("disabledIdMap", mDisabledIdList[i].toJsonObject());
+			}
+			settingsO.putOpt("doNotDisturb", doNotDisturb);
+			for (int i = 0; i < emailAddresses.length; i++) {
+				settingsO.append("emailAddresses", emailAddresses[i].getAddress());
+			}
+			settingsO.putOpt("emailNotificationActive", emailNotificationActive);
+			settingsO.putOpt("emailNotificationAddress", emailNotificationAddress);
+			settingsO.putOpt("greetings", greetings); // An Object Array uses the Bean get Methods - no toJson() needed in Greeting
+			settingsO.putOpt("groupList", groupList);
 			
 			JSONObject groupObject = new JSONObject();
 			String[] groupNames = JSONObject.getNames(groups);
 			if(groupNames!=null && groupNames.length>0) {
 				for (int i = 0; i < groupNames.length; i++) {
 					JSONObject oneGroupObject = groups;
-					groupObject.putOnce(groupNames[i], oneGroupObject);
+					groupObject.putOpt(groupNames[i], oneGroupObject);
 				}
 			}
-			settingsO.putOnce("groups", groups);
+			settingsO.putOpt("groups", groups);
 			
-			settingsO.putOnce("language", language);
-			settingsO.putOnce("primaryDid", primaryDid);
-			settingsO.putOnce("screenBehavior", screenBehavior);
-			settingsO.putOnce("showTranscripts", showTranscripts);
-			settingsO.putOnce("smsNotifications", smsNotifications);
-			settingsO.putOnce("smsToEmailActive", smsToEmailActive);
-			settingsO.putOnce("smsToEmailSubject", smsToEmailSubject);
-			settingsO.putOnce("spam", spam);
-			settingsO.putOnce("timezone", timezone);
-			settingsO.putOnce("useDidAsCallerId", useDidAsCallerId);
-			settingsO.putOnce("useDidAsSource", useDidAsSource);
+			settingsO.putOpt("language", language);
+			settingsO.putOpt("primaryDid", primaryDid);
+			settingsO.putOpt("screenBehavior", screenBehavior);
+			settingsO.putOpt("showTranscripts", showTranscripts);
+			settingsO.putOpt("smsNotifications", smsNotifications);
+			settingsO.putOpt("smsToEmailActive", smsToEmailActive);
+			settingsO.putOpt("smsToEmailSubject", smsToEmailSubject);
+			settingsO.putOpt("spam", spam);
+			settingsO.putOpt("timezone", timezone);
+			settingsO.putOpt("useDidAsCallerId", useDidAsCallerId);
+			settingsO.putOpt("useDidAsSource", useDidAsSource);
 			
-			resultO.put("settings", settingsO);
+			//resultO.put("settings", settingsO);
 		} catch (JSONException e) {
 			System.out.println(e.getLocalizedMessage());
 			return null;
 		}
 		
-		return resultO;
+		return settingsO;
 	}
 
 	/**
@@ -263,7 +267,7 @@ public class Setting {
 	/**
 	 * @return the smsNotifications
 	 */
-	public String getSmsNotifications() {
+	public String[] getSmsNotifications() {
 		return smsNotifications;
 	}
 

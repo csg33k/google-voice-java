@@ -1,10 +1,6 @@
 
 package com.techventus.server.voice.datatypes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,12 +30,12 @@ public class Phone{
    	private int type;
    	private boolean verified;
    	private boolean voicemailForwardingVerified;
-   	private Wd wd;
-   	private We we;
+   	private Wd wd; //TODO
+   	private We we; //TODO
    	private boolean weekdayAllDay;
-   	private String[] weekdayTimes;//Type correct??
+   	private String[] weekdayTimes;
    	private boolean weekendAllDay;
-   	private String[] weekendTimes;//Type correct??
+   	private String[] weekendTimes;
    	
    	public Phone(int id, String name, String phoneNumber) {
    		this.id = id;
@@ -48,20 +44,39 @@ public class Phone{
    	}
    	
    	public Phone(JSONObject phonesJSON) throws JSONException {
-   		//TODO implement like Settings.java - FINISH
 		if(!saveMode || saveMode && phonesJSON.has("id")) id = phonesJSON.getInt("id");
 		if(!saveMode || saveMode && phonesJSON.has("name")) name = phonesJSON.getString("name");
 		if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
+		if(!saveMode || saveMode && phonesJSON.has("active")) active = phonesJSON.getBoolean("active");
+	   	if(!saveMode || saveMode && phonesJSON.has("behaviorOnRedirect")) behaviorOnRedirect = phonesJSON.getInt("behaviorOnRedirect");
+	   	if(!saveMode || saveMode && phonesJSON.has("carrier")) carrier = phonesJSON.getString("carrier");
+	   	if(!saveMode || saveMode && phonesJSON.has("customOverrideState")) customOverrideState = phonesJSON.getInt("customOverrideState");
+	   	if(!saveMode || saveMode && phonesJSON.has("dEPRECATEDDisabled")) dEPRECATEDDisabled = phonesJSON.getBoolean("dEPRECATEDDisabled");
+	   	if(!saveMode || saveMode && phonesJSON.has("enabledForOthers")) enabledForOthers = phonesJSON.getBoolean("enabledForOthers");
+	   	if(!saveMode || saveMode && phonesJSON.has("formattedNumber")) formattedNumber = phonesJSON.getString("formattedNumber");
+	   	if(!saveMode || saveMode && phonesJSON.has("incomingAccessNumber")) incomingAccessNumber = phonesJSON.getString("incomingAccessNumber");
+	   	if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
+	   	if(!saveMode || saveMode && phonesJSON.has("policyBitmask")) policyBitmask = phonesJSON.getInt("policyBitmask");
+	   	if(!saveMode || saveMode && phonesJSON.has("redirectToVoicemail")) redirectToVoicemail = phonesJSON.getBoolean("redirectToVoicemail");
+	   	if(!saveMode || saveMode && phonesJSON.has("scheduleSet")) scheduleSet = phonesJSON.getBoolean("scheduleSet");
+	   	if(!saveMode || saveMode && phonesJSON.has("smsEnabled")) smsEnabled = phonesJSON.getBoolean("smsEnabled");
+	   	if(!saveMode || saveMode && phonesJSON.has("telephonyVerified")) telephonyVerified = phonesJSON.getBoolean("telephonyVerified");
+	   	if(!saveMode || saveMode && phonesJSON.has("type")) type = phonesJSON.getInt("type");
+	   	if(!saveMode || saveMode && phonesJSON.has("verified")) verified = phonesJSON.getBoolean("verified");
+	   	if(!saveMode || saveMode && phonesJSON.has("voicemailForwardingVerified")) voicemailForwardingVerified = phonesJSON.getBoolean("voicemailForwardingVerified");
+//	   	if(!saveMode || saveMode && phonesJSON.has("wd")) wd = phonesJSON.getInt("id"); //TODO
+//	   	if(!saveMode || saveMode && phonesJSON.has("we")) wd = phonesJSON.getInt("id"); //TODO
+	   	if(!saveMode || saveMode && phonesJSON.has("weekdayAllDay")) weekdayAllDay = phonesJSON.getBoolean("weekdayAllDay");
+	   	if(!saveMode || saveMode && phonesJSON.has("weekdayTimes")) weekdayTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekdayTimes"));//Type correct??
+	   	if(!saveMode || saveMode && phonesJSON.has("weekendAllDay")) weekendAllDay = phonesJSON.getBoolean("weekendAllDay");
+	   	if(!saveMode || saveMode && phonesJSON.has("weekendTimes")) weekendTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekendTimes"));//Type correct??
    	}
    	
    	public static final Phone[] createArrayFromJsonObject(JSONObject phonesJSON) throws JSONException { 
 		String[] phoneNames = JSONObject.getNames(phonesJSON);
 		Phone[] result = new Phone[phoneNames.length];
 		for (int i = 0; i < phoneNames.length; i++) {
-			int lId = phonesJSON.getJSONObject(phoneNames[i]).getInt("id");
-			String lName = phonesJSON.getJSONObject(phoneNames[i]).getString("name");
-			String lPhoneNumber = phonesJSON.getJSONObject(phoneNames[i]).getString("phoneNumber");
-			result[i] = new Phone(lId,lName,lPhoneNumber);
+			result[i] = new Phone(phonesJSON.getJSONObject(phoneNames[i]));
 		}
 		return result;
 	}
@@ -84,15 +99,34 @@ public class Phone{
 	
 	public JSONObject toJsonObject(){
 		JSONObject resultO = new JSONObject();
-		try { 
-			JSONObject phoneO = new JSONObject();
-
-			//TODO implement like Settings.java - FINISH
-			phoneO.putOnce("id", id);
-			phoneO.putOnce("name", name);
-			phoneO.putOnce("phoneNumber", phoneNumber);
-			
-			resultO.put("phones", phoneO);
+		try { 		
+			resultO.putOpt("id", id);
+			resultO.putOpt("name", name);
+			resultO.putOpt("active", active);
+		   	resultO.putOpt("behaviorOnRedirect", behaviorOnRedirect);
+		   	resultO.putOpt("carrier", carrier);
+		   	resultO.putOpt("customOverrideState", customOverrideState);
+		   	resultO.putOpt("dEPRECATEDDisabled", dEPRECATEDDisabled);
+		   	resultO.putOpt("enabledForOthers", enabledForOthers);
+		   	resultO.putOpt("formattedNumber", formattedNumber);
+		   	resultO.putOpt("id", id);
+		   	resultO.putOpt("incomingAccessNumber", incomingAccessNumber);
+		   	resultO.putOpt("name", name);
+		   	resultO.putOpt("phoneNumber", phoneNumber);
+		   	resultO.putOpt("policyBitmask", policyBitmask);
+		   	resultO.putOpt("redirectToVoicemail", redirectToVoicemail);
+		   	resultO.putOpt("scheduleSet", scheduleSet);
+		   	resultO.putOpt("smsEnabled", smsEnabled);
+		   	resultO.putOpt("telephonyVerified", telephonyVerified);
+		   	resultO.putOpt("type", type);
+		   	resultO.putOpt("verified", verified);
+		   	resultO.putOpt("voicemailForwardingVerified", voicemailForwardingVerified);
+//		   	private Wd wd", ); //TODO
+//		   	private We we", ); //TODO
+		   	resultO.putOpt("weekdayAllDay", weekdayAllDay);
+		   	resultO.putOpt("weekdayTimes", weekdayTimes);//Type correct??
+		   	resultO.putOpt("weekendAllDay", weekendAllDay);
+		   	resultO.putOpt("weekendTimes", weekendTimes);//Type correct??
 		} catch (JSONException e) {
 			return null;
 		}
@@ -108,7 +142,7 @@ public class Phone{
 	public static Object phonesArrayToJsonObject(Phone[] phones) throws JSONException {
 		JSONObject phoneO = new JSONObject();
 		for (int i = 0; i < phones.length; i++) {
-			phoneO.putOnce(phones[i].getName(),phones[i].toJsonObject());
+			phoneO.putOnce(phones[i].getId()+"",phones[i].toJsonObject());
 		}
 		return phoneO;
 	}

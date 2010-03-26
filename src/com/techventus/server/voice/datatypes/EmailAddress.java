@@ -68,4 +68,11 @@ public class EmailAddress {
 		List<EmailAddress> tList = createListFromJsonObject(settingsJSON);
 		return (EmailAddress[]) tList.toArray(new EmailAddress[tList.size()]);
 	}
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+	
 }

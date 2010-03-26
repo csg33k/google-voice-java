@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class We{
    	private boolean allDay;
-   	private List times;
+   	private List<String> times;
 
  	public boolean getAllDay(){
 		return this.allDay;
@@ -17,10 +17,10 @@ public class We{
 	public void setAllDay(boolean allDay){
 		this.allDay = allDay;
 	}
- 	public List getTimes(){
+ 	public List<String> getTimes(){
 		return this.times;
 	}
-	public void setTimes(List times){
+	public void setTimes(List<String> times){
 		this.times = times;
 	}
 }

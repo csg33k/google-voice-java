@@ -84,5 +84,15 @@ public class DisabledId {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	public JSONObject toJsonObject(){
+		JSONObject resultO = new JSONObject();
+		try { 		
+			resultO.accumulate(id, disabled);
+		} catch (JSONException e) {
+			return null;
+		}
+		
+		return resultO;
+	}
 	
 }
