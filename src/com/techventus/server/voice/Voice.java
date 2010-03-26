@@ -1119,6 +1119,13 @@ public class Voice {
 
 		return out;
 	}
+	
+	/*
+	 * TODO: REMOVE before release
+	 */
+	public String getONLYFORTEST(String urlString) throws IOException {
+		return get(urlString);
+	}
 
 	/**
 	 * HTML GET request for a given URL String.
