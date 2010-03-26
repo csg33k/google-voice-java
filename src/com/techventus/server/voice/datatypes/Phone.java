@@ -78,7 +78,11 @@ public class Phone{
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
-	public String toJson(){
+	public String toJson(){	
+		return toJsonObject().toString();
+	}
+	
+	public JSONObject toJsonObject(){
 		JSONObject resultO = new JSONObject();
 		try { 
 			JSONObject phoneO = new JSONObject();
@@ -93,7 +97,195 @@ public class Phone{
 			return null;
 		}
 		
-		return resultO.toString();
+		return resultO;
+	}
+
+	/**
+	 * @param phones
+	 * @return
+	 * @throws JSONException 
+	 */
+	public static Object phonesArrayToJsonObject(Phone[] phones) throws JSONException {
+		JSONObject phoneO = new JSONObject();
+		for (int i = 0; i < phones.length; i++) {
+			phoneO.putOnce(phones[i].getName(),phones[i].toJsonObject());
+		}
+		return phoneO;
+	}
+
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @return the behaviorOnRedirect
+	 */
+	public int getBehaviorOnRedirect() {
+		return behaviorOnRedirect;
+	}
+
+	/**
+	 * @return the carrier
+	 */
+	public String getCarrier() {
+		return carrier;
+	}
+
+	/**
+	 * @return the customOverrideState
+	 */
+	public int getCustomOverrideState() {
+		return customOverrideState;
+	}
+
+	/**
+	 * @return the dEPRECATEDDisabled
+	 */
+	public boolean isdEPRECATEDDisabled() {
+		return dEPRECATEDDisabled;
+	}
+
+	/**
+	 * @return the enabledForOthers
+	 */
+	public boolean isEnabledForOthers() {
+		return enabledForOthers;
+	}
+
+	/**
+	 * @return the formattedNumber
+	 */
+	public String getFormattedNumber() {
+		return formattedNumber;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @return the incomingAccessNumber
+	 */
+	public String getIncomingAccessNumber() {
+		return incomingAccessNumber;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the phoneNumber
+	 */
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	/**
+	 * @return the policyBitmask
+	 */
+	public int getPolicyBitmask() {
+		return policyBitmask;
+	}
+
+	/**
+	 * @return the redirectToVoicemail
+	 */
+	public boolean isRedirectToVoicemail() {
+		return redirectToVoicemail;
+	}
+
+	/**
+	 * @return the scheduleSet
+	 */
+	public boolean isScheduleSet() {
+		return scheduleSet;
+	}
+
+	/**
+	 * @return the smsEnabled
+	 */
+	public boolean isSmsEnabled() {
+		return smsEnabled;
+	}
+
+	/**
+	 * @return the telephonyVerified
+	 */
+	public boolean isTelephonyVerified() {
+		return telephonyVerified;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * @return the verified
+	 */
+	public boolean isVerified() {
+		return verified;
+	}
+
+	/**
+	 * @return the voicemailForwardingVerified
+	 */
+	public boolean isVoicemailForwardingVerified() {
+		return voicemailForwardingVerified;
+	}
+
+	/**
+	 * @return the wd
+	 */
+	public Wd getWd() {
+		return wd;
+	}
+
+	/**
+	 * @return the we
+	 */
+	public We getWe() {
+		return we;
+	}
+
+	/**
+	 * @return the weekdayAllDay
+	 */
+	public boolean isWeekdayAllDay() {
+		return weekdayAllDay;
+	}
+
+	/**
+	 * @return the weekdayTimes
+	 */
+	public String[] getWeekdayTimes() {
+		return weekdayTimes;
+	}
+
+	/**
+	 * @return the weekendAllDay
+	 */
+	public boolean isWeekendAllDay() {
+		return weekendAllDay;
+	}
+
+	/**
+	 * @return the weekendTimes
+	 */
+	public String[] getWeekendTimes() {
+		return weekendTimes;
 	}
    	
 	

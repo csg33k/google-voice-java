@@ -24,7 +24,7 @@ public class AllSettings{
    	public JSONObject toJsonObject() throws JSONException {
    		JSONObject lObj = new JSONObject();
    		lObj.putOnce("phoneList",phoneList);
-   		lObj.putOnce("phones",phones);
+   		lObj.putOnce("phones",Phone.phonesArrayToJsonObject(phones));
    		lObj.putOnce("settings",settings.toJsonObject());
    		return lObj;
    	}
