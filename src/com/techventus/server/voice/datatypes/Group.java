@@ -253,7 +253,7 @@ public class Group {
 		JSONObject[] result = new JSONObject[lGroupsArray.length];
 		for (int i = 0; i < lGroupsArray.length; i++) {
 			result[i] = new JSONObject();
-			result[i].putOnce(lGroupsArray[i].getId(), lGroupsArray[i]);
+			result[i].accumulate(lGroupsArray[i].getId(), lGroupsArray[i]);
 		}
 		return result;
 	}
@@ -263,7 +263,7 @@ public class Group {
 		JSONObject result = new JSONObject();
 		for (int i = 0; i < lGroupsArray.length; i++) {
 			result = new JSONObject();
-			result.putOnce(lGroupsArray[i].getId(), lGroupsArray[i]);
+			result.accumulate(lGroupsArray[i].getId(), lGroupsArray[i]);
 		}
 		return result;
 	}

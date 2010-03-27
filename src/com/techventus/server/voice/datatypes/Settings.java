@@ -184,20 +184,20 @@ public class Settings {
 		JSONObject resultO = new JSONObject();
 		try { 
 			//phoneList
-			resultO.putOnce("phoneList", new JSONArray(mPhoneListSimple));
+			resultO.accumulate("phoneList", new JSONArray(mPhoneListSimple));
 			//settings
 			JSONObject settingsO = new JSONObject();
 
-			settingsO.putOnce("activeForwardingIds", mActiveForwardingList);
-			settingsO.putOnce("baseUrl", baseUrl);
-			settingsO.putOnce("credits", credits);
-			settingsO.putOnce("defaultGreetingId", defaultGreetingId);
-			settingsO.putOnce("didInfos", mDidInfos);
-			settingsO.putOnce("directConnect", directConnect);
-			settingsO.putOnce("disabledIdMap", mDisabledIdList);
-			settingsO.putOnce("baseUrl", baseUrl);
-			settingsO.putOnce("baseUrl", baseUrl);
-			settingsO.putOnce("baseUrl", baseUrl);
+			settingsO.accumulate("activeForwardingIds", mActiveForwardingList);
+			settingsO.accumulate("baseUrl", baseUrl);
+			settingsO.accumulate("credits", credits);
+			settingsO.accumulate("defaultGreetingId", defaultGreetingId);
+			settingsO.accumulate("didInfos", mDidInfos);
+			settingsO.accumulate("directConnect", directConnect);
+			settingsO.accumulate("disabledIdMap", mDisabledIdList);
+			settingsO.accumulate("baseUrl", baseUrl);
+			settingsO.accumulate("baseUrl", baseUrl);
+			settingsO.accumulate("baseUrl", baseUrl);
 			/*
 if(!saveMode || saveMode && settingsJSON.has("activeForwardingIds")) mActiveForwardingList = jsonStringArrayToStringList(settingsJSON,mActiveForwardingList,"activeForwardingIds");
 if(!saveMode || saveMode && settingsJSON.has("baseUrl")) baseUrl = settingsJSON.getString("baseUrl");

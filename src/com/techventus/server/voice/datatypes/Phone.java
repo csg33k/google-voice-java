@@ -143,7 +143,7 @@ public class Phone{
 	public static Object phonesArrayToJsonObject(Phone[] phones) throws JSONException {
 		JSONObject phoneO = new JSONObject();
 		for (int i = 0; i < phones.length; i++) {
-			phoneO.putOnce(phones[i].getId()+"",phones[i].toJsonObject());
+			phoneO.accumulate(phones[i].getId()+"",phones[i].toJsonObject());
 		}
 		return phoneO;
 	}
