@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Properties;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
@@ -276,9 +276,15 @@ public class test {
 								JSONObject origSettings = new JSONObject(lJson);
 								System.out.println(origSettings.toString(4));
 								
-								System.out.println("******* Parsed back and forth ******");
+								System.out.println("******* JsonObject from AllSettings ******");
 								AllSettings settings2 = new AllSettings(lJson);
-								System.out.println(settings2.toJsonObject().toString(4));
+								JSONObject objFromAllSettings = settings2.toJsonObject();
+								System.out.println(objFromAllSettings.toString(4));
+								
+								System.out.println("******* Creating new AllSettings from old JSON ******");
+								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
+								System.out.println(settings3.toJsonObject().toString(4));
+								
 							} catch (JSONException e) {
 								System.out.println("Error displaying json:"+e.getLocalizedMessage());
 								e.printStackTrace();

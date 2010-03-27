@@ -3,8 +3,8 @@ package com.techventus.server.voice.datatypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -26,9 +26,9 @@ public class AllSettings{
    	
    	public JSONObject toJsonObject() throws JSONException {
    		JSONObject lObj = new JSONObject();
-   		lObj.accumulate("phoneList",phoneList);
-   		lObj.accumulate("phones",Phone.phonesArrayToJsonObject(phones));
-   		lObj.accumulate("settings",settings.toJsonObject());
+   		lObj.put("phoneList",phoneList);
+   		lObj.put("phones",Phone.phonesArrayToJsonObject(phones));
+   		lObj.put("settings",settings.toJsonObject());
    		return lObj;
    	}
 

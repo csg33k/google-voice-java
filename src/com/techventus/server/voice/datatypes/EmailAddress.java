@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import gvjava.org.json.JSONArray;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -50,11 +50,12 @@ public class EmailAddress {
 		List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
 		if(settingsJSON.has("emailAddresses")) {
 			try {
-				JSONArray lArray = (JSONArray) settingsJSON.get("emailAddresses");
-				
-				for (int i = 0; i < lArray.length(); i++) {
-					emailAddresses.add(new EmailAddress(lArray.getString(i)));
-				}
+//				JSONArray lArray = settingsJSON.getJSONArray("emailAddresses");
+//				for (int i = 0; i < lArray.length(); i++) {
+//					emailAddresses.add(new EmailAddress(lArray.getString(i)));
+//				}
+				String address = settingsJSON.getString("emailAddresses");
+				emailAddresses.add(new EmailAddress(address));
 			} catch (JSONException e1) {
 				// Nothing - will return empty array at exception
 			}

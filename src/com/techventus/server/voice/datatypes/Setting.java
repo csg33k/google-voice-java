@@ -3,9 +3,9 @@ package com.techventus.server.voice.datatypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import gvjava.org.json.JSONArray;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -27,7 +27,7 @@ public class Setting {
     private String emailNotificationAddress;
     private Greeting[] greetings;
     private String[] groupList;
-    private JSONObject groups;
+    private Group[] groups;
 	private String language;
 	private String primaryDid;
 	private int screenBehavior;
@@ -54,7 +54,7 @@ public class Setting {
 		if(!saveMode || saveMode && settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
 		if(!saveMode || saveMode && settingsJSON.has("greetings")) greetings = Greeting.createArrayFromJsonObject(settingsJSON);
 		if(!saveMode || saveMode && settingsJSON.has("groupList")) groupList = ParsingUtil.jsonStringArrayToStringArray(settingsJSON.getJSONArray("groupList"));
-		if(!saveMode || saveMode && settingsJSON.has("groups")) groups = settingsJSON.getJSONObject("groups");
+		if(!saveMode || saveMode && settingsJSON.has("groups")) groups = Group.createArrayFromJsonObject(settingsJSON.getJSONObject("groups"));
 		if(!saveMode || saveMode && settingsJSON.has("language")) language = settingsJSON.getString("language");
 		if(!saveMode || saveMode && settingsJSON.has("primaryDid")) primaryDid = settingsJSON.getString("primaryDid");
 		if(!saveMode || saveMode && settingsJSON.has("screenBehavior")) screenBehavior = settingsJSON.getInt("screenBehavior");
@@ -96,27 +96,32 @@ public class Setting {
 			settingsO.putOpt("defaultGreetingId", defaultGreetingId);
 			settingsO.putOpt("didInfos", mDidInfos);
 			settingsO.putOpt("directConnect", directConnect);
-			for (int i = 0; i < mDisabledIdList.length; i++) {
-				settingsO.accumulate("disabledIdMap", mDisabledIdList[i].toJsonObject());
+			if(mDisabledIdList!=null) {
+				for (int i = 0; i < mDisabledIdList.length; i++) {
+					settingsO.put("disabledIdMap", mDisabledIdList[i].toJsonObject());
+				}
 			}
 			settingsO.putOpt("doNotDisturb", doNotDisturb);
-			for (int i = 0; i < emailAddresses.length; i++) {
-				settingsO.append("emailAddresses", emailAddresses[i].getAddress());
+			if(emailAddresses!=null) {
+				for (int i = 0; i < emailAddresses.length; i++) {
+					settingsO.accumulate("emailAddresses", emailAddresses[i].getAddress());
+				}
 			}
 			settingsO.putOpt("emailNotificationActive", emailNotificationActive);
 			settingsO.putOpt("emailNotificationAddress", emailNotificationAddress);
 			settingsO.putOpt("greetings", greetings); // An Object Array uses the Bean get Methods - no toJson() needed in Greeting
 			settingsO.putOpt("groupList", groupList);
 			
-			JSONObject groupObject = new JSONObject();
-			JSONArray groupNames = groups.names();
-			if(groupNames!=null && groupNames.length()>0) {
-				for (int i = 0; i < groupNames.length(); i++) {
-					JSONObject oneGroupObject = groups;
-					groupObject.putOpt(groupNames.getString(i), oneGroupObject);
-				}
-			}
-			settingsO.putOpt("groups", groups);
+			settingsO.accumulate("groups", Group.phonesArrayToJsonObject(groups)); 
+			
+//			JSONObject groupObject = new JSONObject();
+//			JSONArray groupNames = groups.names();
+//			if(groupNames!=null && groupNames.length()>0) {
+//				for (int i = 0; i < groupNames.length(); i++) {
+//					JSONObject oneGroupObject = groups;
+//					groupObject.putOpt(groupNames.getString(i), oneGroupObject);
+//				}
+//			}
 			
 			settingsO.putOpt("language", language);
 			settingsO.putOpt("primaryDid", primaryDid);
@@ -244,27 +249,10 @@ public class Setting {
 	/**
 	 * @return the groups
 	 */
-	public JSONObject getGroups() {
+	public Group[] getGroups() {
 		return groups;
 	}
 	
-	public Group[] getGroupsAsArray() {
-		try {
-			return Group.createArrayFromJsonObject(groups);
-		} catch (JSONException e) {
-			//nothing
-			return null;
-		}
-	}
-	
-	public List<Group> getGroupsAsList() {
-		List<Group> lresult = new ArrayList<Group>();
-		Group[] groupArray = getGroupsAsArray();
-		for (int i = 0; i < groupArray.length; i++) {
-			lresult.add(groupArray[i]);
-		}
-		return lresult;
-	}
 
 	/**
 	 * @return the language

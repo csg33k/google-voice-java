@@ -1,6 +1,6 @@
 package com.techventus.server.voice.datatypes;
 
-import org.json.JSONObject;
+import gvjava.org.json.JSONObject;
 
 
 /**

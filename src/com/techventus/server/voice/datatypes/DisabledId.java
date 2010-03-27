@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import gvjava.org.json.JSONArray;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -22,6 +22,10 @@ public class DisabledId {
 	public DisabledId(String pId, boolean pDisabled) {
 		id = pId;
 		disabled = pDisabled;
+	}
+	public DisabledId(JSONObject jsonObject, boolean saveMode) throws JSONException {
+		if(!saveMode || saveMode && jsonObject.has("id")) id = jsonObject.getString("id");
+		if(!saveMode || saveMode && jsonObject.has("disabled")) disabled = jsonObject.getBoolean("disabled");
 	}
 	public String toString() {
 		String ret="{id="+id+";";
@@ -41,19 +45,27 @@ public class DisabledId {
 		}
 		return disabledIds;
 	}
-	public final static List<DisabledId> createListFromJsonObject(JSONObject settingsJSON) { 
+	public final static List<DisabledId> createListFromJsonObject(JSONObject disabledIdMapJSON) throws JSONException { 
 		List<DisabledId> disabledIds = new ArrayList<DisabledId>();
+		JSONArray disabledNames = disabledIdMapJSON.names();
+		for (int i = 0; i < disabledNames.length(); i++) {
+			String id = disabledNames.getString(i);
+			boolean booleanValue = disabledIdMapJSON.getBoolean(id);
+			disabledIds.add(new DisabledId(id,booleanValue));
+		}
+		return disabledIds;
+		/*		
 		if(settingsJSON.has("disabledIdMap")) {
-			JSONObject lObject;
+			JSONArray lArray;
 			try {
-				lObject = (JSONObject) settingsJSON.get("disabledIdMap");
-				JSONArray objectNames = lObject.names();
+				lArray = settingsJSON.getJSONArray("disabledIdMap");
+//				JSONArray objectNames = lArray.names();
 				
-				for (int i = 0; i < objectNames.length(); i++) {
-					String lId = objectNames.getString(i);
+				for (int i = 0; i < lArray.length(); i++) {
+					String lId = lArray.getJSONObject(i).getString(i+"");
 					boolean lDisabled;
 					try {
-						lDisabled = lObject.getBoolean(lId);
+						lDisabled = lArray.getJSONObject(i).getBoolean(lId);
 						disabledIds.add(new DisabledId(lId, lDisabled));
 					} catch (JSONException e) {
 						// Nothing - will not add at exception
@@ -66,10 +78,11 @@ public class DisabledId {
 		}
 		
 		return disabledIds;
+		*/
 	}
 	//TODO dotn create list first, direct transform
-	public final static DisabledId[] createArrayFromJsonObject(JSONObject settingsJSON) { 
-		List<DisabledId> tList = createListFromJsonObject(settingsJSON);
+	public final static DisabledId[] createArrayFromJsonObject(JSONObject settingsJSON) throws JSONException { 
+		List<DisabledId> tList = createListFromJsonObject(settingsJSON.getJSONObject("disabledIdMap"));
 		return (DisabledId[]) tList.toArray(new DisabledId[tList.size()]);
 	}
 	/**
