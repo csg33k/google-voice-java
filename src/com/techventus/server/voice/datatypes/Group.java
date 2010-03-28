@@ -28,12 +28,12 @@ public class Group {
 	private boolean isCustomDirectConnect;
 	private boolean directConnect;
 	private boolean isCustomGreeting;
-	private String greetingId;
+	private int greetingId;
 	
 	public Group(String id, String name, boolean isCustomForwarding,
 			List<DisabledForwardingId> disabledForwardingIds,
 			boolean isCustomDirectConnect, boolean directConnect,
-			boolean isCustomGreeting, String greetingId) {
+			boolean isCustomGreeting, int greetingId) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -48,7 +48,7 @@ public class Group {
 	public Group(String id, String name, boolean isCustomForwarding,
 			DisabledForwardingId[] disabledForwardingIdsNeu,
 			boolean isCustomDirectConnect, boolean directConnect,
-			boolean isCustomGreeting, String greetingId) {
+			boolean isCustomGreeting, int greetingId) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -71,7 +71,7 @@ public class Group {
 		if(!saveMode || saveMode && jsonObject.has("isCustomGreeting")) isCustomGreeting = jsonObject.getBoolean("isCustomGreeting");
 		if(!saveMode || saveMode && jsonObject.has("isCustomDirectConnect")) isCustomDirectConnect = jsonObject.getBoolean("isCustomDirectConnect");
 		if(!saveMode || saveMode && jsonObject.has("directConnect")) directConnect = jsonObject.getBoolean("directConnect");
-		if(!saveMode || saveMode && jsonObject.has("greetingId")) greetingId = jsonObject.getString("greetingId");
+		if(!saveMode || saveMode && jsonObject.has("greetingId")) greetingId = jsonObject.getInt("greetingId");
 		if(!saveMode || saveMode && jsonObject.has("disabledForwardingIds")) {
 			JSONObject disabledForwardingIdsObject = jsonObject.getJSONObject("disabledForwardingIds");
 			disabledForwardingIds = DisabledForwardingId.createDisabledForwardingIdListFromJsonPartResponse(disabledForwardingIdsObject.toString());
@@ -97,7 +97,7 @@ public class Group {
 			boolean isCustomGreeting 		= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"isCustomGreeting\":", ",", false));
 			boolean isCustomDirectConnect 	= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"isCustomDirectConnect\":", ",", false));
 			boolean directConnect 			= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"directConnect\":", ",", false));
-			String greetingId 				= groupsStrings[i].substring(groupsStrings[i].indexOf("\"greetingId\":")+13);
+			int greetingId 					= Integer.parseInt(groupsStrings[i].substring(groupsStrings[i].indexOf("\"greetingId\":")+13));
 			String disabledForwardingIdsStr	= ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"disabledForwardingIds\":{", "!,\"", false);
 			
 			List<DisabledForwardingId> disabledForwardingIds = new ArrayList<DisabledForwardingId>();
@@ -241,7 +241,7 @@ public class Group {
 	/**
 	 * @return the greetingId
 	 */
-	public String getGreetingId() {
+	public int getGreetingId() {
 		return greetingId;
 	}
 
