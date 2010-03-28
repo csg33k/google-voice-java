@@ -63,5 +63,11 @@ public class ActiveForwardingId {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 	
 }

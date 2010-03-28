@@ -1,6 +1,7 @@
 package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gvjava.org.json.JSONArray;
@@ -227,6 +228,13 @@ public class Setting {
 	public Greeting[] getGreetings() {
 		return greetings;
 	}
+	/**
+	 * @return the greetings
+	 */
+	public Greeting[] getGreetingsSorted() {
+		Arrays.sort(greetings);
+		return greetings;
+	}
 
 	/**
 	 * @return the groupList
@@ -329,6 +337,181 @@ public class Setting {
 	 */
 	public boolean isUseDidAsSource() {
 		return useDidAsSource;
+	}
+
+	/**
+	 * @param mActiveForwardingList the mActiveForwardingList to set
+	 */
+	public void setmActiveForwardingList(int[] mActiveForwardingList) {
+		this.mActiveForwardingList = mActiveForwardingList;
+	}
+
+	/**
+	 * @param baseUrl the baseUrl to set
+	 */
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
+
+	/**
+	 * @param credits the credits to set
+	 */
+	public void setCredits(int credits) {
+		this.credits = credits;
+	}
+
+	/**
+	 * @param defaultGreetingId the defaultGreetingId to set
+	 */
+	public void setDefaultGreetingId(int defaultGreetingId) {
+		this.defaultGreetingId = defaultGreetingId;
+	}
+
+	/**
+	 * @param mDidInfos the mDidInfos to set
+	 */
+	public void setmDidInfos(String[] mDidInfos) {
+		this.mDidInfos = mDidInfos;
+	}
+
+	/**
+	 * @param directConnect the directConnect to set
+	 */
+	public void setDirectConnect(boolean directConnect) {
+		this.directConnect = directConnect;
+	}
+
+	/**
+	 * @param mDisabledIdList the mDisabledIdList to set
+	 */
+	public void setmDisabledIdList(DisabledId[] mDisabledIdList) {
+		this.mDisabledIdList = mDisabledIdList;
+	}
+
+	/**
+	 * @param doNotDisturb the doNotDisturb to set
+	 */
+	public void setDoNotDisturb(boolean doNotDisturb) {
+		this.doNotDisturb = doNotDisturb;
+	}
+
+	/**
+	 * @param emailAddresses the emailAddresses to set
+	 */
+	public void setEmailAddresses(EmailAddress[] emailAddresses) {
+		this.emailAddresses = emailAddresses;
+	}
+
+	/**
+	 * @param emailNotificationActive the emailNotificationActive to set
+	 */
+	public void setEmailNotificationActive(boolean emailNotificationActive) {
+		this.emailNotificationActive = emailNotificationActive;
+	}
+
+	/**
+	 * @param emailNotificationAddress the emailNotificationAddress to set
+	 */
+	public void setEmailNotificationAddress(String emailNotificationAddress) {
+		this.emailNotificationAddress = emailNotificationAddress;
+	}
+
+	/**
+	 * @param greetings the greetings to set
+	 */
+	public void setGreetings(Greeting[] greetings) {
+		this.greetings = greetings;
+	}
+
+	/**
+	 * @param groupList the groupList to set
+	 */
+	public void setGroupList(String[] groupList) {
+		this.groupList = groupList;
+	}
+
+	/**
+	 * @param groups the groups to set
+	 */
+	public void setGroups(Group[] groups) {
+		this.groups = groups;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	/**
+	 * @param primaryDid the primaryDid to set
+	 */
+	public void setPrimaryDid(String primaryDid) {
+		this.primaryDid = primaryDid;
+	}
+
+	/**
+	 * @param screenBehavior the screenBehavior to set
+	 */
+	public void setScreenBehavior(int screenBehavior) {
+		this.screenBehavior = screenBehavior;
+	}
+
+	/**
+	 * @param showTranscripts the showTranscripts to set
+	 */
+	public void setShowTranscripts(boolean showTranscripts) {
+		this.showTranscripts = showTranscripts;
+	}
+
+	/**
+	 * @param smsNotifications the smsNotifications to set
+	 */
+	public void setSmsNotifications(String[] smsNotifications) {
+		this.smsNotifications = smsNotifications;
+	}
+
+	/**
+	 * @param smsToEmailActive the smsToEmailActive to set
+	 */
+	public void setSmsToEmailActive(boolean smsToEmailActive) {
+		this.smsToEmailActive = smsToEmailActive;
+	}
+
+	/**
+	 * @param smsToEmailSubject the smsToEmailSubject to set
+	 */
+	public void setSmsToEmailSubject(boolean smsToEmailSubject) {
+		this.smsToEmailSubject = smsToEmailSubject;
+	}
+
+	/**
+	 * @param spam the spam to set
+	 */
+	public void setSpam(int spam) {
+		this.spam = spam;
+	}
+
+	/**
+	 * @param timezone the timezone to set
+	 */
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
+	/**
+	 * @param useDidAsCallerId the useDidAsCallerId to set
+	 */
+	public void setUseDidAsCallerId(boolean useDidAsCallerId) {
+		this.useDidAsCallerId = useDidAsCallerId;
+	}
+
+	/**
+	 * @param useDidAsSource the useDidAsSource to set
+	 */
+	public void setUseDidAsSource(boolean useDidAsSource) {
+		this.useDidAsSource = useDidAsSource;
 	}
 	
 	

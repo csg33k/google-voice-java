@@ -90,6 +90,18 @@ public class DisabledForwardingId {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+	/**
+	 * @param disabled the disabled to set
+	 */
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 	
 	
 }	

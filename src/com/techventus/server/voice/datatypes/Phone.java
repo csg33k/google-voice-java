@@ -7,7 +7,7 @@ import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
-public class Phone{
+public class Phone implements Comparable{
    	//TODO - implement
 	
 	private final static boolean saveMode = false;
@@ -321,6 +321,196 @@ public class Phone{
 	 */
 	public String[] getWeekendTimes() {
 		return weekendTimes;
+	}
+	
+	
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	/**
+	 * @param behaviorOnRedirect the behaviorOnRedirect to set
+	 */
+	public void setBehaviorOnRedirect(int behaviorOnRedirect) {
+		this.behaviorOnRedirect = behaviorOnRedirect;
+	}
+
+	/**
+	 * @param carrier the carrier to set
+	 */
+	public void setCarrier(String carrier) {
+		this.carrier = carrier;
+	}
+
+	/**
+	 * @param customOverrideState the customOverrideState to set
+	 */
+	public void setCustomOverrideState(int customOverrideState) {
+		this.customOverrideState = customOverrideState;
+	}
+
+	/**
+	 * @param dEPRECATEDDisabled the dEPRECATEDDisabled to set
+	 */
+	public void setdEPRECATEDDisabled(boolean dEPRECATEDDisabled) {
+		this.dEPRECATEDDisabled = dEPRECATEDDisabled;
+	}
+
+	/**
+	 * @param enabledForOthers the enabledForOthers to set
+	 */
+	public void setEnabledForOthers(boolean enabledForOthers) {
+		this.enabledForOthers = enabledForOthers;
+	}
+
+	/**
+	 * @param formattedNumber the formattedNumber to set
+	 */
+	public void setFormattedNumber(String formattedNumber) {
+		this.formattedNumber = formattedNumber;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @param incomingAccessNumber the incomingAccessNumber to set
+	 */
+	public void setIncomingAccessNumber(String incomingAccessNumber) {
+		this.incomingAccessNumber = incomingAccessNumber;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param phoneNumber the phoneNumber to set
+	 */
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	/**
+	 * @param policyBitmask the policyBitmask to set
+	 */
+	public void setPolicyBitmask(int policyBitmask) {
+		this.policyBitmask = policyBitmask;
+	}
+
+	/**
+	 * @param redirectToVoicemail the redirectToVoicemail to set
+	 */
+	public void setRedirectToVoicemail(boolean redirectToVoicemail) {
+		this.redirectToVoicemail = redirectToVoicemail;
+	}
+
+	/**
+	 * @param scheduleSet the scheduleSet to set
+	 */
+	public void setScheduleSet(boolean scheduleSet) {
+		this.scheduleSet = scheduleSet;
+	}
+
+	/**
+	 * @param smsEnabled the smsEnabled to set
+	 */
+	public void setSmsEnabled(boolean smsEnabled) {
+		this.smsEnabled = smsEnabled;
+	}
+
+	/**
+	 * @param telephonyVerified the telephonyVerified to set
+	 */
+	public void setTelephonyVerified(boolean telephonyVerified) {
+		this.telephonyVerified = telephonyVerified;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	/**
+	 * @param verified the verified to set
+	 */
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
+
+	/**
+	 * @param voicemailForwardingVerified the voicemailForwardingVerified to set
+	 */
+	public void setVoicemailForwardingVerified(boolean voicemailForwardingVerified) {
+		this.voicemailForwardingVerified = voicemailForwardingVerified;
+	}
+
+	/**
+	 * @param wd the wd to set
+	 */
+	public void setWd(Wd wd) {
+		this.wd = wd;
+	}
+
+	/**
+	 * @param we the we to set
+	 */
+	public void setWe(We we) {
+		this.we = we;
+	}
+
+	/**
+	 * @param weekdayAllDay the weekdayAllDay to set
+	 */
+	public void setWeekdayAllDay(boolean weekdayAllDay) {
+		this.weekdayAllDay = weekdayAllDay;
+	}
+
+	/**
+	 * @param weekdayTimes the weekdayTimes to set
+	 */
+	public void setWeekdayTimes(String[] weekdayTimes) {
+		this.weekdayTimes = weekdayTimes;
+	}
+
+	/**
+	 * @param weekendAllDay the weekendAllDay to set
+	 */
+	public void setWeekendAllDay(boolean weekendAllDay) {
+		this.weekendAllDay = weekendAllDay;
+	}
+
+	/**
+	 * @param weekendTimes the weekendTimes to set
+	 */
+	public void setWeekendTimes(String[] weekendTimes) {
+		this.weekendTimes = weekendTimes;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Object o) {
+		if( id < ((Phone)o).getId() )
+            return -1;
+        if( id > ((Phone)o).getId() )
+            return 1;
+            
+        return 0;
 	}
    	
 	

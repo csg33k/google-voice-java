@@ -123,8 +123,8 @@ public class Group {
 		ret+="isCustomDirectConnect="+isCustomDirectConnect+";";
 		ret+="directConnect="+directConnect+";";
 		ret+="isCustomGreeting="+isCustomGreeting+";";	
-		ret+="greetingId="+greetingId+";";
 		ret+="isCustomForwarding="+isCustomForwarding+";";
+		ret+="greetingId="+greetingId+";";
 		ret+="disabledForwardingIds="+disabledForwardingIds+"}";
 		return ret;
 	}
@@ -141,8 +141,8 @@ public class Group {
 		   	resultO.accumulate("disabledForwardingIds", DisabledForwardingId.arrayToJsonObject(disabledForwardingIds)); 
 		   	resultO.putOpt("isCustomDirectConnect", isCustomDirectConnect);
 		   	resultO.putOpt("directConnect", directConnect);
-		   	resultO.putOpt("isCustomGreeting", isCustomGreeting);
 		   	resultO.putOpt("greetingId", greetingId);
+		   	resultO.putOpt("isCustomGreeting", isCustomGreeting);
 		} catch (JSONException e) {
 			return null;
 		}
@@ -237,12 +237,71 @@ public class Group {
 	public boolean isCustomGreeting() {
 		return isCustomGreeting;
 	}
+	
+	
 
 	/**
 	 * @return the greetingId
 	 */
 	public int getGreetingId() {
 		return greetingId;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param isCustomForwarding the isCustomForwarding to set
+	 */
+	public void setCustomForwarding(boolean isCustomForwarding) {
+		this.isCustomForwarding = isCustomForwarding;
+	}
+
+	/**
+	 * @param disabledForwardingIds the disabledForwardingIds to set
+	 */
+	public void setDisabledForwardingIds(
+			List<DisabledForwardingId> disabledForwardingIds) {
+		this.disabledForwardingIds = disabledForwardingIds;
+	}
+
+	/**
+	 * @param isCustomDirectConnect the isCustomDirectConnect to set
+	 */
+	public void setCustomDirectConnect(boolean isCustomDirectConnect) {
+		this.isCustomDirectConnect = isCustomDirectConnect;
+	}
+
+	/**
+	 * @param directConnect the directConnect to set
+	 */
+	public void setDirectConnect(boolean directConnect) {
+		this.directConnect = directConnect;
+	}
+
+	/**
+	 * @param isCustomGreeting the isCustomGreeting to set
+	 */
+	public void setCustomGreeting(boolean isCustomGreeting) {
+		this.isCustomGreeting = isCustomGreeting;
+	}
+
+	/**
+	 * @param greetingId the greetingId to set
+	 */
+	public void setGreetingId(int greetingId) {
+		this.greetingId = greetingId;
 	}
 
 	//TODO dotn create list first, direct transform

@@ -1,6 +1,7 @@
 package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gvjava.org.json.JSONException;
@@ -31,6 +32,25 @@ public class AllSettings{
    		lObj.put("settings",settings.toJsonObject());
    		return lObj;
    	}
+   	
+   	/**
+   	 * Query disabled status - if id not found, then it returned false, which normally means enabled.
+   	 * @param phoneId
+   	 * @return
+   	 */
+   	public boolean isPhoneDisabled(int phoneId) {
+   		boolean ret = false;
+   		try {
+ 			for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+ 				if(settings.getmDisabledIdList()[i].getId().equals(phoneId+"")) {
+ 					ret = true;
+ 				}
+			}
+ 		} catch (NullPointerException e) {
+ 			ret = false;
+ 		}
+ 		return ret;
+   	}
 
 	/**
 	 * @return the phoneList
@@ -56,6 +76,14 @@ public class AllSettings{
 	public Phone[] getPhones() {
 		return phones;
 	}
+	
+	/**
+	 * @return the phones sorted by their id number
+	 */
+	public Phone[] getPhonesSorted() {
+		Arrays.sort(phones);
+		return phones;
+	}
 
 	/**
 	 * @return the settings
@@ -63,7 +91,29 @@ public class AllSettings{
 	public Setting getSettings() {
 		return settings;
 	}
+
+	/**
+	 * @param phoneList the phoneList to set
+	 */
+	public void setPhoneList(int[] phoneList) {
+		this.phoneList = phoneList;
+	}
+
+	/**
+	 * @param phones the phones to set
+	 */
+	public void setPhones(Phone[] phones) {
+		this.phones = phones;
+	}
+
+	/**
+	 * @param settings the settings to set
+	 */
+	public void setSettings(Setting settings) {
+		this.settings = settings;
+	}
    	
+	
    	
    	
    	/*

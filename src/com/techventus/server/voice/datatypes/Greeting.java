@@ -16,7 +16,7 @@ import com.techventus.server.voice.util.ParsingUtil;
  * @author Tobias Eisentraeger
  *
  */
-public class Greeting {
+public class Greeting implements Comparable {
 	
 	
 	private int id;
@@ -111,19 +111,52 @@ public class Greeting {
 		return name;
 	}
 	
-	
-
 	/**
 	 * @return the jobberName
 	 */
 	public String getJobberName() {
 		return jobberName;
 	}
+	
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param jobberName the jobberName to set
+	 */
+	public void setJobberName(String jobberName) {
+		this.jobberName = jobberName;
+	}
 
 	//TODO dotn create list first, direct transform
 	public final static Greeting[] createArrayFromJsonObject(JSONObject settingsJSON) { 
 		List<Greeting> tList = createListFromJsonObject(settingsJSON);
 		return (Greeting[]) tList.toArray(new Greeting[tList.size()]);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Object o) {
+		if( id < ((Greeting)o).getId() )
+            return -1;
+        if( id > ((Greeting)o).getId() )
+            return 1;
+            
+        return 0;
 	}
 	
 	

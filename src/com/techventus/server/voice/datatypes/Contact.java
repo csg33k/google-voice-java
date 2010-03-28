@@ -80,6 +80,7 @@ public class Contact {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
