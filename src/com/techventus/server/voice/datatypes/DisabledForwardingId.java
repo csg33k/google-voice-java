@@ -3,12 +3,10 @@
  */
 package com.techventus.server.voice.datatypes;
 
-import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -37,7 +35,7 @@ public class DisabledForwardingId {
 			String[] disabledForwardingIdsStrings = jsonPart.split(Pattern.quote(","));
 			for (int j = 0; j < disabledForwardingIdsStrings.length; j++) {			
 				String gId = ParsingUtil.removeUninterestingParts(disabledForwardingIdsStrings[j], "\"", "\"", false);
-				boolean gState = Boolean.parseBoolean(disabledForwardingIdsStrings[j].substring(disabledForwardingIdsStrings[j].indexOf(":")+1));
+				boolean gState = Boolean.parseBoolean(disabledForwardingIdsStrings[j].substring(disabledForwardingIdsStrings[j].indexOf(":")+1,disabledForwardingIdsStrings[j].indexOf("}")));
 				if(gId!=null) {
 					DisabledForwardingId dis = new DisabledForwardingId(gId, gState);
 					disabledForwardingIds.add(dis);
