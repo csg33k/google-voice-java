@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import gvjava.org.json.JSONException;
@@ -12,6 +14,7 @@ import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
+import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
@@ -104,8 +107,10 @@ public class test {
 		System.out.println("6: Change Group settings.");
 		System.out.println("7: Read all settings and print them (cached)");
 		System.out.println("8: Read all settings and print them (uncached)");
-		System.out.println("9: JRead all settings - pure json driven - flat data");
-		System.out.println("10: JRead all settings - pure json driven - actual account data");
+		System.out.println("9: Read all settings - pure json driven - flat data");
+		System.out.println("10: Read all settings - pure json driven - actual account data");
+		System.out.println("11: Update Group Settings");
+		System.out.println("12: Group settings isPhoneEnabled tests");
 		
 		int testNr = 0;
 		try {
@@ -285,6 +290,80 @@ public class test {
 								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
 								System.out.println(settings3.toJsonObject().toString(4));
 								
+							} catch (JSONException e) {
+								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+								e.printStackTrace();
+							}
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 11: // 11: Update Group settings
+							System.out.println("******** Starting Test "+testNr+" ********");
+							try {
+								System.out.println("******** Before ********");
+								
+								AllSettings settings2 = voice.getSettings(false);
+								JSONObject objFromAllSettings = settings2.toJsonObject();
+								System.out.println(objFromAllSettings.toString(4));
+								
+								System.out.println("Choose group to change settings (15)");
+								String groupId = "0";
+								try {
+									groupId = br.readLine();
+								} catch (Exception e) {
+									System.out.println("Error trying to read the choice!"+e.getMessage());
+									System.exit(1);
+								}
+								
+								Group[] groups = voice.getSettings(false).getSettings().getGroups();
+								for (int j = 0; j < groups.length; j++) {
+								/* New Settings
+								"directConnect": true,
+				                "disabledForwardingIds": {"1": true},
+				                "greetingId": 2,
+				                "id": "15",
+				                "isCustomDirectConnect": true,
+				                "isCustomForwarding": true,
+				                "isCustomGreeting": true,	
+								 */
+									if(groups[j].getId().equals(groupId)) {
+										System.out.println("Changing settings for Group: "+groups[j].getName());
+										groups[j].setCustomDirectConnect(true);
+										groups[j].setDirectConnect(true);
+										groups[j].setCustomForwarding(true);
+										List<DisabledForwardingId> disList = new ArrayList<DisabledForwardingId>();
+										disList.add(new DisabledForwardingId("1", true));
+										groups[j].setDisabledForwardingIds(disList);
+										groups[j].setCustomGreeting(true);
+										groups[j].setGreetingId(2);
+										voice.setNewGroupSettings(groups[j]);
+									}
+								}
+								
+								System.out.println("******** After  ********");
+								AllSettings settings3 = voice.getSettings(true);
+								System.out.println(settings3.toJsonObject().toString(4));
+								
+							} catch (JSONException e) {
+								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+								e.printStackTrace();
+							}
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 12: // 12: Group isPhoneEnabled Tests
+							System.out.println("******** Starting Test "+testNr+" ********");
+							try {
+								AllSettings settings3 = voice.getSettings(true);
+								Group[] groups = settings3.getSettings().getGroups();
+								int[] phoneIds = settings3.getPhoneList();
+								for (int j = 0; j < groups.length; j++) {
+									System.out.println("+++ Disabled Phones in "+groups[j].getName()+" +++");
+									for (int j2 = 0; j2 < phoneIds.length; j2++) {
+										System.out.println(phoneIds[j2] + ":" + groups[j].isPhoneDisabled(phoneIds[j2]));
+									}
+
+								}
 							} catch (JSONException e) {
 								System.out.println("Error displaying json:"+e.getLocalizedMessage());
 								e.printStackTrace();
