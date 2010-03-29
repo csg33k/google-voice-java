@@ -3,6 +3,7 @@
  */
 package com.techventus.server.voice.datatypes;
 
+import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
@@ -30,19 +31,35 @@ public class DisabledForwardingId {
 	}
 	public final static List<DisabledForwardingId> createDisabledForwardingIdListFromJsonPartResponse(String jsonPart) { 	
 		List<DisabledForwardingId> disabledForwardingIds = new ArrayList<DisabledForwardingId>();
+		try {
+			String[] disNames = JSONObject.getNames(new JSONObject(jsonPart));
+			for (int i = 0; i < disNames.length; i++) {
+				DisabledForwardingId dis = new DisabledForwardingId(disNames[i], true);
+				disabledForwardingIds.add(dis);
+			}
+		} catch (Exception e) {
+			// nothing on parse error
+		}
+		return disabledForwardingIds;
+		/*
 		if(jsonPart!=null &! jsonPart.equals("")) {
 			jsonPart = jsonPart.replaceAll(",\"", ",#");
 			String[] disabledForwardingIdsStrings = jsonPart.split(Pattern.quote(","));
 			for (int j = 0; j < disabledForwardingIdsStrings.length; j++) {			
-				String gId = ParsingUtil.removeUninterestingParts(disabledForwardingIdsStrings[j], "\"", "\"", false);
-				boolean gState = Boolean.parseBoolean(disabledForwardingIdsStrings[j].substring(disabledForwardingIdsStrings[j].indexOf(":")+1,disabledForwardingIdsStrings[j].indexOf("}")));
-				if(gId!=null) {
-					DisabledForwardingId dis = new DisabledForwardingId(gId, gState);
-					disabledForwardingIds.add(dis);
+				try {
+					String gId = ParsingUtil.removeUninterestingParts(disabledForwardingIdsStrings[j], "\"", "\"", false);
+					boolean gState = Boolean.parseBoolean(disabledForwardingIdsStrings[j].substring(disabledForwardingIdsStrings[j].indexOf(":")+1,disabledForwardingIdsStrings[j].indexOf("}")));
+					if(gId!=null) {
+						DisabledForwardingId dis = new DisabledForwardingId(gId, gState);
+						disabledForwardingIds.add(dis);
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+					// do nothing if exception
 				}
 			}
 		}
 		return disabledForwardingIds;
+		*/
 	}
 	
 	public final static DisabledForwardingId[] createDisabledForwardingIdArrayFromJsonPartResponse(String jsonPart) {

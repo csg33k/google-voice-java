@@ -113,7 +113,7 @@ public class Setting {
 			settingsO.putOpt("greetings", greetings); // An Object Array uses the Bean get Methods - no toJson() needed in Greeting
 			settingsO.putOpt("groupList", groupList);
 			
-			settingsO.accumulate("groups", Group.phonesArrayToJsonObject(groups)); 
+			settingsO.accumulate("groups", Group.groupsArrayToJsonObject(groups)); 
 			
 //			JSONObject groupObject = new JSONObject();
 //			JSONArray groupNames = groups.names();

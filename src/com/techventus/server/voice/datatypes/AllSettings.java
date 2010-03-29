@@ -60,6 +60,14 @@ public class AllSettings{
 	}
 	
 	/**
+	 * @return the phoneList sorted
+	 */
+	public int[] getPhoneListSorted() {
+		Arrays.sort(phoneList);
+		return phoneList;
+	}
+	
+	/**
 	 * @return the phoneList as List<Integer>
 	 */
 	public List<Integer> getPhoneListAsList() {

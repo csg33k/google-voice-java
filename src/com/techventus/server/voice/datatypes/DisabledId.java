@@ -94,6 +94,15 @@ public class DisabledId {
 	public String getId() {
 		return id;
 	}
+	public int getIdAsInt() {
+		int ret;
+		try {
+			ret = Integer.parseInt(id);
+		} catch (Exception e) {
+			ret = -1;
+		}
+		return ret;
+	}
 	public boolean isDisabled() {
 		return disabled;
 	}
