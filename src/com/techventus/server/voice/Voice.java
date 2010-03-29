@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -1021,6 +1022,65 @@ public class Voice {
 
 		return postSettings(requestURL, paraString);
 	}
+	
+	/**
+	 * Applies the settings for this group
+	 * @param group 
+	 * @return
+	 * @throws IOException
+	 */
+	public String setNewGroupSettings(Group group) throws IOException {
+		URL requestURL = new URL(groupsSettingsURLString);
+
+		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
+			+ URLEncoder.encode(authToken, "UTF-8");
+		
+		// 1=true 0=false 
+		int isCustomGreeting = 0;
+		if(group.isCustomGreeting()) {
+			isCustomGreeting = 1;
+		}
+		paraString += "&" + URLEncoder.encode("isCustomGreeting", "UTF-8") + "="
+			+ URLEncoder.encode(isCustomGreeting+"", "UTF-8");
+		
+		int greetingId = group.getGreetingId();
+		paraString += "&" + URLEncoder.encode("greetingId", "UTF-8") + "="
+			+ URLEncoder.encode(greetingId+"", "UTF-8");
+		
+		for (int i = 0; i < group.getDisabledForwardingIds().size(); i++) {
+			paraString += "&" + URLEncoder.encode("disabledPhoneIds", "UTF-8") + "="
+				+ URLEncoder.encode(group.getDisabledForwardingIds().get(i).getId(), "UTF-8");
+		}
+		
+		int directConnect = 0;
+		if(group.isDirectConnect()) {
+			directConnect = 1;
+		}
+		paraString += "&" + URLEncoder.encode("directConnect", "UTF-8") + "="
+			+ URLEncoder.encode(directConnect+"", "UTF-8");
+		
+		int isCustomDirectConnect = 0;
+		if(group.isCustomDirectConnect()) {
+			isCustomDirectConnect = 1;
+		}
+		paraString += "&" + URLEncoder.encode("isCustomDirectConnect", "UTF-8") + "="
+			+ URLEncoder.encode(isCustomDirectConnect+"", "UTF-8");
+		
+		int isCustomForwarding = 0;
+		if(group.isCustomForwarding()) {
+			isCustomForwarding = 1;
+		}
+		paraString += "&" + URLEncoder.encode("isCustomForwarding", "UTF-8") + "="
+			+ URLEncoder.encode(isCustomForwarding+"", "UTF-8");
+		
+		paraString += "&" + URLEncoder.encode("id", "UTF-8") + "="
+			+ URLEncoder.encode(group.getId(), "UTF-8");
+		
+		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
+				+ URLEncoder.encode(rnrSEE, "UTF-8");
+
+		return postSettings(requestURL, paraString);
+	}
 
 	/**
 	 * Posts a settings change
@@ -1273,4 +1333,6 @@ public class Voice {
 		}
 		return false;
 	}
+
+	
 }
