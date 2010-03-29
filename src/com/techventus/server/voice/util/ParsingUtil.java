@@ -32,9 +32,10 @@ public abstract class ParsingUtil {
 	 * @return
 	 */
 	public static final String removeUninterestingParts(String text, String startBorder, String endBorder, boolean includeBorders) {
-		String ret;
-		if(text!=null&&startBorder!=null&&endBorder!=null&&(text.indexOf(startBorder)!=-1)&&(text.indexOf(endBorder)!=-1) ) {
-			try {
+		String ret="";
+		try {
+			if(text!=null&&startBorder!=null&&endBorder!=null&&(text.indexOf(startBorder)!=-1)&&(text.indexOf(endBorder)!=-1) ) {
+				
 				if(includeBorders) {
 					text = text.substring(text.indexOf(startBorder));
 					if(text!=null) {
@@ -50,15 +51,16 @@ public abstract class ParsingUtil {
 						ret = null;
 					}
 				}
-			} catch (Exception e) {
-				System.out.println("Exception "+e.getMessage());
-				System.out.println("Begin:"+startBorder);
-				System.out.println("End:"+endBorder);
-				System.out.println("Text:"+text);
-				e.printStackTrace();
+			
+			} else {
 				ret = null;
 			}
-		} else {
+		} catch (Exception e) {
+			System.out.println("Exception "+e.getMessage());
+			System.out.println("Begin:"+startBorder);
+			System.out.println("End:"+endBorder);
+			System.out.println("Text:"+text);
+			e.printStackTrace();
 			ret = null;
 		}
 		return ret;
