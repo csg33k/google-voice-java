@@ -48,11 +48,13 @@ public class DisabledId {
 	public final static List<DisabledId> createListFromJsonObject(JSONObject disabledIdMapJSON) throws JSONException { 
 		List<DisabledId> disabledIds = new ArrayList<DisabledId>();
 		JSONArray disabledNames = disabledIdMapJSON.names();
-		for (int i = 0; i < disabledNames.length(); i++) {
-			String id = disabledNames.getString(i);
-			boolean booleanValue = disabledIdMapJSON.getBoolean(id);
-			disabledIds.add(new DisabledId(id,booleanValue));
-		}
+		if(disabledNames!=null) {
+			for (int i = 0; i < disabledNames.length(); i++) {
+				String id = disabledNames.getString(i);
+				boolean booleanValue = disabledIdMapJSON.getBoolean(id);
+				disabledIds.add(new DisabledId(id,booleanValue));
+			}
+		} // if null, then no phones are disabled.
 		return disabledIds;
 		/*		
 		if(settingsJSON.has("disabledIdMap")) {

@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
 /**
- *
+ * TODO support multiple email adresses, since its an array (but usually only has one address in there)
  */
 public class EmailAddress {
 	String address;

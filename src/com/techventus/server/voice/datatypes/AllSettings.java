@@ -41,11 +41,16 @@ public class AllSettings{
    	public boolean isPhoneDisabled(int phoneId) {
    		boolean ret = false;
    		try {
- 			for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
- 				if(settings.getmDisabledIdList()[i].getId().equals(phoneId+"")) {
- 					ret = true;
- 				}
-			}
+ 			if(settings.getmDisabledIdList()!=null) {
+	   			for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+	 				if(settings.getmDisabledIdList()[i].getId().equals(phoneId+"")) {
+	 					ret = true;
+	 				}
+				}
+ 			} else {
+ 				// list is empty, we will return false
+ 				ret = false;
+ 			}
  		} catch (NullPointerException e) {
  			ret = false;
  		}

@@ -355,11 +355,16 @@ public class Group {
    	public boolean isPhoneDisabled(int phoneId) {
    		boolean ret = false;
    		try {
- 			for (int i = 0; i < disabledForwardingIds.size(); i++) {
- 				if(disabledForwardingIds.get(i).getId().equals(phoneId+"")) {
- 					ret = true;
- 				}
-			}
+ 			if(disabledForwardingIds!=null) {
+	   			for (int i = 0; i < disabledForwardingIds.size(); i++) {
+	 				if(disabledForwardingIds.get(i).getId().equals(phoneId+"")) {
+	 					ret = true;
+	 				}
+				}
+ 			} else {
+ 				// list is null, so we return false
+ 				ret = false;
+ 			}
  		} catch (NullPointerException e) {
  			ret = false;
  		}

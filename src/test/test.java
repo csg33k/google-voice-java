@@ -19,7 +19,6 @@ import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
-import com.techventus.server.voice.datatypes.Settings;
 import com.techventus.server.voice.util.ParsingUtil;
 
 public class test {
@@ -267,6 +266,13 @@ public class test {
 								System.out.println("******* Parsed back and forth ******");
 								AllSettings settings2 = new AllSettings(jsonData);
 								System.out.println(settings2.toJsonObject().toString(4));
+								
+								System.out.println("******* Creating new AllSettings from old JSON ******");
+								AllSettings settings4 = new AllSettings(settings2.toJsonObject().toString());
+								System.out.println(settings4.toJsonObject().toString(4));
+								System.out.println("1:"+settings4.isPhoneDisabled(1));
+								System.out.println("2:"+settings4.isPhoneDisabled(2));
+								System.out.println("3:"+settings4.isPhoneDisabled(4));
 							} catch (JSONException e) {
 								System.out.println("Error displaying json:"+e.getLocalizedMessage());
 								e.printStackTrace();

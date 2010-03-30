@@ -101,12 +101,16 @@ public class Setting {
 				for (int i = 0; i < mDisabledIdList.length; i++) {
 					settingsO.put("disabledIdMap", mDisabledIdList[i].toJsonObject());
 				}
+			} else {  
+				// need to put this "disabledIdMap": {}
 			}
 			settingsO.putOpt("doNotDisturb", doNotDisturb);
 			if(emailAddresses!=null) {
 				for (int i = 0; i < emailAddresses.length; i++) {
 					settingsO.accumulate("emailAddresses", emailAddresses[i].getAddress());
 				}
+			} else {
+				// need to put this "emailAddresses": {}
 			}
 			settingsO.putOpt("emailNotificationActive", emailNotificationActive);
 			settingsO.putOpt("emailNotificationAddress", emailNotificationAddress);
