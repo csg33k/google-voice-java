@@ -7,7 +7,7 @@ import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
-public class Phone implements Comparable{
+public class Phone implements Comparable<Phone>{
    	//TODO - implement
 	
 	private final static boolean saveMode = false;
@@ -59,7 +59,15 @@ public class Phone implements Comparable{
 	   	if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
 	   	if(!saveMode || saveMode && phonesJSON.has("policyBitmask")) policyBitmask = phonesJSON.getInt("policyBitmask");
 	   	if(!saveMode || saveMode && phonesJSON.has("redirectToVoicemail")) redirectToVoicemail = phonesJSON.getBoolean("redirectToVoicemail");
-	   	if(!saveMode || saveMode && phonesJSON.has("scheduleSet")) scheduleSet = phonesJSON.getBoolean("scheduleSet");
+	   	if(!saveMode || saveMode && phonesJSON.has("scheduleSet")) {
+		   	try {
+		   		// if not set, this value is "false", but if active it's 1 !!
+		   		 scheduleSet = phonesJSON.getBoolean("scheduleSet");
+		   	} catch (JSONException jsE) {
+		   		int positive = phonesJSON.getInt("scheduleSet");
+		   		if(positive==1) scheduleSet = true;
+		   	} 
+	   	}
 	   	if(!saveMode || saveMode && phonesJSON.has("smsEnabled")) smsEnabled = phonesJSON.getBoolean("smsEnabled");
 	   	if(!saveMode || saveMode && phonesJSON.has("telephonyVerified")) telephonyVerified = phonesJSON.getBoolean("telephonyVerified");
 	   	if(!saveMode || saveMode && phonesJSON.has("type")) type = phonesJSON.getInt("type");
@@ -116,7 +124,12 @@ public class Phone implements Comparable{
 		   	resultO.putOpt("phoneNumber", phoneNumber);
 		   	resultO.putOpt("policyBitmask", policyBitmask);
 		   	resultO.putOpt("redirectToVoicemail", redirectToVoicemail);
-		   	resultO.putOpt("scheduleSet", scheduleSet);
+		   	//Google json expects false or 1
+		   	if(scheduleSet) {
+		   		resultO.putOpt("scheduleSet", 1);
+		   	} else {
+		   		resultO.putOpt("scheduleSet", false);
+		   	}
 		   	resultO.putOpt("smsEnabled", smsEnabled);
 		   	resultO.putOpt("telephonyVerified", telephonyVerified);
 		   	resultO.putOpt("type", type);
@@ -504,10 +517,10 @@ public class Phone implements Comparable{
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Object o) {
-		if( id < ((Phone)o).getId() )
+	public int compareTo(Phone o) {
+		if( id < o.getId() )
             return -1;
-        if( id > ((Phone)o).getId() )
+        if( id > o.getId() )
             return 1;
             
         return 0;

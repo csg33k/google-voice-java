@@ -25,6 +25,10 @@ public class EmailAddress {
 		String ret="{address="+address+"}";	
 		return ret;
 	}
+	public EmailAddress(JSONObject phonesJSON) throws JSONException {
+		if(phonesJSON.has("emailAddresses")) address = phonesJSON.getString("emailAddresses");
+	}
+		
 	public final static List<EmailAddress> createEmailAddressListFromJsonPartResponse(String jsonPart) { 
 		List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
 		if(jsonPart!=null &! jsonPart.equals("")) {
@@ -39,7 +43,7 @@ public class EmailAddress {
 	}
 
 	public String toJson() {
-		return "\""+address+"\"";
+		return ""+address+"";
 	}
 	/**
 	 * 
