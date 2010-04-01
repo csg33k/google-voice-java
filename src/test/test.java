@@ -17,6 +17,7 @@ import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
+import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.util.ParsingUtil;
@@ -112,6 +113,8 @@ public class test {
 		System.out.println("10: Read all settings - pure json driven - actual account data");
 		System.out.println("11: Update Group Settings");
 		System.out.println("12: Group settings isPhoneEnabled tests");
+		System.out.println("13: List Default Phones and Enabled/Disabled Setting");
+		
 		
 		int testNr = 0;
 		try {
@@ -377,6 +380,32 @@ public class test {
 								e.printStackTrace();
 							}
 							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+							
+						case 13: // 13: List Default Phones and Enabled/Disabled Setting
+							System.out.println("*********Starting Test "+testNr+" *******");
+							
+							AllSettings settings3 = voice.getSettings(true);
+							List<Integer> phoneList =settings3.getPhoneListAsList();
+							Phone[] actualPhoneArray = settings3.getPhones();
+							for(Integer phoneint:phoneList){
+								inner: for(int ig=0;ig<actualPhoneArray.length;ig++){
+											if(actualPhoneArray[ig].getId()==phoneint){
+												System.out.println(actualPhoneArray[ig].getId()+ " "+actualPhoneArray[ig].getName()+" enabled:"+!settings3.isPhoneDisabled(actualPhoneArray[ig].getId()));
+												break inner;
+											}
+								}
+							}
+							
+							
+//							Group[] groupAr = settings3.getSettings().getGroups()
+//							for(String group:groupAr){
+//								settings3.getSettings()
+//							}
+//							
+//							
+//							settings3.getSettings().getGroups()[0].
+//							}
 							break;
 	
 						default: 						
