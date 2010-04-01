@@ -42,7 +42,8 @@ public class test {
 		} catch (Exception e) {
 			System.out.println("Could not read the testProps, falling back to input. ("+e.getMessage()+")");
 			System.out.println("Enter Your Google Voice Username, eg user@gmail.com:");
-
+				//Added this line, otherwise fails all tests.
+				connectOnStartup = true;
 			try {
 				userName = br.readLine();
 			} catch (IOException ioe) {
