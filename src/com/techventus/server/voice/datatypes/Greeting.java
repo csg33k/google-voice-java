@@ -16,7 +16,7 @@ import com.techventus.server.voice.util.ParsingUtil;
  * @author Tobias Eisentraeger
  *
  */
-public class Greeting implements Comparable {
+public class Greeting implements Comparable<Greeting> {
 	
 	
 	private int id;
@@ -150,10 +150,10 @@ public class Greeting implements Comparable {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Object o) {
-		if( id < ((Greeting)o).getId() )
+	public int compareTo(Greeting o) {
+		if( id < (o.getId() ))
             return -1;
-        if( id > ((Greeting)o).getId() )
+        if( id > (o.getId() ))
             return 1;
             
         return 0;
