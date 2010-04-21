@@ -2,7 +2,9 @@ package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
@@ -21,7 +23,7 @@ public class Setting {
 	private int defaultGreetingId;
 	private String[] mDidInfos;
     private boolean directConnect;
-    private DisabledId[] mDisabledIdList;
+    private DisabledId[] mDisabledIdMap;
     private boolean doNotDisturb;
     private EmailAddress[] emailAddresses;
     private boolean emailNotificationActive;
@@ -48,7 +50,7 @@ public class Setting {
 		if(!saveMode || saveMode && settingsJSON.has("defaultGreetingId")) defaultGreetingId = settingsJSON.getInt("defaultGreetingId");
 		if(!saveMode || saveMode && settingsJSON.has("didInfos")) mDidInfos = ParsingUtil.jsonStringArrayToStringArray(settingsJSON.getJSONArray("didInfos"));
 		if(!saveMode || saveMode && settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
-		if(!saveMode || saveMode && settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createArrayFromJsonObject(settingsJSON);
+		if(!saveMode || saveMode && settingsJSON.has("disabledIdMap")) mDisabledIdMap = DisabledId.createArrayFromJsonObject(settingsJSON);
 		if(!saveMode || saveMode && settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
 		if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) emailAddresses = EmailAddress.createArrayFromJsonObject(settingsJSON);
 		if(!saveMode || saveMode && settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
@@ -97,10 +99,12 @@ public class Setting {
 			settingsO.putOpt("defaultGreetingId", defaultGreetingId);
 			settingsO.putOpt("didInfos", mDidInfos);
 			settingsO.putOpt("directConnect", directConnect);
-			if(mDisabledIdList!=null) {
-				for (int i = 0; i < mDisabledIdList.length; i++) {
-					settingsO.put("disabledIdMap", mDisabledIdList[i].toJsonObject());
+			if(mDisabledIdMap!=null) {
+				Map<String,Boolean> disMap = new HashMap<String,Boolean>();
+				for (DisabledId disId : mDisabledIdMap) {
+					disMap.put(disId.getId(), disId.isDisabled());
 				}
+				settingsO.putOpt("disabledIdMap", disMap);
 			} else {  
 				// need to put this "disabledIdMap": {}
 			}
@@ -192,10 +196,10 @@ public class Setting {
 	}
 
 	/**
-	 * @return the mDisabledIdList
+	 * @return the mDisabledIdMap
 	 */
 	public DisabledId[] getmDisabledIdList() {
-		return mDisabledIdList;
+		return mDisabledIdMap;
 	}
 
 	/**
@@ -386,10 +390,10 @@ public class Setting {
 	}
 
 	/**
-	 * @param mDisabledIdList the mDisabledIdList to set
+	 * @param mDisabledIdMap the mDisabledIdMap to set
 	 */
 	public void setmDisabledIdList(DisabledId[] mDisabledIdList) {
-		this.mDisabledIdList = mDisabledIdList;
+		this.mDisabledIdMap = mDisabledIdList;
 	}
 
 	/**

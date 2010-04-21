@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
@@ -42,35 +43,27 @@ public class EmailAddress {
 	}
 
 	public String toJson() {
-		return ""+address+"";
+		return address;
 	}
-	/**
-	 * 
-	 * @param settingsJSON
-	 * @return
-	 */
-	public final static List<EmailAddress> createListFromJsonObject(JSONObject settingsJSON) { 
-		List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
-		if(settingsJSON.has("emailAddresses")) {
-			try {
-//				JSONArray lArray = settingsJSON.getJSONArray("emailAddresses");
-//				for (int i = 0; i < lArray.length(); i++) {
-//					emailAddresses.add(new EmailAddress(lArray.getString(i)));
-//				}
-				String address = settingsJSON.getString("emailAddresses");
-				emailAddresses.add(new EmailAddress(address));
-			} catch (JSONException e1) {
-				// Nothing - will return empty array at exception
-			}
 
-		}
-		
-		return emailAddresses;
-	}
-	//TODO dotn create list first, direct transform
 	public final static EmailAddress[] createArrayFromJsonObject(JSONObject settingsJSON) { 
-		List<EmailAddress> tList = createListFromJsonObject(settingsJSON);
-		return (EmailAddress[]) tList.toArray(new EmailAddress[tList.size()]);
+		JSONArray addresses;
+		EmailAddress[] ret;
+		try {
+			addresses = settingsJSON.getJSONArray("emailAddresses");
+			ret = new EmailAddress[addresses.length()];
+			for (int i = 0; i < addresses.length(); i++) {
+				ret[i] = new EmailAddress(addresses.getString(i));
+			}
+		} catch (JSONException e) {
+			try {
+				String lAddress = settingsJSON.getString("emailAddresses");
+				ret = new EmailAddress[]{new EmailAddress(lAddress)};
+			} catch (JSONException e2) {
+				ret = new EmailAddress[0];
+			}
+		}
+		return ret;
 	}
 	/**
 	 * @return the address

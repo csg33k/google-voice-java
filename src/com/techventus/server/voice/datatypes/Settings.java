@@ -83,7 +83,7 @@ public class Settings {
 					if(!saveMode || saveMode && settingsJSON.has("directConnect")) directConnect =  settingsJSON.getBoolean("directConnect");
 					if(!saveMode || saveMode && settingsJSON.has("disabledIdMap")) mDisabledIdList = DisabledId.createListFromJsonObject(settingsJSON);
 					if(!saveMode || saveMode && settingsJSON.has("doNotDisturb")) doNotDisturb =  settingsJSON.getBoolean("doNotDisturb");
-					if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
+					//if(!saveMode || saveMode && settingsJSON.has("emailAddresses")) mEmailAddressList = EmailAddress.createListFromJsonObject(settingsJSON);
 					if(!saveMode || saveMode && settingsJSON.has("emailNotificationActive")) emailNotificationActive =  settingsJSON.getBoolean("emailNotificationActive");
 					if(!saveMode || saveMode && settingsJSON.has("emailNotificationAddress")) emailNotificationAddress = settingsJSON.getString("emailNotificationAddress");
 					if(!saveMode || saveMode && settingsJSON.has("greetings")) mVoicemailGreetingsList = Greeting.createListFromJsonObject(settingsJSON);

@@ -61,11 +61,13 @@ public class Phone implements Comparable<Phone>{
 	   	if(!saveMode || saveMode && phonesJSON.has("redirectToVoicemail")) redirectToVoicemail = phonesJSON.getBoolean("redirectToVoicemail");
 	   	if(!saveMode || saveMode && phonesJSON.has("scheduleSet")) {
 		   	try {
-		   		// if not set, this value is "false", but if active it's 1 !!
+		   		// if not set, this value is "false", but if active it's 1 !! - this is not true... maybe
 		   		 scheduleSet = phonesJSON.getBoolean("scheduleSet");
 		   	} catch (JSONException jsE) {
-		   		int positive = phonesJSON.getInt("scheduleSet");
-		   		if(positive==1) scheduleSet = true;
+//		   		int positive = phonesJSON.getInt("scheduleSet");
+//		   		if(positive==1) scheduleSet = true;
+		   		// we will just set false on error
+		   		scheduleSet = false;
 		   	} 
 	   	}
 	   	if(!saveMode || saveMode && phonesJSON.has("smsEnabled")) smsEnabled = phonesJSON.getBoolean("smsEnabled");
@@ -124,12 +126,13 @@ public class Phone implements Comparable<Phone>{
 		   	resultO.putOpt("phoneNumber", phoneNumber);
 		   	resultO.putOpt("policyBitmask", policyBitmask);
 		   	resultO.putOpt("redirectToVoicemail", redirectToVoicemail);
-		   	//Google json expects false or 1
-		   	if(scheduleSet) {
-		   		resultO.putOpt("scheduleSet", 1);
-		   	} else {
-		   		resultO.putOpt("scheduleSet", false);
-		   	}
+		   	//Google json expects false or 1 - not anymore
+//		   	if(scheduleSet) {
+//		   		resultO.putOpt("scheduleSet", 1);
+//		   	} else {
+//		   		resultO.putOpt("scheduleSet", false);
+//		   	}
+		   	resultO.putOpt("scheduleSet", scheduleSet);
 		   	resultO.putOpt("smsEnabled", smsEnabled);
 		   	resultO.putOpt("telephonyVerified", telephonyVerified);
 		   	resultO.putOpt("type", type);

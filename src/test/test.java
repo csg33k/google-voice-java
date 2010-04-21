@@ -274,9 +274,6 @@ public class test {
 								System.out.println("******* Creating new AllSettings from old JSON ******");
 								AllSettings settings4 = new AllSettings(settings2.toJsonObject().toString());
 								System.out.println(settings4.toJsonObject().toString(4));
-								System.out.println("1:"+settings4.isPhoneDisabled(1));
-								System.out.println("2:"+settings4.isPhoneDisabled(2));
-								System.out.println("3:"+settings4.isPhoneDisabled(4));
 							} catch (JSONException e) {
 								System.out.println("Error displaying json:"+e.getLocalizedMessage());
 								e.printStackTrace();
