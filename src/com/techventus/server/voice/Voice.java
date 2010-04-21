@@ -301,10 +301,10 @@ public class Voice {
 	 * returns all users settings - lazy
 	 * @param forceUpdate
 	 * @return
-	 * @throws IOException
+	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	public AllSettings getSettings(boolean forceUpdate) throws IOException, JSONException {
+	public AllSettings getSettings(boolean forceUpdate) throws JSONException, IOException {
 		if(settings==null || forceUpdate) {
 			if(isLoggedIn()==false || forceUpdate) {
 				login();
@@ -318,7 +318,11 @@ public class Voice {
 			if(PRINT_TO_CONSOLE) System.out.println("Fetching Settings.");
 			// remove html overhead
 			String lJson = ParsingUtil.removeUninterestingParts(get(groupsInfoURLString), "<json><![CDATA[", "]]></json>", false);
-			settings = new AllSettings(lJson);
+			try {
+				settings = new AllSettings(lJson);
+			} catch (JSONException e) {
+				throw new JSONException(e.getMessage()+lJson);
+			}
 		}
 		return settings;
 	}
