@@ -77,6 +77,12 @@ public abstract class ParsingUtil {
 		return s;
 	}
 	
+	/**
+	 * Json int array to int array.
+	 * 
+	 * @param array the array
+	 * @return the int[]
+	 */
 	public static final int[] jsonIntArrayToIntArray(JSONArray array) {
 		int[] result = new int[array.length()];
 		for (int i = 0; i < array.length(); i++) {
@@ -89,6 +95,12 @@ public abstract class ParsingUtil {
 		return result;
 	}
 	
+	/**
+	 * Json string array to string array.
+	 * 
+	 * @param array the array
+	 * @return the string[]
+	 */
 	public static final String[] jsonStringArrayToStringArray(JSONArray array) {
 		String[] result = new String[array.length()];
 		for (int i = 0; i < array.length(); i++) {
@@ -101,6 +113,15 @@ public abstract class ParsingUtil {
 		return result;
 	}
 	
+	/**
+	 * Json string array to string list.
+	 * 
+	 * @param settingsJSON the settings json
+	 * @param stringList the string list
+	 * @param key the key
+	 * @return the list
+	 * @throws JSONException the jSON exception
+	 */
 	public static final List<String> jsonStringArrayToStringList(JSONObject settingsJSON, List<String> stringList, String key) throws JSONException {
 		stringList = new ArrayList<String>();
 		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
@@ -109,7 +130,17 @@ public abstract class ParsingUtil {
 		return stringList;
 	}
 	
+	/**
+	 * Converts a Json Integer array to an ArrayList of Integers.
+	 * 
+	 * @param settingsJSON the settings json
+	 * @param integerList the integer list
+	 * @param key the key corresponding to the JSON formatted integer array
+	 * @return the list
+	 * @throws JSONException the jSON exception
+	 */
 	public static final List<Integer> jsonIntArrayToIntegerList(JSONObject settingsJSON, List<Integer> integerList, String key) throws JSONException {
+		//TODO Why are we taking integerList as input, if we replace with new one?
 		integerList = new ArrayList<Integer>();
 		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
 			integerList.add(((JSONArray) settingsJSON.get(key)).getInt(i));
@@ -117,6 +148,13 @@ public abstract class ParsingUtil {
 		return integerList;
 	}
 	
+	/**
+	 * String list to JSON array.
+	 * 
+	 * @param stringList the string list input
+	 * @return the JSON array
+	 * @throws JSONException the JSON exception
+	 */
 	public static final JSONArray stringListToJsonArray(List<String> stringList) throws JSONException {	
 		String[] lArray = (String[]) stringList.toArray(new String[stringList.size()]);
 		return new JSONArray(lArray);
