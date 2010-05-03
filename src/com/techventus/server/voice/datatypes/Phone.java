@@ -10,7 +10,7 @@ import com.techventus.server.voice.util.ParsingUtil;
 public class Phone implements Comparable<Phone>{
    	//TODO - implement
 	
-	private final static boolean saveMode = false;
+	private boolean saveMode;
 	
 	private boolean active;
    	private int behaviorOnRedirect;
@@ -44,22 +44,38 @@ public class Phone implements Comparable<Phone>{
    		this.phoneNumber = phoneNumber;
    	}
    	
+   	/**
+	 * 
+	 * saveMode is off
+	 * 
+	 * @param phonesJSON
+	 * 
+	 */
    	public Phone(JSONObject phonesJSON) throws JSONException {
-		if(!saveMode || saveMode && phonesJSON.has("id")) id = phonesJSON.getInt("id");
-		if(!saveMode || saveMode && phonesJSON.has("name")) name = phonesJSON.getString("name");
-		if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
-		if(!saveMode || saveMode && phonesJSON.has("active")) active = phonesJSON.getBoolean("active");
-	   	if(!saveMode || saveMode && phonesJSON.has("behaviorOnRedirect")) behaviorOnRedirect = phonesJSON.getInt("behaviorOnRedirect");
-	   	if(!saveMode || saveMode && phonesJSON.has("carrier")) carrier = phonesJSON.getString("carrier");
-	   	if(!saveMode || saveMode && phonesJSON.has("customOverrideState")) customOverrideState = phonesJSON.getInt("customOverrideState");
-	   	if(!saveMode || saveMode && phonesJSON.has("dEPRECATEDDisabled")) dEPRECATEDDisabled = phonesJSON.getBoolean("dEPRECATEDDisabled");
-	   	if(!saveMode || saveMode && phonesJSON.has("enabledForOthers")) enabledForOthers = phonesJSON.getBoolean("enabledForOthers");
-	   	if(!saveMode || saveMode && phonesJSON.has("formattedNumber")) formattedNumber = phonesJSON.getString("formattedNumber");
-	   	if(!saveMode || saveMode && phonesJSON.has("incomingAccessNumber")) incomingAccessNumber = phonesJSON.getString("incomingAccessNumber");
-	   	if(!saveMode || saveMode && phonesJSON.has("phoneNumber")) phoneNumber = phonesJSON.getString("phoneNumber");
-	   	if(!saveMode || saveMode && phonesJSON.has("policyBitmask")) policyBitmask = phonesJSON.getInt("policyBitmask");
-	   	if(!saveMode || saveMode && phonesJSON.has("redirectToVoicemail")) redirectToVoicemail = phonesJSON.getBoolean("redirectToVoicemail");
-	   	if(!saveMode || saveMode && phonesJSON.has("scheduleSet")) {
+   		this(phonesJSON, false);
+   	}
+   	
+   	/**
+	 * 
+	 * @param phonesJSON
+	 * @param saveMode - check if each key exists before trying to parse it
+	 */
+   	public Phone(JSONObject phonesJSON, boolean pSaveMode) throws JSONException {
+		if(!saveMode || (saveMode && phonesJSON.has("id")) ) id = phonesJSON.getInt("id");
+		if(!saveMode || (saveMode && phonesJSON.has("name")) ) name = phonesJSON.getString("name");
+		if(!saveMode || (saveMode && phonesJSON.has("phoneNumber")) ) phoneNumber = phonesJSON.getString("phoneNumber");
+		if(!saveMode || (saveMode && phonesJSON.has("active")) ) active = phonesJSON.getBoolean("active");
+	   	if(!saveMode || (saveMode && phonesJSON.has("behaviorOnRedirect")) ) behaviorOnRedirect = phonesJSON.getInt("behaviorOnRedirect");
+	   	if(!saveMode || (saveMode && phonesJSON.has("carrier")) ) carrier = phonesJSON.getString("carrier");
+	   	if(!saveMode || (saveMode && phonesJSON.has("customOverrideState")) ) customOverrideState = phonesJSON.getInt("customOverrideState");
+	   	if(!saveMode || (saveMode && phonesJSON.has("dEPRECATEDDisabled")) ) dEPRECATEDDisabled = phonesJSON.getBoolean("dEPRECATEDDisabled");
+	   	if(!saveMode || (saveMode && phonesJSON.has("enabledForOthers")) ) enabledForOthers = phonesJSON.getBoolean("enabledForOthers");
+	   	if(!saveMode || (saveMode && phonesJSON.has("formattedNumber")) ) formattedNumber = phonesJSON.getString("formattedNumber");
+	   	if(!saveMode || (saveMode && phonesJSON.has("incomingAccessNumber")) ) incomingAccessNumber = phonesJSON.getString("incomingAccessNumber");
+	   	if(!saveMode || (saveMode && phonesJSON.has("phoneNumber")) ) phoneNumber = phonesJSON.getString("phoneNumber");
+	   	if(!saveMode || (saveMode && phonesJSON.has("policyBitmask")) ) policyBitmask = phonesJSON.getInt("policyBitmask");
+	   	if(!saveMode || (saveMode && phonesJSON.has("redirectToVoicemail")) ) redirectToVoicemail = phonesJSON.getBoolean("redirectToVoicemail");
+	   	if(!saveMode || (saveMode && phonesJSON.has("scheduleSet")) ) {
 		   	try {
 		   		// if not set, this value is "false", but if active it's 1 !! - this is not true... maybe
 		   		 scheduleSet = phonesJSON.getBoolean("scheduleSet");
@@ -70,17 +86,17 @@ public class Phone implements Comparable<Phone>{
 		   		scheduleSet = false;
 		   	} 
 	   	}
-	   	if(!saveMode || saveMode && phonesJSON.has("smsEnabled")) smsEnabled = phonesJSON.getBoolean("smsEnabled");
-	   	if(!saveMode || saveMode && phonesJSON.has("telephonyVerified")) telephonyVerified = phonesJSON.getBoolean("telephonyVerified");
-	   	if(!saveMode || saveMode && phonesJSON.has("type")) type = phonesJSON.getInt("type");
-	   	if(!saveMode || saveMode && phonesJSON.has("verified")) verified = phonesJSON.getBoolean("verified");
-	   	if(!saveMode || saveMode && phonesJSON.has("voicemailForwardingVerified")) voicemailForwardingVerified = phonesJSON.getBoolean("voicemailForwardingVerified");
-//	   	if(!saveMode || saveMode && phonesJSON.has("wd")) wd = phonesJSON.getInt("id"); //TODO
-//	   	if(!saveMode || saveMode && phonesJSON.has("we")) wd = phonesJSON.getInt("id"); //TODO
-	   	if(!saveMode || saveMode && phonesJSON.has("weekdayAllDay")) weekdayAllDay = phonesJSON.getBoolean("weekdayAllDay");
-	   	if(!saveMode || saveMode && phonesJSON.has("weekdayTimes")) weekdayTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekdayTimes"));//Type correct??
-	   	if(!saveMode || saveMode && phonesJSON.has("weekendAllDay")) weekendAllDay = phonesJSON.getBoolean("weekendAllDay");
-	   	if(!saveMode || saveMode && phonesJSON.has("weekendTimes")) weekendTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekendTimes"));//Type correct??
+	   	if(!saveMode || (saveMode && phonesJSON.has("smsEnabled")) ) smsEnabled = phonesJSON.getBoolean("smsEnabled");
+	   	if(!saveMode || (saveMode && phonesJSON.has("telephonyVerified")) ) telephonyVerified = phonesJSON.getBoolean("telephonyVerified");
+	   	if(!saveMode || (saveMode && phonesJSON.has("type")) ) type = phonesJSON.getInt("type");
+	   	if(!saveMode || (saveMode && phonesJSON.has("verified")) ) verified = phonesJSON.getBoolean("verified");
+	   	if(!saveMode || (saveMode && phonesJSON.has("voicemailForwardingVerified")) ) voicemailForwardingVerified = phonesJSON.getBoolean("voicemailForwardingVerified");
+//	   	if(!saveMode || (saveMode && phonesJSON.has("wd")) ) wd = phonesJSON.getInt("id"); //TODO
+//	   	if(!saveMode || (saveMode && phonesJSON.has("we")) ) wd = phonesJSON.getInt("id"); //TODO
+	   	if(!saveMode || (saveMode && phonesJSON.has("weekdayAllDay")) ) weekdayAllDay = phonesJSON.getBoolean("weekdayAllDay");
+	   	if(!saveMode || (saveMode && phonesJSON.has("weekdayTimes")) ) weekdayTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekdayTimes"));//Type correct??
+	   	if(!saveMode || (saveMode && phonesJSON.has("weekendAllDay")) ) weekendAllDay = phonesJSON.getBoolean("weekendAllDay");
+	   	if(!saveMode || (saveMode && phonesJSON.has("weekendTimes")) ) weekendTimes = ParsingUtil.jsonStringArrayToStringArray(phonesJSON.getJSONArray("weekendTimes"));//Type correct??
    	}
    	
    	public static final Phone[] createArrayFromJsonObject(JSONObject phonesJSON) throws JSONException { 
