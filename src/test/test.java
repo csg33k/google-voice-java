@@ -22,6 +22,7 @@ import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.util.ParsingUtil;
 
+@SuppressWarnings("deprecation")
 public class test {
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -114,7 +115,7 @@ public class test {
 		System.out.println("11: Update Group Settings");
 		System.out.println("12: Group settings isPhoneEnabled tests");
 		System.out.println("13: List Default Phones and Enabled/Disabled Setting");
-		
+		System.out.println("14: Send SMS");
 		
 		int testNr = 0;
 		try {
@@ -404,7 +405,19 @@ public class test {
 //							settings3.getSettings().getGroups()[0].
 //							}
 							break;
-	
+						
+						case 14:
+							System.out.println("*********Starting Test "+testNr+" SEND SMS*******");
+							System.out.println("\n\rEnter Number to Send SMS:");
+							String number = br.readLine();
+							System.out.println("Enter Message:");
+							String txt = br.readLine();
+							voice.sendSMS(number, txt);
+							break;
+						case 15:
+							System.out.println("*********Starting Test "+testNr);
+							System.out.println("");
+							break;
 						default: 						
 							System.out.println("Test "+testNr+" not found, exiting.");
 							System.exit(1);
