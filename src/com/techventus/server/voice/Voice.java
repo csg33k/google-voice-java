@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-//import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -42,7 +41,6 @@ import gvjava.org.json.JSONException;
 import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.PhoneOld;
-//import com.techventus.server.voice.datatypes.Settings;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.util.ParsingUtil;
 
