@@ -101,9 +101,14 @@ public class Voice {
 	 * which service issued it.
 	 */
 	private String authToken = null;
-	
+	/**
+	 * (optional) Token representing the specific CAPTCHA challenge. Google supplies this token and the 
+	 * CAPTCHA image URL in a login failed response with the error code "CaptchaRequired".
+	 */
 	private String captchaToken = null;
-	
+	/**
+	 * Url of the image with the captcha - only filled after a captacha response to a login try
+	 */
 	private String captchaUrl = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 	/**
@@ -1289,7 +1294,7 @@ public class Voice {
 	
 	/**
 	 * Use this login method to login - use captchaAnswer to answer a captcha challenge
-	 * @param captchaAnswer - null to make a normal login attempt
+	 * @param captchaAnswer - (optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
 	 * @throws IOException
 	 */
 	public void login(String captchaAnswer) throws IOException {
