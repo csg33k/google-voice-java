@@ -54,6 +54,21 @@ import com.techventus.server.voice.util.ParsingUtil;
 @SuppressWarnings("deprecation")
 public class Voice {
 
+	public enum ERROR_CODE{
+		BadAuthentication(	"The login request used a username or password that is not recognized."),
+		NotVerified(		"The account email address has not been verified. The user will need to access their Google account directly to resolve the issue before logging in using a non-Google application."),
+		TermsNotAgreed(		"The user has not agreed to terms. The user will need to access their Google account directly to resolve the issue before logging in using a non-Google application."),
+		CaptchaRequired(	"A CAPTCHA is required. (A response with this error code will also contain an image URL and a CAPTCHA token.)"),
+		Unknown(			"The error is unknown or unspecified; the request contained invalid input or was malformed."),
+		AccountDeleted(		"The user account has been deleted."),
+		AccountDisabled(	"The user account has been disabled."),
+		ServiceDisabled(	"The user's access to the specified service has been disabled. (The user account may still be valid.)"),
+		ServiceUnavailable(	"The service is not available; try again later.");
+		ERROR_CODE(String pLongText) {
+			LONG_TEXT = pLongText;
+		}
+		public final String LONG_TEXT;
+	}
 	public boolean PRINT_TO_CONSOLE;
 	/** 
 	 * keeps the list of phones - lazy
@@ -63,6 +78,7 @@ public class Voice {
 	String general = null;
 	String phonesInfo = null;
 	String rnrSEE = null;
+	private ERROR_CODE error;
 	/**
 	 * Short string identifying your application, for logging purposes. This string should take the form:
 	 * "companyName-applicationName-versionID". See: http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request
@@ -85,6 +101,10 @@ public class Voice {
 	 * which service issued it.
 	 */
 	private String authToken = null;
+	
+	private String captchaToken = null;
+	
+	private String captchaUrl = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 	/**
 	 * Type of account to request authorization for. Possible values are: <br/><br/>
@@ -1256,14 +1276,23 @@ public class Voice {
 
 		return result;
 	}
-
+	
 	/**
 	 * Login Method to refresh authentication with Google Voice.
 	 * 
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public void login() throws IOException {
+	public void login()  throws IOException {
+		login(null);
+	}
+	
+	/**
+	 * Use this login method to login - use captchaAnswer to answer a captcha challenge
+	 * @param captchaAnswer - null to make a normal login attempt
+	 * @throws IOException
+	 */
+	public void login(String captchaAnswer) throws IOException {
 
 		String data = URLEncoder.encode("accountType", "UTF-8") + "="
 				+ URLEncoder.encode(ACCOUNT_TYPE, "UTF-8");
@@ -1275,6 +1304,12 @@ public class Voice {
 				+ URLEncoder.encode(SERVICE, "UTF-8");
 		data += "&" + URLEncoder.encode("source", "UTF-8") + "="
 				+ URLEncoder.encode(source, "UTF-8");
+		if(captchaAnswer!=null && captchaToken!=null) {
+			data += "&" + URLEncoder.encode("logintoken", "UTF-8") + "="
+					+ URLEncoder.encode(captchaToken, "UTF-8");
+			data += "&" + URLEncoder.encode("logincaptcha", "UTF-8") + "="
+					+ URLEncoder.encode(captchaAnswer, "UTF-8");
+		}
 
 		// Send data
 		URL url = new URL(loginURLString);
@@ -1288,6 +1323,18 @@ public class Voice {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
 				.getInputStream()));
 		String line;
+		
+		/*
+		 * A failure response contains an error code and a URL to an error page that can be displayed to the user. 
+		 * If the error code is a CAPTCHA challenge, the response also includes a URL to a CAPTCHA image and a special 
+		 * token. Your application should be able to solicit an answer from the user and then retry the login request. 
+		 * To display the CAPTCHA image to the user, prefix the CaptchaUrl value with "http://www.google.com/accounts/", 
+		 * for example: " http://www.google.com/accounts/Captcha?ctoken=HiteT4b0Bk5Xg18_AcVoP6-yFkHPibe7O9EqxeiI7lUSN".
+		 */
+		String lErrorString = "Unknown Connection Error."; // ex: Error=CaptchaRequired
+		String lUrl = ""; // ex: Url=http://www.google.com/login/captcha
+		String lCaptchaToken = ""; // ex: CaptchaToken=DQAAAGgA...dkI1LK9
+		String lCaptchaUrl = ""; // ex: CaptchaUrl=Captcha?ctoken=HiteT4b0Bk5Xg18_AcVoP6-yFkHPibe7O9EqxeiI7lUSN
 
 		// String AuthToken = null;
 		while ((line = rd.readLine()) != null) {
@@ -1296,14 +1343,61 @@ public class Voice {
 				this.authToken = line.split("=", 2)[1].trim();
 				if (PRINT_TO_CONSOLE)
 					System.out.println("Login success - auth token received.");
+			} else if (line.contains("Error=")) {
+				lErrorString = line.split("=", 2)[1].trim();
+				error = getErrorEnumByCode(lErrorString);
+				if (PRINT_TO_CONSOLE)
+					System.out.println("Login error - "+lErrorString);
+			} else if (line.contains("Url=")) {
+				lUrl = line.split("=", 2)[1].trim();
+			} else if (line.contains("CaptchaToken=")) {
+				captchaToken = line.split("=", 2)[1].trim();
+			} else if (line.contains("CaptchaUrl=")) {
+				captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
 			}
 		}
 		wr.close();
 		rd.close();
 
 		if (this.authToken == null) {
-			throw new IOException("No Authorisation Received.");
+			
+			throw new IOException(lErrorString + " " + error.LONG_TEXT);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private ERROR_CODE getErrorEnumByCode(String pErrorCodeString) {
+		if(pErrorCodeString.equals(ERROR_CODE.AccountDeleted.name())) {
+			return ERROR_CODE.AccountDeleted;
+		} else if(pErrorCodeString.equals(ERROR_CODE.AccountDisabled.name())) {
+			return ERROR_CODE.AccountDisabled;
+		} else if(pErrorCodeString.equals(ERROR_CODE.BadAuthentication.name())) {
+			return ERROR_CODE.BadAuthentication;
+		} else if(pErrorCodeString.equals(ERROR_CODE.CaptchaRequired.name())) {
+			return ERROR_CODE.CaptchaRequired;
+		} else if(pErrorCodeString.equals(ERROR_CODE.NotVerified.name())) {
+			return ERROR_CODE.NotVerified;
+		} else if(pErrorCodeString.equals(ERROR_CODE.ServiceDisabled.name())) {
+			return ERROR_CODE.ServiceDisabled;
+		} else if(pErrorCodeString.equals(ERROR_CODE.TermsNotAgreed.name())) {
+			return ERROR_CODE.TermsNotAgreed;
+		} else {
+			return ERROR_CODE.Unknown;
+		}
+	}
+	
+	public ERROR_CODE getError() {
+		return error;
+	}
+	
+	public String getCaptchaUrl() {
+		return captchaUrl;
+	}
+	
+	public String getCaptchaToken() {
+		return captchaToken;
 	}
 
 	/**

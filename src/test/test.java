@@ -116,6 +116,7 @@ public class test {
 		System.out.println("12: Group settings isPhoneEnabled tests");
 		System.out.println("13: List Default Phones and Enabled/Disabled Setting");
 		System.out.println("14: Send SMS");
+		System.out.println("15: Captcha Test");
 		
 		int testNr = 0;
 		try {
@@ -415,7 +416,7 @@ public class test {
 							voice.sendSMS(number, txt);
 							break;
 						case 15:
-							System.out.println("*********Starting Test "+testNr);
+							System.out.println("*********Starting Test "+testNr+" *******");
 							System.out.println("");
 							break;
 						default: 						
