@@ -513,12 +513,26 @@ public class Voice {
 	 * Internal method which parses the Homepage source code to determine the
 	 * rnrsee variable, this variable is passed into most fuctions for placing
 	 * calls and sms.
+	 * @throws IOException 
 	 */
-	private void setRNRSEE() {
+	private void setRNRSEE() throws IOException {
 		if (general != null) {
-			String p1 = general.split("'_rnr_se': '", 2)[1];
-			rnrSEE = p1.split("',", 2)[0];
-			p1 = null;
+			if(general.contains("'_rnr_se': '")) {
+				String p1 = general.split("'_rnr_se': '", 2)[1];
+				rnrSEE = p1.split("',", 2)[0];
+				p1 = null;
+			} else if(general.contains("<div class=\"gc-notice\">")) {
+				String gcNotice = ParsingUtil.removeUninterestingParts(general, "<div class=\"gc-notice\">", "</div>", false);	
+				System.out.println(gcNotice+ "(Answer did not contain rnr_se)");
+				throw new IOException(gcNotice + "(Answer did not contain rnr_se)");
+			} else {
+				System.out.println("Answer did not contain rnr_se!");
+				throw new IOException("Answer did not contain rnr_se!");
+			}
+		} else {
+			if(PRINT_TO_CONSOLE) 
+				System.out.println("setRNRSEE(): Answer was null!");
+			throw new IOException("setRNRSEE(): Answer was null!");
 		}
 	}
 
