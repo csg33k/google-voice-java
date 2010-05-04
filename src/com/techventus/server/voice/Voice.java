@@ -28,8 +28,10 @@ package com.techventus.server.voice;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -1318,15 +1320,22 @@ public class Voice {
 
 		// Send data
 		URL url = new URL(loginURLString);
-		URLConnection conn = url.openConnection();
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		wr.write(data);
 		wr.flush();
 
 		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-				.getInputStream()));
+		int responseCode = conn.getResponseCode();
+		InputStream is;
+		if(responseCode==200) {
+			is = conn.getInputStream();
+		} else {
+			is = conn.getErrorStream();
+		}
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader rd = new BufferedReader(isr);
 		String line;
 		
 		/*
