@@ -57,14 +57,14 @@ import com.techventus.server.voice.util.ParsingUtil;
 public class Voice {
 
 	public enum ERROR_CODE{
-		BadAuthentication(	"The login request used a username or password that is not recognized."),
-		NotVerified(		"The account email address has not been verified. The user will need to access their Google account directly to resolve the issue before logging in using a non-Google application."),
-		TermsNotAgreed(		"The user has not agreed to terms. The user will need to access their Google account directly to resolve the issue before logging in using a non-Google application."),
+		BadAuthentication(	"Wrong username or password."),
+		NotVerified(		"The account email address has not been verified. You need to access your Google account directly to resolve the issue before logging in using google-voice-java."),
+		TermsNotAgreed(		"You have not agreed to terms. You need to access your Google account directly to resolve the issue before logging in using google-voice-java."),
 		CaptchaRequired(	"A CAPTCHA is required. (A response with this error code will also contain an image URL and a CAPTCHA token.)"),
-		Unknown(			"The error is unknown or unspecified; the request contained invalid input or was malformed."),
+		Unknown(			"Unknown or unspecified error; the request contained invalid input or was malformed."),
 		AccountDeleted(		"The user account has been deleted."),
 		AccountDisabled(	"The user account has been disabled."),
-		ServiceDisabled(	"The user's access to the specified service has been disabled. (The user account may still be valid.)"),
+		ServiceDisabled(	"Your access to the voice service has been disabled. (Your user account may still be valid.)"),
 		ServiceUnavailable(	"The service is not available; try again later.");
 		ERROR_CODE(String pLongText) {
 			LONG_TEXT = pLongText;
