@@ -81,6 +81,7 @@ public class Voice {
 	String phonesInfo = null;
 	String rnrSEE = null;
 	private ERROR_CODE error;
+
 	/**
 	 * Short string identifying your application, for logging purposes. This string should take the form:
 	 * "companyName-applicationName-versionID". See: http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request
@@ -526,13 +527,12 @@ public class Voice {
 				System.out.println(gcNotice+ "(Answer did not contain rnr_se)");
 				throw new IOException(gcNotice + "(Answer did not contain rnr_se)");
 			} else {
-				System.out.println("Answer did not contain rnr_se!");
-				throw new IOException("Answer did not contain rnr_se!");
+				System.out.println("Answer did not contain rnr_se! + general");
+				throw new IOException("Answer did not contain rnr_se! + general");
 			}
 		} else {
-			if(PRINT_TO_CONSOLE) 
-				System.out.println("setRNRSEE(): Answer was null!");
-			throw new IOException("setRNRSEE(): Answer was null!");
+			System.out.println("setRNRSEE(): Answer was null! + general");
+			throw new IOException("setRNRSEE(): Answer was null! + general");
 		}
 	}
 
