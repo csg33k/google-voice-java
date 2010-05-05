@@ -11,7 +11,12 @@ import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
-
+/**
+ * Accountsettings - subtype of AllSettings
+ * 
+ * @author tobias eisentraeger
+ *
+ */
 public class Setting {
 	
 	private final static boolean saveMode = true;
