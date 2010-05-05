@@ -527,12 +527,12 @@ public class Voice {
 				System.out.println(gcNotice+ "(Answer did not contain rnr_se)");
 				throw new IOException(gcNotice + "(Answer did not contain rnr_se)");
 			} else {
-				System.out.println("Answer did not contain rnr_se! + general");
-				throw new IOException("Answer did not contain rnr_se! + general");
+				System.out.println("Answer did not contain rnr_se! "+ general);
+				throw new IOException("Answer did not contain rnr_se! "+ general);
 			}
 		} else {
-			System.out.println("setRNRSEE(): Answer was null! + general");
-			throw new IOException("setRNRSEE(): Answer was null! + general");
+			System.out.println("setRNRSEE(): Answer was null!");
+			throw new IOException("setRNRSEE(): Answer was null!");
 		}
 	}
 
