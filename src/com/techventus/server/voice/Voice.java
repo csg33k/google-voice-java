@@ -1335,6 +1335,11 @@ public class Voice {
 		// Send data
 		URL url = new URL(loginURLString);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn
+		.setRequestProperty(
+				"User-agent",
+				USER_AGENT);
+		
 		conn.setDoOutput(true);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		wr.write(data);
@@ -1369,8 +1374,9 @@ public class Voice {
 			// if(PRINT_TO_CONSOLE) System.out.println(line);
 			if (line.contains("Auth=")) {
 				this.authToken = line.split("=", 2)[1].trim();
-				if (PRINT_TO_CONSOLE)
-					System.out.println("Login success - auth token received.");
+				if (PRINT_TO_CONSOLE){
+					System.out.println("Logged in to Google - Auth token received");
+				}
 			} else if (line.contains("Error=")) {
 				lErrorString = line.split("=", 2)[1].trim();
 				error = getErrorEnumByCode(lErrorString);
