@@ -33,7 +33,9 @@ public class AllSettings{
    		return lObj;
    	}
    	
+   	//TODO Perhaps this should throw an Exception rather than return false
    	/**
+   	 *
    	 * Query disabled status - if id not found, then it returned false, which normally means enabled.
    	 * @param phoneId
    	 * @return
