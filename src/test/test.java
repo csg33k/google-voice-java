@@ -18,7 +18,6 @@ import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
-import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -102,7 +101,7 @@ public class test {
 	private static void listTests() {
 		System.out.println("Availible Tests for "+userName);
 		System.out.println("0: Exit");  
-		System.out.println("1: Multi phone enable / disable");
+		System.out.println("1: Prints True - Does Nothing Relevant");
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
 		System.out.println("4: Set Default Voicemail Greeting");
@@ -150,42 +149,7 @@ public class test {
 					switch (testNr) {
 						case 1: // 1: Multi phone enable / disable 
 							System.out.println("******** Starting Test "+testNr+" ********");
-							// create int Array from all phone ids
-							int[] phonesToChangeStatus = new int[voice.getPhoneList(true).size()];
-							int i=0;
-							
-							for (Iterator<PhoneOld> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
-								PhoneOld type = (PhoneOld) iterator.next();
-								phonesToChangeStatus[i] = type.id;
-								i++;
-							}
-							
-							System.out.println("Current phone status:");
-							for (Iterator<PhoneOld> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
-								PhoneOld type = (PhoneOld) iterator.next();
-								System.out.println(type.toString());
-							}
-							
-							//Disable all phones with one call
-							voice.phonesDisable(phonesToChangeStatus);
-							
-							// Output
-							System.out.println("After deactivate multi:");
-							for (Iterator<PhoneOld> iterator = voice.getPhoneList(true).iterator(); iterator.hasNext();) {
-								PhoneOld type = (PhoneOld) iterator.next();
-								System.out.println(type.toString());
-							}
-							
-							//Enable all phones with one call
-							voice.phonesEnable(phonesToChangeStatus);
-							
-							// Output
-							System.out.println("After activate multi:");
-							for (Iterator<PhoneOld> iterator = voice.getPhoneList(false).iterator(); iterator.hasNext();) {
-								PhoneOld type = (PhoneOld) iterator.next();
-								System.out.println(type.toString());
-							}
-							
+							System.out.println("******** true ********");
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							

@@ -42,7 +42,6 @@ import gvjava.org.json.JSONException;
 
 import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Group;
-import com.techventus.server.voice.datatypes.PhoneOld;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -75,7 +74,7 @@ public class Voice {
 	/** 
 	 * keeps the list of phones - lazy
 	*/
-	private List<PhoneOld> phoneList = null;
+
 	private AllSettings settings;
 	String general = null;
 	String phonesInfo = null;
@@ -264,31 +263,7 @@ public class Voice {
 		setRNRSEE();
 	}
 	
-	/**
-	 * Returns the phone list - Lazy
-	 * TODO move this function in the Settings class
-	 * @param refresh - set to true to force a List update from the server
-	 * @return List of PhoneOld objects
-	 * @throws IOException
-	 */
-	public List<PhoneOld> getPhoneList(boolean forceUpdate) throws IOException {
-		if(phoneList==null || forceUpdate) {
-			if(isLoggedIn()==false || forceUpdate) {
-				login();
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
 
-					e.printStackTrace();
-				}
-			}
-			
-			this.phonesInfo = this.getRawPhonesInfo();
-			setPhoneInfo();
-		}
-		return phoneList;
-	}
-	
 	
 	/**
 	 * Returns the Greeting list - Lazy
@@ -542,102 +517,6 @@ public class Voice {
 	}
 	
 	
-
-	/**
-	 * Reads raw account info, and creates the phoneList of PhoneOld objects.
-	 */
-	private void setPhoneInfo() {
-		if (general != null && phonesInfo!=null) {
-			
-			List<Integer> disabledList = new ArrayList<Integer>();
-			
-			String f1 = phonesInfo.substring(phonesInfo.indexOf("disabledIdMap\":{"));
-			f1=f1.substring(16);
-			f1 = f1.substring(0,f1.indexOf("},\""));
-			String[] rawslice = f1.split(",");
-			
-			for(int i=0;i<rawslice.length;i++){
-				if(rawslice[i].contains("true")){
-					//System.out.println(rawslice[i]);
-					rawslice[i] = rawslice[i].replace("\":true", "");
-					rawslice[i] =rawslice[i].replace("\"", "");
-					//System.out.println(rawslice[i]);
-					Integer z = Integer.parseInt(rawslice[i]);
-					disabledList.add(z);
-				}
-			}
-			
-			
-			
-			List<PhoneOld> phoneList = new ArrayList<PhoneOld>();
-			String p1 = general.split("'phones':", 2)[1];
-			p1 = (p1.split("'_rnr_se'", 2))[0];
-			String[] a = p1.split("\\{\"id\"\\:");
-			// if(PRINT_TO_CONSOLE) System.out.println(a[0]);
-			for (int i = 1; i < a.length; i++) {
-				//PhoneOld phone = new PhoneOld();
-				String[] b = a[i].split(",\"wd\"\\:\\{", 2)[0].split(",");
-				//phone.id = Integer.parseInt(b[0].replaceAll("\"", ""));
-				int id = Integer.parseInt(b[0].replaceAll("\"", ""));
-				String number = "";
-				String type = "";
-				String name = "";
-				String formattedNumber="";
-				String carrier = "";
-				Boolean verified = false;
-				for (int j = 0; j < b.length; j++) {
-					if (b[j].contains("phoneNumber")) {
-						//phone.number = b[j].split("\\:")[1]
-						//		.replaceAll("\"", "");
-						number  = b[j].split("\\:")[1]
-						   .replaceAll("\"", "");
-					} else if (b[j].contains("type")) {
-						//phone.type = b[j].split("\\:")[1].replaceAll("\"", "");
-						type = b[j].split("\\:")[1].replaceAll("\"", "");
-					} else if (b[j].contains("name")) {
-						//phone.name = b[j].split("\\:")[1].replaceAll("\"", "");
-						name = b[j].split("\\:")[1].replaceAll("\"", "");
-					} else if (b[j].contains("formattedNumber")) {
-						//phone.formattedNumber = b[j].split("\\:")[1]
-						//		.replaceAll("\"", "");
-						formattedNumber = b[j].split("\\:")[1]
-						    								.replaceAll("\"", "");
-					} else if (b[j].contains("carrier")) {
-						//phone.carrier = b[j].split("\\:")[1].replaceAll("\"",
-						//		"");
-						carrier = b[j].split("\\:")[1].replaceAll("\"",
-							"");
-					} else if (b[j].contains("\"verified")) {
-						//phone.verified = Boolean
-						//		.parseBoolean(b[j].split("\\:")[1].replaceAll(
-						//				"\"", ""));
-						verified = Boolean
-						.parseBoolean(b[j].split("\\:")[1].replaceAll(
-								"\"", ""));
-					}
-				}
-				if(id!=0 && !number.equals("")&&!formattedNumber.equals("")&&!type.equals("")&&!name.equals("")){
-					
-					boolean enabled;
-					
-					if(disabledList.contains(new Integer(id))){
-						enabled = false;
-					}else{
-						enabled = true;
-					}
-					
-					PhoneOld phoneOld = new PhoneOld(id, number, formattedNumber, type, name, carrier, verified,enabled);
-											
-					phoneList.add(phoneOld);
-				}else{
-					System.out.println("Error in phone object creation.");
-				}
-			}
-
-			this.phoneList = phoneList;
-
-		}
-	}
 
 	/**
 	 * Place a call.
