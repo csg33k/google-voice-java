@@ -496,6 +496,8 @@ public class Voice {
 			if(general.contains("'_rnr_se': '")) {
 				String p1 = general.split("'_rnr_se': '", 2)[1];
 				rnrSEE = p1.split("',", 2)[0];
+				if(PRINT_TO_CONSOLE)
+					System.out.println("Successfully Received rnr_se.");
 				p1 = null;
 			} else if(general.contains("<div class=\"gc-notice\">")) {
 				String gcNotice = ParsingUtil.removeUninterestingParts(general, "<div class=\"gc-notice\">", "</div>", false);	
@@ -534,9 +536,7 @@ public class Voice {
 	public String call(String originNumber, String destinationNumber,
 			String phoneType) throws IOException {
 		String out = "";
-		String calldata = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		calldata += "&" + URLEncoder.encode("outgoingNumber", "UTF-8") + "="
+		String calldata = URLEncoder.encode("outgoingNumber", "UTF-8") + "="
 				+ URLEncoder.encode(destinationNumber, "UTF-8");
 		calldata += "&" + URLEncoder.encode("forwardingNumber", "UTF-8") + "="
 				+ URLEncoder.encode(originNumber, "UTF-8");
@@ -555,6 +555,8 @@ public class Voice {
 		URL callURL = new URL("https://www.google.com/voice/call/connect/");
 
 		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		callconn
 				.setRequestProperty(
 						"User-agent",
@@ -602,9 +604,8 @@ public class Voice {
 	public String cancelCall(String originNumber, String destinationNumber,
 			String phoneType) throws IOException {
 		String out = "";
-		String calldata = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		calldata += "&" + URLEncoder.encode("outgoingNumber", "UTF-8") + "="
+		String calldata = "";
+		calldata += URLEncoder.encode("outgoingNumber", "UTF-8") + "="
 				+ URLEncoder.encode("undefined", "UTF-8");
 		calldata += "&" + URLEncoder.encode("forwardingNumber", "UTF-8") + "="
 				+ URLEncoder.encode("undefined", "UTF-8");
@@ -620,6 +621,8 @@ public class Voice {
 		URL callURL = new URL("https://www.google.com/voice/call/cancel/");
 
 		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		callconn
 				.setRequestProperty(
 						"User-agent",
@@ -672,9 +675,7 @@ public class Voice {
 			for (int i = 0; i < IDs.length; i++) {
 				//TODO spawn threads!
 				int j = IDs[i];
-				String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-				paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+				String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
 						+ URLEncoder.encode("1", "UTF-8");
 				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
 						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
@@ -699,9 +700,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public String phoneEnable(int ID) throws IOException {
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+		String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
 				+ URLEncoder.encode("1", "UTF-8");
 		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
 				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
@@ -733,9 +732,7 @@ public class Voice {
 			for (int i = 0; i < IDs.length; i++) {
 				//TODO spawn threads!
 				int j = IDs[i];
-				String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-				paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+				String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
 						+ URLEncoder.encode("0", "UTF-8");
 				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
 						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
@@ -760,9 +757,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public String phoneDisable(int ID) throws IOException {
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("enabled", "UTF-8") + "="
+		String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
 				+ URLEncoder.encode("0", "UTF-8");
 		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
 				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
@@ -793,6 +788,8 @@ public class Voice {
 		URL requestURL = new URL(phoneEnableURLString);
 
 		URLConnection conn = requestURL.openConnection();
+		conn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		conn
 				.setRequestProperty(
 						"User-agent",
@@ -852,15 +849,16 @@ public class Voice {
 			if (PRINT_TO_CONSOLE) System.out.println("Turning caller announcement off.");
 		}
 		
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("directConnect", "UTF-8") + "="
+		String paraString = "";
+		paraString += URLEncoder.encode("directConnect", "UTF-8") + "="
 				+ URLEncoder.encode(announceCallerStr, "UTF-8");
 		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
 
 
 		URLConnection conn = requestURL.openConnection();
+		conn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		conn.setRequestProperty("User-agent",
 								USER_AGENT);
 
@@ -903,9 +901,9 @@ public class Voice {
 
 		if (PRINT_TO_CONSOLE) System.out.println("Activating Greeting#"+greetingToSet);
 
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("greetingId", "UTF-8") + "="
+		String paraString = "";
+		// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += URLEncoder.encode("greetingId", "UTF-8") + "="
 				+ URLEncoder.encode(greetingToSet+"", "UTF-8");
 		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
@@ -935,9 +933,9 @@ public class Voice {
 			enabled = "0";
 		}
 
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += "&" + URLEncoder.encode("doNotDisturb", "UTF-8") + "="
+		String paraString = "";
+			// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");
+		paraString += URLEncoder.encode("doNotDisturb", "UTF-8") + "="
 				+ URLEncoder.encode(enabled+"", "UTF-8");
 		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
 				+ URLEncoder.encode(rnrSEE, "UTF-8");
@@ -955,15 +953,15 @@ public class Voice {
 	public String setNewGroupSettings(Group group) throws IOException {
 		URL requestURL = new URL(groupsSettingsURLString);
 
-		String paraString = URLEncoder.encode("auth", "UTF-8") + "="
-			+ URLEncoder.encode(authToken, "UTF-8");
+		String paraString = "";
+		// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");;
 		
 		// 1=true 0=false 
 		int isCustomGreeting = 0;
 		if(group.isCustomGreeting()) {
 			isCustomGreeting = 1;
 		}
-		paraString += "&" + URLEncoder.encode("isCustomGreeting", "UTF-8") + "="
+		paraString += URLEncoder.encode("isCustomGreeting", "UTF-8") + "="
 			+ URLEncoder.encode(isCustomGreeting+"", "UTF-8");
 		
 		int greetingId = group.getGreetingId();
@@ -1016,7 +1014,9 @@ public class Voice {
 	private String postSettings(URL requestURL, String paraString)
 			throws IOException {
 		String out = "";
-		URLConnection conn = requestURL.openConnection();
+		HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
+		conn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		conn.setRequestProperty("User-agent",
 								USER_AGENT);
 
@@ -1027,8 +1027,19 @@ public class Voice {
 		callwr.write(paraString);
 		callwr.flush();
 
-		BufferedReader callrd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
+		// Get the response
+		int responseCode = conn.getResponseCode();
+		if(PRINT_TO_CONSOLE)
+			System.out.println(requestURL + " - " + conn.getResponseMessage());
+		InputStream is;
+		if(responseCode==200) {
+			is = conn.getInputStream();
+		} else {
+			is = conn.getErrorStream();
+		}
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader callrd = new BufferedReader(isr);
+		
 		String line;
 		while ((line = callrd.readLine()) != null) {
 			out += line + "\n\r";
@@ -1061,10 +1072,9 @@ public class Voice {
 	public String sendSMS(String destinationNumber, String txt)
 			throws IOException {
 		String out = "";
-		String smsdata = URLEncoder.encode("auth", "UTF-8") + "="
-				+ URLEncoder.encode(authToken, "UTF-8");
+		String smsdata = "";
 
-		smsdata += "&" + URLEncoder.encode("phoneNumber", "UTF-8") + "="
+		smsdata += URLEncoder.encode("phoneNumber", "UTF-8") + "="
 				+ URLEncoder.encode(destinationNumber, "UTF-8");
 		smsdata += "&" + URLEncoder.encode("text", "UTF-8") + "="
 				+ URLEncoder.encode(txt, "UTF-8");
@@ -1073,6 +1083,8 @@ public class Voice {
 		URL smsurl = new URL("https://www.google.com/voice/sms/send/");
 
 		URLConnection smsconn = smsurl.openConnection();
+		smsconn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		smsconn
 				.setRequestProperty(
 						"User-agent",
@@ -1120,17 +1132,32 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	String get(String urlString) throws IOException {
-		URL url = new URL(urlString + "?auth="
-				+ URLEncoder.encode(authToken, "UTF-8"));
-		URLConnection conn = url.openConnection();
-		conn
-				.setRequestProperty(
+		URL url = new URL(urlString);
+		//+ "?auth=" + URLEncoder.encode(authToken, "UTF-8"));
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
+		conn.setRequestProperty(
 						"User-agent",
 						USER_AGENT);
+		HttpURLConnection.setFollowRedirects(false);
+		conn.setFollowRedirects(false);
 
 		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-				.getInputStream()));
+		int responseCode = conn.getResponseCode();
+		if(PRINT_TO_CONSOLE)
+			System.out.println(urlString + " - " + conn.getResponseMessage());
+		InputStream is;
+		if(responseCode==200) {
+			is = conn.getInputStream();
+		} else {
+			is = conn.getErrorStream();
+		}
+		
+		// Get the response
+		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+		
 		StringBuffer sb = new StringBuffer();
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -1153,11 +1180,11 @@ public class Voice {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	String get(String urlString,int page) throws IOException {
-		URL url = new URL(urlString + "?page=p"+page+"&auth="
-				+ URLEncoder.encode(authToken, "UTF-8")
-				);
+		URL url = new URL(urlString + "?page=p"+page);
 		//url+="&page="+page;
 		URLConnection conn = url.openConnection();
+		conn.setRequestProperty( "Authorization",
+                "GoogleLogin auth="+authToken );
 		conn
 				.setRequestProperty(
 						"User-agent",
@@ -1226,6 +1253,8 @@ public class Voice {
 
 		// Get the response
 		int responseCode = conn.getResponseCode();
+		if(PRINT_TO_CONSOLE)
+			System.out.println(loginURLString + " - " + conn.getResponseMessage());
 		InputStream is;
 		if(responseCode==200) {
 			is = conn.getInputStream();
@@ -1244,13 +1273,11 @@ public class Voice {
 		 * for example: " http://www.google.com/accounts/Captcha?ctoken=HiteT4b0Bk5Xg18_AcVoP6-yFkHPibe7O9EqxeiI7lUSN".
 		 */
 		String lErrorString = "Unknown Connection Error."; // ex: Error=CaptchaRequired
-		String lUrl = ""; // ex: Url=http://www.google.com/login/captcha
-		String lCaptchaToken = ""; // ex: CaptchaToken=DQAAAGgA...dkI1LK9
-		String lCaptchaUrl = ""; // ex: CaptchaUrl=Captcha?ctoken=HiteT4b0Bk5Xg18_AcVoP6-yFkHPibe7O9EqxeiI7lUSN
 
 		// String AuthToken = null;
 		while ((line = rd.readLine()) != null) {
-			// if(PRINT_TO_CONSOLE) System.out.println(line);
+			//if(PRINT_TO_CONSOLE) 
+				//System.out.println(line);
 			if (line.contains("Auth=")) {
 				this.authToken = line.split("=", 2)[1].trim();
 				if (PRINT_TO_CONSOLE){
@@ -1261,9 +1288,11 @@ public class Voice {
 				error = getErrorEnumByCode(lErrorString);
 				if (PRINT_TO_CONSOLE)
 					System.out.println("Login error - "+lErrorString);
-			} else if (line.contains("Url=")) {
-				lUrl = line.split("=", 2)[1].trim();
-			} else if (line.contains("CaptchaToken=")) {
+			} 
+//			else if (line.contains("Url=")) {
+//				lUrl = line.split("=", 2)[1].trim();
+//			} 
+			else if (line.contains("CaptchaToken=")) {
 				captchaToken = line.split("=", 2)[1].trim();
 			} else if (line.contains("CaptchaUrl=")) {
 				captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
