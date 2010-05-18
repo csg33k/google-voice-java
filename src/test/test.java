@@ -244,7 +244,12 @@ public class test {
 							
 						case 6: // 6: Group settings
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("All to json:"+voice.getSettings(false).getSettings().getGroups());
+							Group[] groups1 = voice.getSettings(false).getSettings().getGroups();
+							String jsonGroups="";
+							for (int i = 0; i < groups1.length; i++) {
+								jsonGroups+=groups1[i].toJson();
+							}
+							System.out.println("All to json:"+jsonGroups);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
