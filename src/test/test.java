@@ -101,7 +101,7 @@ public class test {
 	private static void listTests() {
 		System.out.println("Availible Tests for "+userName);
 		System.out.println("0: Exit");  
-		System.out.println("1: Prints True - Does Nothing Relevant");
+		System.out.println("1: Multi phone enable / disable");
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
 		System.out.println("4: Set Default Voicemail Greeting");
@@ -149,7 +149,41 @@ public class test {
 					switch (testNr) {
 						case 1: // 1: Multi phone enable / disable 
 							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("******** true ********");
+							Phone[] phones = voice.getSettings(false).getPhones();
+							// create int Array from all phone ids
+							int[] phonesToChangeStatus = new int[phones.length];
+							
+							System.out.println("Current phone status:");
+							for (int j = 0; j < phones.length; j++) {
+								phonesToChangeStatus[j] = phones[j].getId();
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+							}
+							
+							//Disable all phones
+							for (int j = 0; j < phones.length; j++) {
+								voice.phoneDisable(phones[j].getId());
+							}
+							
+							
+							phones = voice.getSettings(true).getPhones();
+							// Output
+							System.out.println("After deactivate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+							}
+							
+							//Enable all phones 
+							for (int j = 0; j < phones.length; j++) {
+								voice.phoneEnable(phones[j].getId());
+							}
+							
+							// Output
+							phones = voice.getSettings(true).getPhones();
+							System.out.println("After activate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+							}
+							
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
