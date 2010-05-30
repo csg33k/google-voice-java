@@ -113,6 +113,9 @@ public class Voice {
 	 */
 	private String captchaUrl = null;
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
+	public final static String GOOGLE = "GOOGLE";
+	public final static String HOSTED = "HOSTED";
+	public final static String HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
 	/**
 	 * Type of account to request authorization for. Possible values are: <br/><br/>
 	 * -<b>GOOGLE</b> (get authorization for a Google account only) <br/>
@@ -122,7 +125,8 @@ public class Voice {
 	 * Use <b>HOSTED_OR_GOOGLE</b> if you're not sure which type of account you want authorization for. 
 	 * If the user information matches both a hosted and a Google account, only the hosted account is authorized.
 	 */
-	final static String ACCOUNT_TYPE = "GOOGLE"; //TODO Should we change this to HOSTED_OR_GOOGLE or add a custom Constructor?
+	private String account_type = GOOGLE; 
+	
 	/**
 	 * Name of the Google service you're requesting authorization for. Each service using the Authorization 
 	 * service is assigned a name value; for example, the name associated with Google Calendar is 'cl'. 
@@ -180,6 +184,7 @@ public class Voice {
 
 	/**
 	 * A constructor which which allows a custom source.
+	 * This Constructor enables verbose output.
 	 * 
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
@@ -192,7 +197,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public Voice(String user, String pass, String source) throws IOException {
-		init(user, pass, source, true);
+		init(user, pass, source, true, GOOGLE);
 
 	}
 
@@ -208,7 +213,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public Voice(String user, String pass) throws IOException {
-		init(user, pass, null, true);
+		init(user, pass, null, true, GOOGLE);
 	}
 
 	/**
@@ -228,7 +233,34 @@ public class Voice {
 	 */
 	public Voice(String user, String pass, String source,
 			boolean printDebugIntoToSystemOut) throws IOException {
-		init(user, pass, source, printDebugIntoToSystemOut);
+		init(user, pass, source, printDebugIntoToSystemOut, GOOGLE);
+	}
+	
+	/**
+	 * Instantiates a new voice. Custom Source Variable allowed, and
+	 * printDebugIntoSystemOut which allows for Verbose output.
+	 * 
+	 * @param user
+	 *            the username in the format of user@gmail.com or user@googlemail.com
+	 * @param pass
+	 *            the password
+	 * @param source
+	 *            the arbitrary source identifier.  Can be anything.
+	 * @param printDebugIntoToSystemOut
+	 *            the print debug into to system out
+	 * @param accountType
+	 * 			  Type of account to request authorization for. Possible values are:
+	 *			Voice.GOOGLE (get authorization for a Google account only) 
+	 *			Voice.HOSTED (get authorization for a hosted account only) 
+	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
+	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public Voice(String user, String pass, String source,
+			boolean printDebugIntoToSystemOut, String accountType) throws IOException {
+		init(user, pass, source, printDebugIntoToSystemOut, accountType);
 	}
 
 	/**
@@ -243,24 +275,36 @@ public class Voice {
 	 *            the source
 	 * @param printDebugIntoToSystemOut
 	 *            the print debug into to system out
+	 * @param accountType
+	 * 			  Type of account to request authorization for. Possible values are:
+	 *			Voice.GOOGLE (get authorization for a Google account only) 
+	 *			Voice.HOSTED (get authorization for a hosted account only) 
+	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
+	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
+	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void init(String user, String pass, String source,
-			boolean printDebugIntoToSystemOut) throws IOException {
-		this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
-		this.user = user;
-		this.pass = pass;
-		// this.rnrSEE = rnrSee;
-		if (source != null) {
-			this.source = source;
+			boolean printDebugIntoToSystemOut, String accountType) throws IOException {
+		if(accountType==GOOGLE||accountType==HOSTED||accountType==HOSTED_OR_GOOGLE) {
+			this.account_type = accountType;
+			this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
+			this.user = user;
+			this.pass = pass;
+			// this.rnrSEE = rnrSee;
+			if (source != null) {
+				this.source = source;
+			} else {
+				this.source = "GoogleVoiceJava";
+			}
+			
+			login();
+			this.general = getGeneral();
+			setRNRSEE();
 		} else {
-			this.source = "GoogleVoiceJava";
+			throw new IOException("Accounttype not valid");
 		}
-		
-		login();
-		this.general = getGeneral();
-		setRNRSEE();
 	}
 	
 
@@ -1222,7 +1266,7 @@ public class Voice {
 	public void login(String captchaAnswer) throws IOException {
 
 		String data = URLEncoder.encode("accountType", "UTF-8") + "="
-				+ URLEncoder.encode(ACCOUNT_TYPE, "UTF-8");
+				+ URLEncoder.encode(account_type, "UTF-8");
 		data += "&" + URLEncoder.encode("Email", "UTF-8") + "="
 				+ URLEncoder.encode(user, "UTF-8");
 		data += "&" + URLEncoder.encode("Passwd", "UTF-8") + "="
