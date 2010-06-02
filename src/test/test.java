@@ -64,7 +64,7 @@ public class test {
 		}
 		
 		try {
-			if(connectOnStartup) voice = new Voice(userName, pass);
+			if(connectOnStartup) voice = new Voice(userName, pass,"GoogleVoiceJava",true,Voice.GOOGLE);
 		} catch (IOException e) {
 			System.out.println("IO error creating voice!"+e.getLocalizedMessage());
 		}
