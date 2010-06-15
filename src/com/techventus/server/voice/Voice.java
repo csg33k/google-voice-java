@@ -99,6 +99,7 @@ public class Voice {
 	 * Url of the image with the captcha - only filled after a captacha response to a login try
 	 */
 	private String captchaUrl = null;
+	final static String enc = "UTF-8";
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 	public final static String GOOGLE = "GOOGLE";
 	public final static String HOSTED = "HOSTED";
@@ -567,36 +568,40 @@ public class Voice {
 	public String call(String originNumber, String destinationNumber,
 			String phoneType) throws IOException {
 		String out = "";
-		String calldata = URLEncoder.encode("outgoingNumber", "UTF-8") + "="
-				+ URLEncoder.encode(destinationNumber, "UTF-8");
-		calldata += "&" + URLEncoder.encode("forwardingNumber", "UTF-8") + "="
-				+ URLEncoder.encode(originNumber, "UTF-8");
-		calldata += "&" + URLEncoder.encode("subscriberNumber", "UTF-8") + "="
-				+ URLEncoder.encode("undefined", "UTF-8");
-		calldata += "&" + URLEncoder.encode("phoneType", "UTF-8") + "="
-				+ URLEncoder.encode(phoneType, "UTF-8");
-		calldata += "&" + URLEncoder.encode("remember", "UTF-8") + "="
-				+ URLEncoder.encode("0", "UTF-8");
-		calldata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
-		// POST /voice/call/connect/ outgoingNumber=[number to
-		// call]&forwardingNumber=[forwarding
-		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
-		// page]
+		StringBuffer calldata = new StringBuffer();
+		
+		
+		// POST /voice/call/connect/ 
+		// outgoingNumber=[number to call]
+		// &forwardingNumber=[forwarding number]
+		// &subscriberNumber=undefined
+		// &phoneType=[phone type from google]
+		// &remember=0
+		// &_rnr_se=[pull from page]
+		
+		calldata.append("outgoingNumber=");
+		calldata.append(URLEncoder.encode(destinationNumber, enc));
+		calldata.append("&forwardingNumber=");
+		calldata.append(URLEncoder.encode(originNumber, enc));
+		calldata.append("&subscriberNumber=undefined");
+		calldata.append("&phoneType=");
+		calldata.append(URLEncoder.encode(phoneType, enc));
+		calldata.append("&remember=0");
+		calldata.append("&_rnr_se=");
+		calldata.append(URLEncoder.encode(rnrSEE, enc));
+		
+		
 		URL callURL = new URL("https://www.google.com/voice/call/connect/");
 
 		URLConnection callconn = callURL.openConnection();
-		callconn.setRequestProperty( "Authorization",
-                "GoogleLogin auth="+authToken );
-		callconn
-				.setRequestProperty(
-						"User-agent",
-						USER_AGENT);
+		callconn.setRequestProperty("Authorization","GoogleLogin auth="+authToken);
+		callconn.setRequestProperty("User-agent",USER_AGENT);
 
 		callconn.setDoOutput(true);
 		OutputStreamWriter callwr = new OutputStreamWriter(callconn
 				.getOutputStream());
-		callwr.write(calldata);
+
+		callwr.write(calldata.toString());
 		callwr.flush();
 
 		BufferedReader callrd = new BufferedReader(new InputStreamReader(
@@ -636,15 +641,15 @@ public class Voice {
 			String phoneType) throws IOException {
 		String out = "";
 		String calldata = "";
-		calldata += URLEncoder.encode("outgoingNumber", "UTF-8") + "="
-				+ URLEncoder.encode("undefined", "UTF-8");
-		calldata += "&" + URLEncoder.encode("forwardingNumber", "UTF-8") + "="
-				+ URLEncoder.encode("undefined", "UTF-8");
+		calldata += URLEncoder.encode("outgoingNumber", enc) + "="
+				+ URLEncoder.encode("undefined", enc);
+		calldata += "&" + URLEncoder.encode("forwardingNumber", enc) + "="
+				+ URLEncoder.encode("undefined", enc);
 
-		calldata += "&" + URLEncoder.encode("cancelType", "UTF-8") + "="
-				+ URLEncoder.encode("C2C", "UTF-8");
-		calldata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		calldata += "&" + URLEncoder.encode("cancelType", enc) + "="
+				+ URLEncoder.encode("C2C", enc);
+		calldata += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 		// POST /voice/call/connect/ outgoingNumber=[number to
 		// call]&forwardingNumber=[forwarding
 		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
@@ -706,12 +711,12 @@ public class Voice {
 			for (int i = 0; i < IDs.length; i++) {
 				//TODO spawn threads!
 				int j = IDs[i];
-				String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
-						+ URLEncoder.encode("1", "UTF-8");
-				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
-						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
-				paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-					+ URLEncoder.encode(rnrSEE, "UTF-8");
+				String paraString = URLEncoder.encode("enabled", enc) + "="
+						+ URLEncoder.encode("1", enc);
+				paraString += "&" + URLEncoder.encode("phoneId", enc) + "="
+						+ URLEncoder.encode(Integer.toString(j), enc);
+				paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+					+ URLEncoder.encode(rnrSEE, enc);
 			
 				phonesEnableDisableApply(paraString);
 			}
@@ -731,12 +736,12 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public String phoneEnable(int ID) throws IOException {
-		String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
-				+ URLEncoder.encode("1", "UTF-8");
-		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
-				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		String paraString = URLEncoder.encode("enabled", enc) + "="
+				+ URLEncoder.encode("1", enc);
+		paraString += "&" + URLEncoder.encode("phoneId", enc) + "="
+				+ URLEncoder.encode(Integer.toString(ID), enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 		return phonesEnableDisableApply(paraString);
 	}
 	
@@ -763,12 +768,12 @@ public class Voice {
 			for (int i = 0; i < IDs.length; i++) {
 				//TODO spawn threads!
 				int j = IDs[i];
-				String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
-						+ URLEncoder.encode("0", "UTF-8");
-				paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
-						+ URLEncoder.encode(Integer.toString(j), "UTF-8");
-				paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-					+ URLEncoder.encode(rnrSEE, "UTF-8");
+				String paraString = URLEncoder.encode("enabled", enc) + "="
+						+ URLEncoder.encode("0", enc);
+				paraString += "&" + URLEncoder.encode("phoneId", enc) + "="
+						+ URLEncoder.encode(Integer.toString(j), enc);
+				paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+					+ URLEncoder.encode(rnrSEE, enc);
 			
 				phonesEnableDisableApply(paraString);
 			}
@@ -788,12 +793,12 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public String phoneDisable(int ID) throws IOException {
-		String paraString = URLEncoder.encode("enabled", "UTF-8") + "="
-				+ URLEncoder.encode("0", "UTF-8");
-		paraString += "&" + URLEncoder.encode("phoneId", "UTF-8") + "="
-				+ URLEncoder.encode(Integer.toString(ID), "UTF-8");
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		String paraString = URLEncoder.encode("enabled", enc) + "="
+				+ URLEncoder.encode("0", enc);
+		paraString += "&" + URLEncoder.encode("phoneId", enc) + "="
+				+ URLEncoder.encode(Integer.toString(ID), enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 		return phonesEnableDisableApply(paraString);
 	}
 
@@ -881,10 +886,10 @@ public class Voice {
 		}
 		
 		String paraString = "";
-		paraString += URLEncoder.encode("directConnect", "UTF-8") + "="
-				+ URLEncoder.encode(announceCallerStr, "UTF-8");
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		paraString += URLEncoder.encode("directConnect", enc) + "="
+				+ URLEncoder.encode(announceCallerStr, enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 
 
 		URLConnection conn = requestURL.openConnection();
@@ -933,11 +938,11 @@ public class Voice {
 		if (PRINT_TO_CONSOLE) System.out.println("Activating Greeting#"+greetingToSet);
 
 		String paraString = "";
-		// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += URLEncoder.encode("greetingId", "UTF-8") + "="
-				+ URLEncoder.encode(greetingToSet+"", "UTF-8");
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		// URLEncoder.encode("auth", enc) + "="+ URLEncoder.encode(authToken, enc);
+		paraString += URLEncoder.encode("greetingId", enc) + "="
+				+ URLEncoder.encode(greetingToSet+"", enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 
 
 		return postSettings(requestURL, paraString);
@@ -965,11 +970,11 @@ public class Voice {
 		}
 
 		String paraString = "";
-			// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");
-		paraString += URLEncoder.encode("doNotDisturb", "UTF-8") + "="
-				+ URLEncoder.encode(enabled+"", "UTF-8");
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+			// URLEncoder.encode("auth", enc) + "="+ URLEncoder.encode(authToken, enc);
+		paraString += URLEncoder.encode("doNotDisturb", enc) + "="
+				+ URLEncoder.encode(enabled+"", enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 
 
 		return postSettings(requestURL, paraString);
@@ -985,51 +990,51 @@ public class Voice {
 		URL requestURL = new URL(groupsSettingsURLString);
 
 		String paraString = "";
-		// URLEncoder.encode("auth", "UTF-8") + "="+ URLEncoder.encode(authToken, "UTF-8");;
+		// URLEncoder.encode("auth", enc) + "="+ URLEncoder.encode(authToken, enc);;
 		
 		// 1=true 0=false 
 		int isCustomGreeting = 0;
 		if(group.isCustomGreeting()) {
 			isCustomGreeting = 1;
 		}
-		paraString += URLEncoder.encode("isCustomGreeting", "UTF-8") + "="
-			+ URLEncoder.encode(isCustomGreeting+"", "UTF-8");
+		paraString += URLEncoder.encode("isCustomGreeting", enc) + "="
+			+ URLEncoder.encode(isCustomGreeting+"", enc);
 		
 		int greetingId = group.getGreetingId();
-		paraString += "&" + URLEncoder.encode("greetingId", "UTF-8") + "="
-			+ URLEncoder.encode(greetingId+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("greetingId", enc) + "="
+			+ URLEncoder.encode(greetingId+"", enc);
 		
 		for (int i = 0; i < group.getDisabledForwardingIds().size(); i++) {
-			paraString += "&" + URLEncoder.encode("disabledPhoneIds", "UTF-8") + "="
-				+ URLEncoder.encode(group.getDisabledForwardingIds().get(i).getId(), "UTF-8");
+			paraString += "&" + URLEncoder.encode("disabledPhoneIds", enc) + "="
+				+ URLEncoder.encode(group.getDisabledForwardingIds().get(i).getId(), enc);
 		}
 		
 		int directConnect = 0;
 		if(group.isDirectConnect()) {
 			directConnect = 1;
 		}
-		paraString += "&" + URLEncoder.encode("directConnect", "UTF-8") + "="
-			+ URLEncoder.encode(directConnect+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("directConnect", enc) + "="
+			+ URLEncoder.encode(directConnect+"", enc);
 		
 		int isCustomDirectConnect = 0;
 		if(group.isCustomDirectConnect()) {
 			isCustomDirectConnect = 1;
 		}
-		paraString += "&" + URLEncoder.encode("isCustomDirectConnect", "UTF-8") + "="
-			+ URLEncoder.encode(isCustomDirectConnect+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("isCustomDirectConnect", enc) + "="
+			+ URLEncoder.encode(isCustomDirectConnect+"", enc);
 		
 		int isCustomForwarding = 0;
 		if(group.isCustomForwarding()) {
 			isCustomForwarding = 1;
 		}
-		paraString += "&" + URLEncoder.encode("isCustomForwarding", "UTF-8") + "="
-			+ URLEncoder.encode(isCustomForwarding+"", "UTF-8");
+		paraString += "&" + URLEncoder.encode("isCustomForwarding", enc) + "="
+			+ URLEncoder.encode(isCustomForwarding+"", enc);
 		
-		paraString += "&" + URLEncoder.encode("id", "UTF-8") + "="
-			+ URLEncoder.encode(group.getId(), "UTF-8");
+		paraString += "&" + URLEncoder.encode("id", enc) + "="
+			+ URLEncoder.encode(group.getId(), enc);
 		
-		paraString += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 
 		return postSettings(requestURL, paraString);
 	}
@@ -1105,12 +1110,12 @@ public class Voice {
 		String out = "";
 		String smsdata = "";
 
-		smsdata += URLEncoder.encode("phoneNumber", "UTF-8") + "="
-				+ URLEncoder.encode(destinationNumber, "UTF-8");
-		smsdata += "&" + URLEncoder.encode("text", "UTF-8") + "="
-				+ URLEncoder.encode(txt, "UTF-8");
-		smsdata += "&" + URLEncoder.encode("_rnr_se", "UTF-8") + "="
-				+ URLEncoder.encode(rnrSEE, "UTF-8");
+		smsdata += URLEncoder.encode("phoneNumber", enc) + "="
+				+ URLEncoder.encode(destinationNumber, enc);
+		smsdata += "&" + URLEncoder.encode("text", enc) + "="
+				+ URLEncoder.encode(txt, enc);
+		smsdata += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
 		URL smsurl = new URL("https://www.google.com/voice/sms/send/");
 
 		URLConnection smsconn = smsurl.openConnection();
@@ -1164,7 +1169,7 @@ public class Voice {
 	 */
 	String get(String urlString) throws IOException {
 		URL url = new URL(urlString);
-		//+ "?auth=" + URLEncoder.encode(authToken, "UTF-8"));
+		//+ "?auth=" + URLEncoder.encode(authToken, enc));
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestProperty( "Authorization",
@@ -1252,21 +1257,21 @@ public class Voice {
 	 */
 	public void login(String captchaAnswer) throws IOException {
 
-		String data = URLEncoder.encode("accountType", "UTF-8") + "="
-				+ URLEncoder.encode(account_type, "UTF-8");
-		data += "&" + URLEncoder.encode("Email", "UTF-8") + "="
-				+ URLEncoder.encode(user, "UTF-8");
-		data += "&" + URLEncoder.encode("Passwd", "UTF-8") + "="
-				+ URLEncoder.encode(pass, "UTF-8");
-		data += "&" + URLEncoder.encode("service", "UTF-8") + "="
-				+ URLEncoder.encode(SERVICE, "UTF-8");
-		data += "&" + URLEncoder.encode("source", "UTF-8") + "="
-				+ URLEncoder.encode(source, "UTF-8");
+		String data = URLEncoder.encode("accountType", enc) + "="
+				+ URLEncoder.encode(account_type, enc);
+		data += "&" + URLEncoder.encode("Email", enc) + "="
+				+ URLEncoder.encode(user, enc);
+		data += "&" + URLEncoder.encode("Passwd", enc) + "="
+				+ URLEncoder.encode(pass, enc);
+		data += "&" + URLEncoder.encode("service", enc) + "="
+				+ URLEncoder.encode(SERVICE, enc);
+		data += "&" + URLEncoder.encode("source", enc) + "="
+				+ URLEncoder.encode(source, enc);
 		if(captchaAnswer!=null && captchaToken!=null) {
-			data += "&" + URLEncoder.encode("logintoken", "UTF-8") + "="
-					+ URLEncoder.encode(captchaToken, "UTF-8");
-			data += "&" + URLEncoder.encode("logincaptcha", "UTF-8") + "="
-					+ URLEncoder.encode(captchaAnswer, "UTF-8");
+			data += "&" + URLEncoder.encode("logintoken", enc) + "="
+					+ URLEncoder.encode(captchaToken, enc);
+			data += "&" + URLEncoder.encode("logincaptcha", enc) + "="
+					+ URLEncoder.encode(captchaAnswer, enc);
 		}
 
 		// Send data
