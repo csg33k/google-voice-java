@@ -19,6 +19,7 @@ import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.exception.CaptchaRequiredException;
 import com.techventus.server.voice.util.ParsingUtil;
 
 @SuppressWarnings("deprecation")
@@ -66,7 +67,7 @@ public class test {
 		try {
 			if(connectOnStartup) voice = new Voice(userName, pass,"GoogleVoiceJava",true,Voice.GOOGLE);
 		} catch (IOException e) {
-			System.out.println("IO error creating voice!"+e.getLocalizedMessage());
+			System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
 		}
 
 		listTests();
@@ -418,8 +419,38 @@ public class test {
 							String txt = br.readLine();
 							voice.sendSMS(number, txt);
 							break;
-						case 15:
+						case 15: // 15: Captcha Test
 							System.out.println("*********Starting Test "+testNr+" *******");
+							System.out.println("Enter Fake Password:");
+							String tempPass = br.readLine();
+							
+							boolean tryAgain = true;
+							
+							while(tryAgain) {
+								System.out.println("\n\rAttempting new Login...");
+								try {
+									voice = null;
+									voice = new Voice(userName, tempPass,"GoogleVoiceJava",true,Voice.GOOGLE);
+								} catch (CaptchaRequiredException e) {
+									System.out.println("Captcha found! - " + e.getLocalizedMessage());
+									System.out.println("Token: " + e.getCaptchaToken());
+									System.out.println("URL: " + e.getCaptchaUrl());
+								} catch (IOException e) {
+									System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
+									
+									System.out.println("Try Again? (Y/N):");
+									tryAgain = br.readLine().equalsIgnoreCase("Y");
+									System.out.println();
+								}
+							
+							}
+							
+							
+							
+							
+							voice = null;
+							voice = new Voice(userName, tempPass,"GoogleVoiceJava",true,Voice.GOOGLE);
+							
 							System.out.println("");
 							break;
 						default: 						
