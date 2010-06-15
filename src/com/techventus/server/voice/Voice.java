@@ -26,6 +26,8 @@
  */
 package com.techventus.server.voice;
 
+import gvjava.org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,11 +40,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import gvjava.org.json.JSONException;
-
 import com.techventus.server.voice.datatypes.AllSettings;
-import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.datatypes.Group;
+import com.techventus.server.voice.exception.AuthenticationException;
+import com.techventus.server.voice.exception.ERROR_CODE;
 import com.techventus.server.voice.util.ParsingUtil;
 
 /**
@@ -55,21 +57,6 @@ import com.techventus.server.voice.util.ParsingUtil;
 @SuppressWarnings("deprecation")
 public class Voice {
 
-	public enum ERROR_CODE{
-		BadAuthentication(	"Wrong username or password."),
-		NotVerified(		"The account email address has not been verified. You need to access your Google account directly to resolve the issue before logging in using google-voice-java."),
-		TermsNotAgreed(		"You have not agreed to terms. You need to access your Google account directly to resolve the issue before logging in using google-voice-java."),
-		CaptchaRequired(	"A CAPTCHA is required. (A response with this error code will also contain an image URL and a CAPTCHA token.)"),
-		Unknown(			"Unknown or unspecified error; the request contained invalid input or was malformed."),
-		AccountDeleted(		"The user account has been deleted."),
-		AccountDisabled(	"The user account has been disabled."),
-		ServiceDisabled(	"Your access to the voice service has been disabled. (Your user account may still be valid.)"),
-		ServiceUnavailable(	"The service is not available; try again later.");
-		ERROR_CODE(String pLongText) {
-			LONG_TEXT = pLongText;
-		}
-		public final String LONG_TEXT;
-	}
 	public boolean PRINT_TO_CONSOLE;
 	/** 
 	 * keeps the list of phones - lazy
@@ -303,7 +290,7 @@ public class Voice {
 			this.general = getGeneral();
 			setRNRSEE();
 		} else {
-			throw new IOException("Accounttype not valid");
+			throw new IOException("AccountType not valid");
 		}
 	}
 	
@@ -1329,31 +1316,36 @@ public class Voice {
 				}
 			} else if (line.contains("Error=")) {
 				lErrorString = line.split("=", 2)[1].trim();
-				error = getErrorEnumByCode(lErrorString);
+				//error = getErrorEnumByCode(lErrorString);
+				error = ERROR_CODE.valueOf(lErrorString);
 				if (PRINT_TO_CONSOLE)
 					System.out.println("Login error - "+lErrorString);
-			} 
-//			else if (line.contains("Url=")) {
-//				lUrl = line.split("=", 2)[1].trim();
-//			} 
-			else if (line.contains("CaptchaToken=")) {
-				captchaToken = line.split("=", 2)[1].trim();
-			} else if (line.contains("CaptchaUrl=")) {
-				captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
+				
+				if(error == ERROR_CODE.CaptchaRequired) {
+					if (line.contains("CaptchaToken=")) {
+						captchaToken = line.split("=", 2)[1].trim();
+					} 
+					
+					if (line.contains("CaptchaUrl=")) {
+						captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
+					}
+				}
 			}
+			
+
 		}
 		wr.close();
 		rd.close();
 
 		if (this.authToken == null) {
-			
-			throw new IOException(lErrorString + " " + error.LONG_TEXT);
+			AuthenticationException.throwProperException(error, captchaToken, captchaUrl);
 		}
 	}
 
 	/**
 	 * @return
 	 */
+	@Deprecated
 	private ERROR_CODE getErrorEnumByCode(String pErrorCodeString) {
 		if(pErrorCodeString.equals(ERROR_CODE.AccountDeleted.name())) {
 			return ERROR_CODE.AccountDeleted;
@@ -1374,6 +1366,7 @@ public class Voice {
 		}
 	}
 	
+	@Deprecated
 	public ERROR_CODE getError() {
 		return error;
 	}
