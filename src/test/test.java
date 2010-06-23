@@ -66,8 +66,18 @@ public class test {
 		
 		try {
 			if(connectOnStartup) voice = new Voice(userName, pass,"GoogleVoiceJava",true,Voice.GOOGLE);
-		} catch (IOException e) {
+		} catch(CaptchaRequiredException captEx) {
+			System.out.println("A captcha is required.");
+			System.out.println("Image URL  = "+captEx.getCaptchaUrl());
+			System.out.println("Capt Token = "+captEx.getCaptchaToken());
+			System.out.println("Goodbye.");
+			System.exit(1);
+			
+		}
+		catch (IOException e) {
 			System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
+			System.out.println("Goodbye.");
+			System.exit(1);
 		}
 
 		listTests();
@@ -425,22 +435,27 @@ public class test {
 							String tempPass = br.readLine();
 							
 							boolean tryAgain = true;
-							
+							int counter = 0;
 							while(tryAgain) {
-								System.out.println("\n\rAttempting new Login...");
+								System.out.println("\n\rAttempting new Login... " + counter++);
 								try {
 									voice = null;
-									voice = new Voice(userName, tempPass,"GoogleVoiceJava",true,Voice.GOOGLE);
+									/* (Toby) added here the counter to the tempPass, so that we actually get the CaptchaEx - bc without 
+									 * it I had 300 tries only getting the IO Error, with counter (each time a different password) 
+									 * I got the captcha after 30 tries
+									 */
+									voice = new Voice(userName, tempPass+counter,"GoogleVoiceJavaUnitTests",true,Voice.GOOGLE);
 								} catch (CaptchaRequiredException e) {
 									System.out.println("Captcha found! - " + e.getLocalizedMessage());
 									System.out.println("Token: " + e.getCaptchaToken());
 									System.out.println("URL: " + e.getCaptchaUrl());
+									tryAgain = false;
 								} catch (IOException e) {
 									System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
 									
-									System.out.println("Try Again? (Y/N):");
-									tryAgain = br.readLine().equalsIgnoreCase("Y");
-									System.out.println();
+									//System.out.println("Try Again? (Y/N):");
+									//tryAgain = br.readLine().equalsIgnoreCase("Y");
+									//System.out.println();
 								}
 							
 							}
@@ -448,8 +463,8 @@ public class test {
 							
 							
 							
-							voice = null;
-							voice = new Voice(userName, tempPass,"GoogleVoiceJava",true,Voice.GOOGLE);
+//							voice = null;
+//							voice = new Voice(userName, tempPass,"GoogleVoiceJavaUnitTests",true,Voice.GOOGLE);
 							
 							System.out.println("");
 							break;

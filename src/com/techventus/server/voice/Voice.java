@@ -99,6 +99,7 @@ public class Voice {
 	 * Url of the image with the captcha - only filled after a captacha response to a login try
 	 */
 	private String captchaUrl = null;
+	private String captchaUrl2 = null;
 	final static String enc = "UTF-8";
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
 	public final static String GOOGLE = "GOOGLE";
@@ -1300,6 +1301,7 @@ public class Voice {
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader rd = new BufferedReader(isr);
 		String line;
+		String completelineDebug="";
 		
 		/*
 		 * A failure response contains an error code and a URL to an error page that can be displayed to the user. 
@@ -1312,8 +1314,7 @@ public class Voice {
 
 		// String AuthToken = null;
 		while ((line = rd.readLine()) != null) {
-			//if(PRINT_TO_CONSOLE) 
-				//System.out.println(line);
+			completelineDebug += line+"\n";
 			if (line.contains("Auth=")) {
 				this.authToken = line.split("=", 2)[1].trim();
 				if (PRINT_TO_CONSOLE){
@@ -1326,15 +1327,17 @@ public class Voice {
 				if (PRINT_TO_CONSOLE)
 					System.out.println("Login error - "+lErrorString);
 				
-				if(error == ERROR_CODE.CaptchaRequired) {
-					if (line.contains("CaptchaToken=")) {
-						captchaToken = line.split("=", 2)[1].trim();
-					} 
-					
-					if (line.contains("CaptchaUrl=")) {
-						captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
-					}
-				}
+				
+			}
+			if (line.contains("CaptchaToken=")) {
+				captchaToken = line.split("=", 2)[1].trim();
+			} 
+			
+			if (line.contains("CaptchaUrl=")) {
+				captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
+			}
+			if (line.contains("Url=")) {
+				captchaUrl2 = line.split("=", 2)[1].trim();
 			}
 			
 
@@ -1342,6 +1345,10 @@ public class Voice {
 		wr.close();
 		rd.close();
 
+//		if (PRINT_TO_CONSOLE){
+//			System.out.println(completelineDebug);
+//		}
+		
 		if (this.authToken == null) {
 			AuthenticationException.throwProperException(error, captchaToken, captchaUrl);
 		}
