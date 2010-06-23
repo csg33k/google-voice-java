@@ -72,9 +72,7 @@ public class test {
 			System.out.println("Capt Token = "+captEx.getCaptchaToken());
 			System.out.println("Goodbye.");
 			System.exit(1);
-			
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
 			System.out.println("Goodbye.");
 			System.exit(1);
@@ -448,7 +446,11 @@ public class test {
 								} catch (CaptchaRequiredException e) {
 									System.out.println("Captcha found! - " + e.getLocalizedMessage());
 									System.out.println("Token: " + e.getCaptchaToken());
-									System.out.println("URL: " + e.getCaptchaUrl());
+									System.out.println("URL  : " + e.getCaptchaUrl());
+									System.out.println("Please enter the captcha challenge response from the URL:");
+									String response = br.readLine();
+									// create the voice object with the response
+									voice = new Voice(userName, pass,"GoogleVoiceJavaUnitTests",true,Voice.GOOGLE,response,e.getCaptchaToken());
 									tryAgain = false;
 								} catch (IOException e) {
 									System.out.println("IO error creating voice! - "+e.getLocalizedMessage());

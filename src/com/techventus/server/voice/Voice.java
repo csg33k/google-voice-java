@@ -186,7 +186,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public Voice(String user, String pass, String source) throws IOException {
-		init(user, pass, source, true, GOOGLE);
+		init(user, pass, source, true, GOOGLE, null, null);
 
 	}
 
@@ -202,7 +202,7 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public Voice(String user, String pass) throws IOException {
-		init(user, pass, null, true, GOOGLE);
+		init(user, pass, null, true, GOOGLE, null, null);
 	}
 
 	/**
@@ -222,7 +222,7 @@ public class Voice {
 	 */
 	public Voice(String user, String pass, String source,
 			boolean printDebugIntoToSystemOut) throws IOException {
-		init(user, pass, source, printDebugIntoToSystemOut, GOOGLE);
+		init(user, pass, source, printDebugIntoToSystemOut, GOOGLE, null, null);
 	}
 	
 	/**
@@ -249,12 +249,42 @@ public class Voice {
 	 */
 	public Voice(String user, String pass, String source,
 			boolean printDebugIntoToSystemOut, String accountType) throws IOException {
-		init(user, pass, source, printDebugIntoToSystemOut, accountType);
+		init(user, pass, source, printDebugIntoToSystemOut, accountType, null, null);
+	}
+	
+	/**
+	 * Instantiates a new voice. Custom Source Variable allowed, and
+	 * printDebugIntoSystemOut which allows for Verbose output.
+	 * 
+	 * @param user
+	 *            the username in the format of user@gmail.com or user@googlemail.com
+	 * @param pass
+	 *            the password
+	 * @param source
+	 *            the arbitrary source identifier.  Can be anything.
+	 * @param printDebugIntoToSystemOut
+	 *            the print debug into to system out
+	 * @param accountType
+	 * 			  Type of account to request authorization for. Possible values are:
+	 *			Voice.GOOGLE (get authorization for a Google account only) 
+	 *			Voice.HOSTED (get authorization for a hosted account only) 
+	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
+	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
+	 * @param captchaResponse
+	 * 				response to a captcha challenge, set to null if normal login
+	 * @param captchaToken
+	 * 				(optional) token which matches the response/url from the captcha challenge
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public Voice(String user, String pass, String source,
+			boolean printDebugIntoToSystemOut, String accountType, String captchaResponse, String captchaToken) throws IOException {
+		init(user, pass, source, printDebugIntoToSystemOut, accountType, captchaResponse, captchaToken);
 	}
 
 	/**
 	 * Internal function used by all constructors to fully initiate the Voice
-	 * Object.
+	 * Object without chaptcha Response
 	 * 
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
@@ -270,12 +300,16 @@ public class Voice {
 	 *			Voice.HOSTED (get authorization for a hosted account only) 
 	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
 	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
+	 * @param captchaResponse
+	 * 				response to a captcha challenge, set to null if normal login
+	 * @param captchaToken
+	 * 				token which matches the response/url from the captcha challenge
 	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void init(String user, String pass, String source,
-			boolean printDebugIntoToSystemOut, String accountType) throws IOException {
+			boolean printDebugIntoToSystemOut, String accountType, String captchaResponse, String captchaToken) throws IOException {
 		if(accountType==GOOGLE||accountType==HOSTED||accountType==HOSTED_OR_GOOGLE) {
 			this.account_type = accountType;
 			this.PRINT_TO_CONSOLE = printDebugIntoToSystemOut;
@@ -288,7 +322,7 @@ public class Voice {
 				this.source = "GoogleVoiceJava";
 			}
 			
-			login();
+			login(captchaResponse,captchaToken);
 			this.general = getGeneral();
 			setRNRSEE();
 		} else {
@@ -1248,15 +1282,18 @@ public class Voice {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void login()  throws IOException {
-		login(null);
+		login(null,null);
 	}
 	
 	/**
 	 * Use this login method to login - use captchaAnswer to answer a captcha challenge
-	 * @param captchaAnswer - (optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
+	 * @param captchaAnswer
+	 * 				(optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
+	 * @param captchaToken
+	 * 				(optional) token which matches the response/url from the captcha challenge
 	 * @throws IOException
 	 */
-	public void login(String captchaAnswer) throws IOException {
+	public void login(String pCaptchaAnswer, String pCaptchaToken) throws IOException {
 
 		String data = URLEncoder.encode("accountType", enc) + "="
 				+ URLEncoder.encode(account_type, enc);
@@ -1268,11 +1305,11 @@ public class Voice {
 				+ URLEncoder.encode(SERVICE, enc);
 		data += "&" + URLEncoder.encode("source", enc) + "="
 				+ URLEncoder.encode(source, enc);
-		if(captchaAnswer!=null && captchaToken!=null) {
+		if(pCaptchaAnswer!=null && pCaptchaToken!=null) {
 			data += "&" + URLEncoder.encode("logintoken", enc) + "="
-					+ URLEncoder.encode(captchaToken, enc);
+					+ URLEncoder.encode(pCaptchaToken, enc);
 			data += "&" + URLEncoder.encode("logincaptcha", enc) + "="
-					+ URLEncoder.encode(captchaAnswer, enc);
+					+ URLEncoder.encode(pCaptchaAnswer, enc);
 		}
 
 		// Send data
