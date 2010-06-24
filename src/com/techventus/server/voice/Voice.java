@@ -1099,6 +1099,7 @@ public class Voice {
 		callwr.flush();
 
 		// Get the response
+		conn.connect();
 		int responseCode = conn.getResponseCode();
 		if(PRINT_TO_CONSOLE)
 			System.out.println(requestURL + " - " + conn.getResponseMessage());
@@ -1162,8 +1163,7 @@ public class Voice {
 						USER_AGENT);
 
 		smsconn.setDoOutput(true);
-		OutputStreamWriter callwr = new OutputStreamWriter(smsconn
-				.getOutputStream());
+		OutputStreamWriter callwr = new OutputStreamWriter(smsconn.getOutputStream());
 		callwr.write(smsdata);
 		callwr.flush();
 
@@ -1216,6 +1216,7 @@ public class Voice {
 		conn.setFollowRedirects(false);
 
 		// Get the response
+		conn.connect();
 		int responseCode = conn.getResponseCode();
 		if(PRINT_TO_CONSOLE)
 			System.out.println(urlString + " - " + conn.getResponseMessage());
@@ -1326,6 +1327,7 @@ public class Voice {
 		wr.flush();
 
 		// Get the response
+		conn.connect();
 		int responseCode = conn.getResponseCode();
 		if(PRINT_TO_CONSOLE)
 			System.out.println(loginURLString + " - " + conn.getResponseMessage());
