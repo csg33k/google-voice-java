@@ -1212,8 +1212,7 @@ public class Voice {
 		conn.setRequestProperty(
 						"User-agent",
 						USER_AGENT);
-		HttpURLConnection.setFollowRedirects(false);
-		conn.setFollowRedirects(false);
+		conn.setInstanceFollowRedirects(false);
 
 		// Get the response
 		conn.connect();
