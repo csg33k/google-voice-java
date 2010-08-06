@@ -428,6 +428,14 @@ public class Voice {
 		return get(generalURLString);
 	}
 	
+	/**
+	 * The main Google Voice section is paginated.  Access the raw HTML for 
+	 * specific page of the main section.
+	 *
+	 * @param page the page
+	 * @return the general page
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public String getGeneralPage(int page) throws IOException {
 		return get(generalURLString,page);
 	}
