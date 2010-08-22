@@ -34,7 +34,8 @@ public class AuthenticationException extends IOException{
 	}
 
 	public AuthenticationException(Throwable cause, ERROR_CODE errorCode) {
-		super(errorCode.LONG_TEXT, cause);
+		//super(errorCode.LONG_TEXT, cause); Java5 no cause
+		super(errorCode.LONG_TEXT);
 		error = errorCode;
 	}
 
