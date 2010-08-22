@@ -1234,16 +1234,25 @@ public class Voice {
 			is = conn.getErrorStream();
 		}
 		
-		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		
-		StringBuffer sb = new StringBuffer();
-		String line;
-		while ((line = rd.readLine()) != null) {
-			sb.append(line + "\n\r");
+		if(is==null) {
+			throw new IOException(urlString + " : " + conn.getResponseMessage() + "("+responseCode+") : InputStream was null : exiting.");
 		}
-		rd.close();
-		String result = sb.toString();
+		
+		String result="";
+		try {
+			// Get the response
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			
+			StringBuffer sb = new StringBuffer();
+			String line;
+			while ((line = rd.readLine()) != null) {
+				sb.append(line + "\n\r");
+			}
+			rd.close();
+			result = sb.toString();
+		} catch (Exception e) {
+			throw new IOException(urlString + " - " + conn.getResponseMessage() + "("+responseCode+") - " +e.getLocalizedMessage());
+		}
 
 		return result;
 	}
