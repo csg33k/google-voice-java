@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -81,6 +82,10 @@ public class Voice {
 	 * User's password.
 	 */
 	private String pass = null;
+	/**
+   * Google Voice Phone Number.
+   */
+  private String phoneNumber = null;
 	/**
 	 * Once the login information has been successfully authenticated, Google returns a token, which your 
 	 * application will reference each time it requests access to the user's account.
@@ -146,6 +151,7 @@ public class Voice {
 	final static String groupsInfoURLString = "https://www.google.com/voice/settings/tab/groups";
 	final static String voicemailInfoURLString = "https://www.google.com/voice/settings/tab/voicemailsettings";
 	final static String groupsSettingsURLString = "https://www.google.com/voice/settings/editGroup/";
+  final static String voicemailDownloadURLString = "https://www.google.com/voice/media/send_voicemail/";
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -549,6 +555,71 @@ public class Voice {
 		return get(missedURLString,page);
 	}
 
+  /**
+	 * Gets the Voicemail page raw source code.
+	 *
+	 * @return the Voicemail
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String getVoicemail() throws IOException {
+		return get(voicemailURLString);
+	}
+
+	public String getVoicemailPage(int page) throws IOException {
+		return get(voicemailURLString,page);
+	}
+
+  /**
+	 * Downloads a voicemail
+	 *
+   * @param id of the voicemail to download
+	 * @return byte output stream
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+  public ByteArrayOutputStream downloadVoicemail(String msgID) throws IOException
+  {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+    try
+    {
+      URL u = new URL (voicemailDownloadURLString + msgID);
+      HttpURLConnection huc = (HttpURLConnection)u.openConnection () ;
+      huc.setRequestProperty("Authorization", "GoogleLogin auth="+authToken);
+      huc.setRequestProperty("User-agent", USER_AGENT);
+      huc.setRequestMethod ("GET");
+      huc.connect() ;
+      InputStream is = huc.getInputStream();
+
+      if(huc.getResponseCode() == HttpURLConnection.HTTP_OK)
+      {
+        byte[] buffer = new byte [4096];
+        int bytes = 0;
+
+        while(true)
+        {
+          bytes = is.read(buffer);
+          if(bytes <= 0)
+            break;
+          outputStream.write(buffer, 0, bytes);
+        }
+
+        outputStream.flush();
+      }
+               
+      huc.disconnect ();
+
+      return outputStream;
+    }
+    catch(IOException e)
+    {
+      System.out.println ( "Exception\n" + e ) ;
+    }
+
+    return null;
+  }
+
 	/**
 	 * Gets the SMS page raw source code.
 	 * 
@@ -592,13 +663,16 @@ public class Voice {
 		}
 	}
 
+  public String getPhoneNumber()
+  {
+    return this.phoneNumber;
+  }
+
 	//TODO Combine with or replace setPhoneInfo
 	public String getRawPhonesInfo() throws IOException{
 		return get(phonesInfoURLString);
 	}
 	
-	
-
 	/**
 	 * Place a call.
 	 * 
@@ -736,6 +810,56 @@ public class Voice {
 		return out;
 
 	}
+	
+	public String deleteMessage(String msgID) throws IOException
+  {
+    String out = "";
+		StringBuffer calldata = new StringBuffer();
+
+
+		// POST /voice/inbox/deleteMessages/
+		// messages=[messageID]
+		// &trash=1
+		// &_rnr_se=[pull from page]
+
+		calldata.append("messages=");
+		calldata.append(URLEncoder.encode(msgID, enc));
+		calldata.append("&trash=1");
+		calldata.append("&_rnr_se=");
+		calldata.append(URLEncoder.encode(rnrSEE, enc));
+
+
+		URL callURL = new URL("https://www.google.com/voice/inbox/deleteMessages/");
+
+		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty("Authorization","GoogleLogin auth="+authToken);
+		callconn.setRequestProperty("User-agent",USER_AGENT);
+
+		callconn.setDoOutput(true);
+		OutputStreamWriter callwr = new OutputStreamWriter(callconn
+				.getOutputStream());
+
+		callwr.write(calldata.toString());
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(
+				callconn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+  }
 	
 	/** 
 	 * Enables multiple phones in one post 
@@ -1424,6 +1548,11 @@ public class Voice {
 		if (this.authToken == null) {
 			AuthenticationException.throwProperException(error, captchaToken, captchaUrl);
 		}
+		
+		String response = this.getRawPhonesInfo();
+    int phoneIndex = response.indexOf("gc-user-number-value\">");
+    this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
+    this.phoneNumber = this.phoneNumber.replaceAll("[^a-zA-Z0-9]", "");
 	}
 
 	/**
