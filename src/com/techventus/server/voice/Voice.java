@@ -29,24 +29,27 @@ package com.techventus.server.voice;
 import gvjava.org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.datatypes.Group;
+import com.techventus.server.voice.datatypes.records.SMSThread;
 import com.techventus.server.voice.exception.AuthenticationException;
 import com.techventus.server.voice.exception.ERROR_CODE;
 import com.techventus.server.voice.util.ParsingUtil;
+import com.techventus.server.voice.util.SMSParser;
 
 /**
  * The Class Voice. This class is the basis of the entire API and contains all
@@ -629,6 +632,18 @@ public class Voice {
 	 */
 	public String getSMS() throws IOException {
 		return get(smsURLString);
+	}
+	
+	/**
+	 * Gets a collection of SMS threads. Each SMS thread has a collection of SMS
+	 * objects which contains contact, text and timestamp information.
+	 * 
+	 * @return a collection of SMS threads.
+	 * @throws IOException
+	 */
+	public Collection<SMSThread> getSMSThreads() throws IOException {
+		SMSParser parser = new SMSParser(get(smsURLString), phoneNumber);
+		return parser.getSMSThreads();
 	}
 	
 	public String getSMSPage(int page) throws IOException {
