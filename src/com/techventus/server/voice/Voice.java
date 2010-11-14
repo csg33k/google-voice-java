@@ -1565,9 +1565,12 @@ public class Voice {
 		}
 		
 		String response = this.getRawPhonesInfo();
-    int phoneIndex = response.indexOf("gc-user-number-value\">");
-    this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
-    this.phoneNumber = this.phoneNumber.replaceAll("[^a-zA-Z0-9]", "");
+		int phoneIndex = response.indexOf("gc-user-number-value\">");
+		this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
+		this.phoneNumber = this.phoneNumber.replaceAll("[^a-zA-Z0-9]", "");
+		if (this.phoneNumber.indexOf("+") == -1) {
+			this.phoneNumber = "+1" + this.phoneNumber;
+		}
 	}
 
 	/**
