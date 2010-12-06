@@ -111,7 +111,7 @@ public class Contact {
 	public static Contact extractContact(String html) {
 		html = ParsingUtil.removeUninterestingParts(html,"<table class=\"gc-message-tbl\">","</table>", true);
 		
-		//if it shows a name <a class="gc-under gc-message-name-link" title="Go to contact" href="javascript://">Emily Laborde</a> 
+		//if it shows a name <a class="gc-under gc-message-name-link" title="Go to contact" href="javascript://">John Doe</a> 
 		String lname;
 		try {
 			lname = ParsingUtil.removeUninterestingParts(html,"<a class=\"gc-under gc-message-name-link\" title=\"Go to contact\" href=\"javascript://\">","</a>",false);
