@@ -343,7 +343,14 @@ public class Voice {
 		}
 	}
 	
-
+        /**
+	 * Returns the username
+	 * @return username for gvoice account
+	 */
+        public String getUsername()
+        {
+            return this.user;
+        }
 	
 	/**
 	 * Returns the Greeting list - Lazy
