@@ -77,6 +77,16 @@ public class SMS implements Comparable<SMS> {
 
 	@Override
 	public int compareTo(SMS o) {
-		return dateTime.compareTo(o.dateTime);
+		int dateTimeCompare = o.dateTime.compareTo(dateTime);
+		if(dateTimeCompare == 0) {
+			int fromCompare = o.from.compareTo(from);
+			if(fromCompare == 0) {
+				return o.content.compareTo(content);
+			} else {
+				return fromCompare;
+			}
+		} else {
+			return dateTimeCompare;
+		}
 	}
 }
