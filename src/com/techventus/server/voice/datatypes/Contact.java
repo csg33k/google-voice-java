@@ -11,7 +11,7 @@ import com.techventus.server.voice.util.ParsingUtil;
  * @author Tobias Eisentraeger
  *
  */
-public class Contact {
+public class Contact implements Comparable<Contact>{
 	/** The Display name of the contact **/
 	private String name;
 	/** Googles id of the contact **/
@@ -154,6 +154,14 @@ public class Contact {
 		}
 		
 		return new Contact(lname, lid, lnumber, limageUrl);
+	}
+	@Override
+	public int compareTo(Contact o) {
+		if(o.name.compareTo(name) == 0) {
+			return o.number.compareTo(number);
+		} else {
+			return o.name.compareTo(name);
+		}
 	}
 	
 	
