@@ -77,7 +77,19 @@ public class SMSParser {
 		// Use tidy to fix the HTML to a well-formed XML representation.
 		Tidy tidy = new Tidy();
 		tidy.setXHTML(true);
+		// show warnings removes some of the verboseness
 		tidy.setShowWarnings(false);
+		// However, jtidy is still spewing crap to stderr that is
+		// not breaking the parser, but is making it ugly.
+		// So we redirect to a bitbucket. This works, but is hacky.
+		// It probably shoud go to log4j, if it weren't shakespearean in length.
+		tidy.setErrout(new java.io.PrintWriter(new java.io.PrintStream(
+				new java.io.OutputStream() {
+					public void write(int b) {
+					}
+				})));
+		// TODO: figure out why jtidy generates so much error text and fix
+		// the issues if possible
 		org.w3c.dom.Document tDOM = tidy.parseDOM(
 				new StringReader(htmlResponse), null);
 
@@ -138,22 +150,21 @@ public class SMSParser {
 				.selectNodes(XPathQuery.MESSAGE_SMS_ROW);
 		for (Element element : elements) {
 			try {
-				String from = element
-						.selectSingleNode(XPathQuery.MESSAGE_SMS_FROM)
-						.getText().replaceAll(":", "").trim();
-				String text = element
-						.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT)
-						.getText().trim();
-				String dateTime = element
-						.selectSingleNode(XPathQuery.MESSAGE_SMS_TIME)
-						.getText().trim();
+				String from = element.selectSingleNode(
+						XPathQuery.MESSAGE_SMS_FROM).getText().replaceAll(":",
+						"").trim();
+				String text = element.selectSingleNode(
+						XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
+				String dateTime = element.selectSingleNode(
+						XPathQuery.MESSAGE_SMS_TIME).getText().trim();
 				Contact contact = thread.getContact();
 				if (!from.equals(contact.getName())
 						&& from.equals(GoogleVoice.CONTACT_ME)) {
 					contact = me;
 				}
 				Date time = dateTimeFormat.parse(dateFormat.format(thread
-						.getDate()) + " " + dateTime);
+						.getDate())
+						+ " " + dateTime);
 				if (!time.before(thread.getDate())) {
 					time = new Date(time.getTime()
 							- GoogleVoice.DAY_MILLISECONDS);
@@ -188,13 +199,17 @@ public class SMSParser {
 				String id = jsonSmsThread.has(JSONContants.ID) ? jsonSmsThread
 						.getString(JSONContants.ID) : "";
 				long startTime = jsonSmsThread.has(JSONContants.START_TIME) ? jsonSmsThread
-						.getLong(JSONContants.START_TIME) : 0;
+						.getLong(JSONContants.START_TIME)
+						: 0;
 				String note = jsonSmsThread.has(JSONContants.NOTE) ? jsonSmsThread
-						.getString(JSONContants.NOTE) : "";
+						.getString(JSONContants.NOTE)
+						: "";
 				boolean isRead = jsonSmsThread.has(JSONContants.IS_READ) ? jsonSmsThread
-						.getBoolean(JSONContants.IS_READ) : false;
+						.getBoolean(JSONContants.IS_READ)
+						: false;
 				boolean isStarred = jsonSmsThread.has(JSONContants.STARRED) ? jsonSmsThread
-						.getBoolean(JSONContants.STARRED) : false;
+						.getBoolean(JSONContants.STARRED)
+						: false;
 				SMSThread smsThread = new SMSThread(id, note, new Date(
 						startTime), null, isRead, isStarred);
 				result.put(id, smsThread);
