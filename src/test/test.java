@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -19,6 +20,8 @@ import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.datatypes.records.SMS;
+import com.techventus.server.voice.datatypes.records.SMSThread;
 import com.techventus.server.voice.exception.CaptchaRequiredException;
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -124,7 +127,8 @@ public class test {
 		System.out.println("12: Group settings isPhoneEnabled tests");
 		System.out.println("13: List Default Phones and Enabled/Disabled Setting");
 		System.out.println("14: Send SMS");
-		System.out.println("15: Captcha Test");
+		System.out.println("15: Check SMS");
+		System.out.println("16: Captcha Test");
 		
 		int testNr = 0;
 		try {
@@ -427,7 +431,18 @@ public class test {
 							String txt = br.readLine();
 							voice.sendSMS(number, txt);
 							break;
-						case 15: // 15: Captcha Test
+						case 15:
+							System.out.println("*********Starting Test "+testNr+" CHECK SMS*******");
+							Collection<SMSThread> threads = voice.getSMSThreads();
+							for (SMSThread thread : threads) {
+								System.out.println("\tThread " + thread.getId());
+								for (SMS sms : thread.getAllSMS()) {
+									System.out.println("\t\tMessage: " + sms.getContent());
+								}
+							}
+							System.out.println("******** Finished Test "+testNr+" ********");
+							break;
+						case 16: // 15: Captcha Test
 							System.out.println("*********Starting Test "+testNr+" *******");
 							System.out.println("Enter Fake Password:");
 							String tempPass = br.readLine();
