@@ -1,6 +1,3 @@
-package test;
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +36,7 @@ public class test {
 	public static void main(String[] args){
 		
 		try {
-			testProps = load("test/privateTestData.properties");
+			testProps = load("privateTestData.properties");
 			userName = testProps.getProperty("username");
 			pass = testProps.getProperty("password");
 			connectOnStartup = Boolean.parseBoolean(testProps.getProperty("connectOnStartup"));
