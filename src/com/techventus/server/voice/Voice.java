@@ -135,26 +135,29 @@ public class Voice {
 	 * names, refer to the service documentation.
 	 */
 	final static String SERVICE = "grandcentral";
-	final static String generalURLString = "https://www.google.com/voice/";
+	final static String generalURLString = "https://www.google.com/voice/b/0";
 	final static String loginURLString = "https://www.google.com/accounts/ClientLogin";
-	final static String inboxURLString = "https://www.google.com/voice/inbox/recent/inbox/";
-	final static String starredURLString = "https://www.google.com/voice/inbox/recent/starred/";
-	final static String recentAllURLString = "https://www.google.com/voice/inbox/recent/all/";
-	final static String spamURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	final static String trashURLString = "https://www.google.com/voice/inbox/recent/spam/";
-	final static String voicemailURLString = "https://www.google.com/voice/inbox/recent/voicemail/";
-	final static String smsURLString = "https://www.google.com/voice/inbox/recent/sms/";
-	final static String recordedURLString = "https://www.google.com/voice/inbox/recent/recorded/";
-	final static String placedURLString = "https://www.google.com/voice/inbox/recent/placed/";
-	final static String receivedURLString = "https://www.google.com/voice/inbox/recent/received/";
-	final static String missedURLString = "https://www.google.com/voice/inbox/recent/missed/";
+	final static String inboxURLString = "https://www.google.com/voice/b/0/inbox/recent/inbox/";
+	final static String starredURLString = "https://www.google.com/voice/b/0/inbox/recent/starred/";
+	final static String recentAllURLString = "https://www.google.com/voice/b/0/inbox/recent/all/";
+	final static String spamURLString = "https://www.google.com/voice/b/0/inbox/recent/spam/";
+	final static String trashURLString = "https://www.google.com/voice/b/0/inbox/recent/spam/";
+	final static String voicemailURLString = "https://www.google.com/voice/b/0/inbox/recent/voicemail/";
+	final static String smsURLString = "https://www.google.com/voice/b/0/inbox/recent/sms/";
+	final static String recordedURLString = "https://www.google.com/voice/b/0/inbox/recent/recorded/";
+	final static String placedURLString = "https://www.google.com/voice/b/0/inbox/recent/placed/";
+	final static String receivedURLString = "https://www.google.com/voice/b/0/inbox/recent/received/";
+	final static String missedURLString = "https://www.google.com/voice/b/0/inbox/recent/missed/";
 	final static String phoneEnableURLString = "https://www.google.com/voice/settings/editDefaultForwarding/";
 	final static String generalSettingsURLString = "https://www.google.com/voice/settings/editGeneralSettings/";
-	final static String phonesInfoURLString = "https://www.google.com/voice/settings/tab/phones";
+	final static String phonesInfoURLString = "https://www.google.com/voice/b/0/settings/tab/phones";
 	final static String groupsInfoURLString = "https://www.google.com/voice/settings/tab/groups";
 	final static String voicemailInfoURLString = "https://www.google.com/voice/settings/tab/voicemailsettings";
 	final static String groupsSettingsURLString = "https://www.google.com/voice/settings/editGroup/";
-  final static String voicemailDownloadURLString = "https://www.google.com/voice/media/send_voicemail/";
+	final static String voicemailDownloadURLString = "https://www.google.com/voice/media/send_voicemail/";
+	final static String markAsReadString = "https://www.google.com/voice/b/0/inbox/mark/";
+	final static String unreadSMSString = "https://www.google.com/voice/b/0/inbox/recent/sms/unread/";
+  
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -475,6 +478,14 @@ public class Voice {
 		return get(starredURLString,page);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Gets the raw page source code for the recent items.
 	 * 
@@ -565,6 +576,22 @@ public class Voice {
 		return get(missedURLString,page);
 	}
 
+	
+	public String getUnreadSMS() throws IOException{
+		return get(unreadSMSString);
+	}
+	
+	public String getUnreadSMSPage(int page) throws IOException{
+		return get(unreadSMSString,page);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
   /**
 	 * Gets the Voicemail page raw source code.
 	 *
@@ -640,6 +667,14 @@ public class Voice {
 	public String getSMS() throws IOException {
 		return get(smsURLString);
 	}
+
+	
+	
+	public String getSMSPage(int page) throws IOException {
+		return get(smsURLString,page);
+	}
+	
+	
 	
 	/**
 	 * Gets a collection of SMS threads. Each SMS thread has a collection of SMS
@@ -653,9 +688,15 @@ public class Voice {
 		return parser.getSMSThreads();
 	}
 	
-	public String getSMSPage(int page) throws IOException {
-		return get(smsURLString,page);
+	
+	public Collection<SMSThread> getSMSThreads(String response){
+		SMSParser parser= new SMSParser(response, phoneNumber);
+		return parser.getSMSThreads();
 	}
+	
+	
+	
+	
 
 	/**
 	 * Internal method which parses the Homepage source code to determine the
@@ -833,6 +874,132 @@ public class Voice {
 
 	}
 	
+	/**
+	 * Mark a Conversation with a known Message ID as read.
+	 *
+	 * @param msgID the msg id
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public String markAsRead(String msgID) throws IOException
+  {
+    String out = "";
+		StringBuffer calldata = new StringBuffer();
+
+		
+        // POST /voice/inbox/mark/ 
+        // messages=[messageID]
+        // &read=1
+        // &_rnr_se=[pull from page]
+		
+		calldata.append("messages=");
+		calldata.append(URLEncoder.encode(msgID, enc));
+		calldata.append("&read=1");
+		calldata.append("&_rnr_se=");
+		calldata.append(URLEncoder.encode(rnrSEE, enc));
+
+
+		URL callURL = new URL(markAsReadString);
+
+		URLConnection callconn = callURL.openConnection();
+		callconn.setRequestProperty("Authorization","GoogleLogin auth="+authToken);
+		callconn.setRequestProperty("User-agent",USER_AGENT);
+
+		callconn.setDoOutput(true);
+		OutputStreamWriter callwr = new OutputStreamWriter(callconn
+				.getOutputStream());
+
+		callwr.write(calldata.toString());
+		callwr.flush();
+
+		BufferedReader callrd = new BufferedReader(new InputStreamReader(
+				callconn.getInputStream()));
+
+		String line;
+		while ((line = callrd.readLine()) != null) {
+			out += line + "\n\r";
+
+		}
+
+		callwr.close();
+		callrd.close();
+
+		if (out.equals("")) {
+			throw new IOException("No Response Data Received.");
+		}
+
+		return out;
+  }
+	
+	
+
+	/**
+	 * Mark a Conversation with a known Message ID as unread.
+	 *
+	 * @param msgID the msg id
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public String markUnRead(String msgID) throws IOException
+	{
+	    String out = "";
+	        StringBuffer calldata = new StringBuffer();
+	
+	
+	        // POST /voice/inbox/mark/ 
+	        // messages=[messageID]
+	        // &read=0
+	        // &_rnr_se=[pull from page]
+	
+	        calldata.append("messages=");
+	        calldata.append(URLEncoder.encode(msgID, enc));
+	        calldata.append("&read=0");
+	        calldata.append("&_rnr_se=");
+	        calldata.append(URLEncoder.encode(rnrSEE, enc));
+	
+	
+	        URL callURL = new URL("https://www.google.com/voice/inbox/mark");
+	
+	        URLConnection callconn = callURL.openConnection();
+	        callconn.setRequestProperty("Authorization","GoogleLogin auth="+authToken);
+	        callconn.setRequestProperty("User-agent",USER_AGENT);
+	
+	        callconn.setDoOutput(true);
+	        OutputStreamWriter callwr = new OutputStreamWriter(callconn
+	                .getOutputStream());
+	
+	        callwr.write(calldata.toString());
+	        callwr.flush();
+	
+	        BufferedReader callrd = new BufferedReader(new InputStreamReader(
+	                callconn.getInputStream()));
+	
+	        String line;
+	        while ((line = callrd.readLine()) != null) {
+	            out += line + "\n\r";
+	
+	        }
+	
+	        callwr.close();
+	        callrd.close();
+	
+	        if (out.equals("")) {
+	            throw new IOException("No Response Data Received.");
+	        }
+	
+	        return out;
+	}
+
+	
+	
+	
+	/**
+	 * Delete message.
+	 *
+	 * @param msgID the msg id
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public String deleteMessage(String msgID) throws IOException
   {
     String out = "";
@@ -882,6 +1049,17 @@ public class Voice {
 
 		return out;
   }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/** 
 	 * Enables multiple phones in one post 

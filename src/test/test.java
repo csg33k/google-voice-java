@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -16,10 +17,13 @@ import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
+import com.techventus.server.voice.datatypes.Contact;
 import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.datatypes.records.SMS;
+import com.techventus.server.voice.datatypes.records.SMSThread;
 import com.techventus.server.voice.exception.CaptchaRequiredException;
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -110,7 +114,7 @@ public class test {
 	 */
 	private static void listTests() {
 		System.out.println("Availible Tests for "+userName);
-		System.out.println("0: Exit");  
+		System.out.println("0: Exit (or any other invalid entry)");  
 		System.out.println("1: Multi phone enable / disable");
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
@@ -127,6 +131,8 @@ public class test {
 		System.out.println("14: Send SMS");
 		System.out.println("15: Captcha Test");
 		System.out.println("16: List SMS");
+		System.out.println("17. List Unread Conversations. Mark Selected Conversations as Read.");
+		System.out.println("18. List Starred Conversations. ");
 		
 		int testNr = 0;
 		try {
@@ -485,6 +491,68 @@ public class test {
 							  String t2="";
 							  while (st2.hasMoreElements()) t2 += st2.nextElement();
 							System.out.println(t2);
+							break;
+							
+							
+						case 17:
+							System.out.println("*********Starting Test "+testNr+" List Unread SMS, Mark one as read. *******");
+							
+							Collection<SMSThread> collection = voice.getSMSThreads(voice.getUnreadSMS());
+							
+							int i = 0;
+							
+							for(SMSThread t:collection){
+								System.out.println("index "+i+" id "+t.getId());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								//t.
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i++;
+		
+								
+								
+							}
+							
+							List<SMSThread> smsList = new ArrayList<SMSThread>(collection);
+							try{
+								System.out.println("Please Enter an Integer corresponding to one of the above Indeces to \n\rMark the SMS Conversation as Read");
+								int index = Integer.parseInt(br.readLine());
+								voice.markAsRead(smsList.get(index).getId());
+							}catch(Exception j){
+								System.out.println("Error: Did you enter an invalid Non-Negative Integer?");
+								j.printStackTrace();
+							}
+							
+							break;
+						
+						case 18:
+							System.out.println("*********Starting Test "+testNr+" List Starred Conversations. *******");
+
+							Collection<SMSThread> collection18 = voice.getSMSThreads(voice.getStarred());
+							
+							int i18 = 0;
+							
+							for(SMSThread t:collection18){
+								System.out.println("index "+i18+" id "+t.getId());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								//t.
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i18++;
+		
+								
+								
+							}
 							break;
 							
 						default: 						
