@@ -129,6 +129,27 @@ public class SMSParser {
 				.selectSingleNode(XPathQuery.MESSAGE_PORTRAIT));
 		String phoneNumber = phoneNumberNode == null ? name
 				: parsePhoneNumber(phoneNumberNode.getText());
+		
+		
+		//TODO TEST SIMPLIFY
+//		System.out.println("Parsing Contact...");
+		//JLM Phone Number Correction
+		List e = element.selectNodes(XPathQuery.MESSAGE_QUICKCALL);
+		
+		for(Object o:e){
+			Node n = (Node)o;
+			String res = n.selectSingleNode(XPathQuery.MESSAGE_BOLD).getText();
+			//System.out.println(o);
+			res =res.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
+			phoneNumber = res;
+			if (phoneNumber.indexOf("+") == -1) {
+				phoneNumber = "+1" + phoneNumber;
+			}
+//			System.out.println(phoneNumber);
+			
+		}
+		
+		
 		return new Contact(name, "", phoneNumber, imgURL);
 	}
 
@@ -275,6 +296,8 @@ public class SMSParser {
 		public static final String MESSAGE_ID = "/*/*/div[@id]";
 		public static final String MESSAGE_PORTRAIT = "descendant::div[@class='gc-message-portrait']";
 		public static final String MESSAGE_IMG = "descendant::img";
+		public static final String MESSAGE_BOLD = "descendant::b";
+		public static final String MESSAGE_QUICKCALL = "descendant::form[@name='quickcall']";
 	}
 
 	/** Filter responses constants. */
