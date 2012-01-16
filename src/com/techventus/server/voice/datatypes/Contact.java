@@ -108,6 +108,7 @@ public class Contact implements Comparable<Contact>{
 	 * @param html
 	 * @return
 	 */
+	@Deprecated
 	public static Contact extractContact(String html) {
 		html = ParsingUtil.removeUninterestingParts(html,"<table class=\"gc-message-tbl\">","</table>", true);
 		
@@ -155,6 +156,8 @@ public class Contact implements Comparable<Contact>{
 		
 		return new Contact(lname, lid, lnumber, limageUrl);
 	}
+	
+	
 	@Override
 	public int compareTo(Contact o) {
 		if(o.name.compareTo(name) == 0) {
