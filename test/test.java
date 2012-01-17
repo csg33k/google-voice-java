@@ -298,25 +298,26 @@ public class test {
 							
 						case 10: // 10: Read all settings - pure json driven - account data
 							System.out.println("******** Starting Test "+testNr+" ********");
-							try {
-								System.out.println("******** Original JSON Data ********");
-								String lJson = ParsingUtil.removeUninterestingParts(voice.getONLYFORTEST("https://www.google.com/voice/settings/tab/groups"), "<json><![CDATA[", "]]></json>", false);
-								JSONObject origSettings = new JSONObject(lJson);
-								System.out.println(origSettings.toString(4));
-								
-								System.out.println("******* JsonObject from AllSettings ******");
-								AllSettings settings2 = new AllSettings(lJson);
-								JSONObject objFromAllSettings = settings2.toJsonObject();
-								System.out.println(objFromAllSettings.toString(4));
-								
-								System.out.println("******* Creating new AllSettings from old JSON ******");
-								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
-								System.out.println(settings3.toJsonObject().toString(4));
-								
-							} catch (JSONException e) {
-								System.out.println("Error displaying json:"+e.getLocalizedMessage());
-								e.printStackTrace();
-							}
+//							try {
+							System.out.println("******** Test REMOVED FOR NOW ********");
+//								System.out.println("******** Original JSON Data ********");
+//								String lJson = ParsingUtil.removeUninterestingParts(voice.getONLYFORTEST("https://www.google.com/voice/settings/tab/groups"), "<json><![CDATA[", "]]></json>", false);
+//								JSONObject origSettings = new JSONObject(lJson);
+//								System.out.println(origSettings.toString(4));
+//								
+//								System.out.println("******* JsonObject from AllSettings ******");
+//								AllSettings settings2 = new AllSettings(lJson);
+//								JSONObject objFromAllSettings = settings2.toJsonObject();
+//								System.out.println(objFromAllSettings.toString(4));
+//								
+//								System.out.println("******* Creating new AllSettings from old JSON ******");
+//								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
+//								System.out.println(settings3.toJsonObject().toString(4));
+//								
+//							} catch (JSONException e) {
+//								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+//								e.printStackTrace();
+//							}
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
