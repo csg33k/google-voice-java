@@ -1841,13 +1841,13 @@ public class Voice {
 		login(null,null);
 	}
 	
+	
+	
 	/**
 	 * Use this login method to login - use captchaAnswer to answer a captcha challenge
-	 * @param captchaAnswer
-	 * 				(optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
-	 * @param captchaToken
-	 * 				(optional) token which matches the response/url from the captcha challenge
-	 * @throws IOException
+	 * @param pCaptchaAnswer (optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
+	 * @param pCaptchaToken (optional) token which matches the response/url from the captcha challenge
+	 * @throws IOException if login encounters a connection error
 	 */
 	public void login(String pCaptchaAnswer, String pCaptchaToken) throws IOException {
 
