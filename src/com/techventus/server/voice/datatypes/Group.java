@@ -173,8 +173,10 @@ public class Group {
 	*/
 	/**
 	 * Creates a complete json of a list of Group
-	 "groups":{"15":{..details of group id 15..},"12":{..details of group id 12..}}
-	 * @return
+	 * "groups":{"15":{..details of group id 15..},"12":{..details of group id 12..}}
+	 *
+	 * @param pGroupSettings the group settings
+	 * @return the JSON string
 	 */
 	public static String listToJson(List<Group> pGroupSettings) {
 		String ret = "\"groups\":{";
@@ -336,8 +338,11 @@ public class Group {
 	}
 
 	/**
-	 * @return
-	 * @throws JSONException 
+	 * Groups array to json object.
+	 *
+	 * @param groups the groups
+	 * @return the object
+	 * @throws JSONException the jSON exception
 	 */
 	public static Object groupsArrayToJsonObject(Group[] groups) throws JSONException {
 		JSONObject groupO = new JSONObject();
@@ -348,10 +353,11 @@ public class Group {
 	}
 
 	/**
-   	 * Query disabled status - if id not found, then it returns false, which means enabled.
-   	 * @param phoneId
-   	 * @return
-   	 */
+	 * Query disabled status - if id not found, then it returns false, which means enabled.
+	 *
+	 * @param phoneId the phone id
+	 * @return true, if is phone disabled
+	 */
    	public boolean isPhoneDisabled(int phoneId) {
    		boolean ret = false;
    		try {

@@ -93,6 +93,11 @@ public class Setting {
 		return toJsonObject().toString();
 	}
 	
+	/**
+	 * Convert this Settings Object to its JsonObject Representation.
+	 *
+	 * @return the jSON object
+	 */
 	public JSONObject toJsonObject(){ 
 		JSONObject settingsO = new JSONObject();
 		try { 
