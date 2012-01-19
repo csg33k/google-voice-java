@@ -103,10 +103,11 @@ public class Contact implements Comparable<Contact>{
 	}
 	
 	/**
-	 * Creates a Contact out of a html
-	 * TODO DummyData - Implement
-	 * @param html
-	 * @return
+	 * Deprecated Method.  Creates a Contact out of a html
+	 * TODO DummyData - Implement.
+	 *
+	 * @param html the html
+	 * @return the contact
 	 */
 	@Deprecated
 	public static Contact extractContact(String html) {
