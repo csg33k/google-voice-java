@@ -174,8 +174,13 @@ public class SMSParser {
 				String from = element.selectSingleNode(
 						XPathQuery.MESSAGE_SMS_FROM).getText().replaceAll(":",
 						"").trim();
-				String text = element.selectSingleNode(
-						XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
+//				String text = element.selectSingleNode(
+//						XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
+				//SEE ISSUE 19 Comment 5
+				String text = "";
+				 if (element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT) != null) {
+				     text = element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
+				 }
 				String dateTime = element.selectSingleNode(
 						XPathQuery.MESSAGE_SMS_TIME).getText().trim();
 				Contact contact = thread.getContact();
