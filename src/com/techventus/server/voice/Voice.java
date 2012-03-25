@@ -62,7 +62,7 @@ import com.techventus.server.voice.util.SMSParser;
 @SuppressWarnings("deprecation")
 public class Voice {
 
-	/** The PRIN t_ t o_ console. */
+	/** The PRINT to Console FLAG setting. */
 	public boolean PRINT_TO_CONSOLE;
 	
 	/** keeps the list of phones - lazy. */
@@ -224,6 +224,27 @@ public class Voice {
 	/** The Constant unreadSMSString. */
 	final static String unreadSMSString = "https://www.google.com/voice/b/0/inbox/recent/sms/unread/";
   
+	//Experimental  keyFlag is just there to overload method
+	public Voice(String authToken ) throws IOException{
+		this.authToken = authToken;
+		this.pass = "UNKNOWN";
+		this.user = "UNKNOWN";
+		
+		this.source = "GoogleVoiceJava";
+		
+	
+		this.general = 	getGeneral();
+		this.setRNRSEE();
+			
+		String response = this.getRawPhonesInfo();
+		int phoneIndex = response.indexOf("gc-user-number-value\">");
+		this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
+		this.phoneNumber = this.phoneNumber.replaceAll("[^a-zA-Z0-9]", "");
+		if (this.phoneNumber.indexOf("+") == -1) {
+			this.phoneNumber = "+1" + this.phoneNumber;
+		}
+
+	}
 
 	/**
 	 * Instantiates a new voice. This constructor is deprecated. Try
@@ -832,6 +853,16 @@ public class Voice {
 	public Collection<SMSThread> getSMSThreads(String response){
 		SMSParser parser= new SMSParser(response, phoneNumber);
 		return parser.getSMSThreads();
+	}
+	
+	
+	/**
+	 * Gets the rNRSEE.
+	 *
+	 * @return the rNRSEE
+	 */
+	public String getRNRSEE(){
+		return rnrSEE;
 	}
 	
 	/**
@@ -2017,7 +2048,9 @@ public class Voice {
 	 * otherwise if arbitrary text is contained for a logged in account, a true
 	 * is returned.
 	 * 
-	 *TODO Examine methodology.
+	 *TODO Examine methodology. Perhaps Could Establish greater persistence with 
+	 *an option to force an update.  Currently this is an expensive
+	 *and slow method.
 	 * 
 	 * @return true, if is logged in
 	 */
