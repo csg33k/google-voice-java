@@ -147,7 +147,7 @@ public class SMSParser {
 			}
 //			System.out.println(phoneNumber);
 			
-		}
+		}	
 		
 		
 		return new Contact(name, "", phoneNumber, imgURL);
@@ -253,7 +253,7 @@ public class SMSParser {
 	 *            the phone number from the server's HTML response.
 	 * @return the contact's phone number.
 	 */
-	public String parsePhoneNumber(String phoneNumber) {
+	private String parsePhoneNumber(String phoneNumber) {
 		String result = phoneNumber.replaceAll(GoogleVoice.PHONE_REGEX, "");
 		if (result.indexOf("+") == -1) {
 			result = GoogleVoice.DEFAULT_COUNTRY_CODE + result;
