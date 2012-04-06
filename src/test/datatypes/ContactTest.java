@@ -8,6 +8,8 @@ import com.techventus.server.voice.datatypes.Contact;
 
 public class ContactTest {
 	
+	//Variables for Contact Object Construction
+	//nodata is replacement variable to test toString override.
 	private static String nodata = null;
 	private static String testName = "testName";
 	private static String testname1 = "testName1";
@@ -16,6 +18,7 @@ public class ContactTest {
 	private static String testNumber1 = "testNumber1";
 	private static String testURL = "testURL";
 	
+	//test Objects
 	Contact testContact = new Contact(testName, testID, testNumber, testURL);
 	Contact testContact1 = new Contact(testname1, testID, testNumber1, testURL);
 

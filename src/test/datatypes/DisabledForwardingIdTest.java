@@ -10,7 +10,8 @@ import com.techventus.server.voice.datatypes.DisabledForwardingId;
 
 public class DisabledForwardingIdTest {
 
-	DisabledForwardingId testDisabledForwardingId = new DisabledForwardingId(
+	//Golden DisabledForwardingId Object
+	final DisabledForwardingId testDisabledForwardingId = new DisabledForwardingId(
 			"1", true);
 
 	@Test
@@ -20,11 +21,11 @@ public class DisabledForwardingIdTest {
 		testJSONDisabledForwardingId.put("id", "1");
 		testJSONDisabledForwardingId.put("disabled", true);
 
-		DisabledForwardingId testDisabledForwardingId1 = new DisabledForwardingId(
+		final DisabledForwardingId testDisabledForwardingId1 = new DisabledForwardingId(
 				testJSONDisabledForwardingId, false);
 
-		boolean test = (testDisabledForwardingId.toString()
-				.equals(testDisabledForwardingId1.toString()));
+		final boolean test = testDisabledForwardingId.toString()
+				.equals(testDisabledForwardingId1.toString());
 
 		Assert.assertEquals(true, test);
 	}
@@ -37,11 +38,11 @@ public class DisabledForwardingIdTest {
 		testJSONDisabledForwardingId.put("id", "1");
 		testJSONDisabledForwardingId.put("disabled", false);
 
-		DisabledForwardingId testDisabledForwardingId2 = new DisabledForwardingId(
+		final DisabledForwardingId testDisabledForwardingId2 = new DisabledForwardingId(
 				testJSONDisabledForwardingId, false);
 
-		boolean test = (testDisabledForwardingId.toString()
-				.equals(testDisabledForwardingId2.toString()));
+		final boolean test = testDisabledForwardingId.toString()
+				.equals(testDisabledForwardingId2.toString());
 
 		Assert.assertEquals(false, test);
 	}
@@ -54,11 +55,11 @@ public class DisabledForwardingIdTest {
 		testJSONDisabledForwardingId.put("id", "2");
 		testJSONDisabledForwardingId.put("disabled", true);
 
-		DisabledForwardingId testDisabledForwardingId2 = new DisabledForwardingId(
+		final DisabledForwardingId testDisabledForwardingId2 = new DisabledForwardingId(
 				testJSONDisabledForwardingId, false);
 
-		boolean test = (testDisabledForwardingId.toString()
-				.equals(testDisabledForwardingId2.toString()));
+		final boolean test = testDisabledForwardingId.toString()
+				.equals(testDisabledForwardingId2.toString());
 
 		Assert.assertEquals(false, test);
 	}

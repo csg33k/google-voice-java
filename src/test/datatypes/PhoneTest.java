@@ -1,6 +1,6 @@
 package test.datatypes;
 
-import static org.junit.Assert.*; 
+import static org.junit.Assert.assertArrayEquals; 
 import junit.framework.Assert;
 
 import gvjava.org.json.JSONArray;
@@ -13,15 +13,17 @@ import com.techventus.server.voice.datatypes.Phone;
 
 public class PhoneTest {
 
-	Phone testPhone = new Phone(1, "testPhone", "5035551212");
+	final Phone testPhone = new Phone(1, "testPhone", "5035551212");
 	Phone testPhone1;
 	Phone testPhone2;
 	Phone testPhone3;
 
 	@Before
 	public void setUp() throws Exception {
+		//empty "time" array
 		JSONArray times = new JSONArray();
 
+		//Generic Phone JSON construction
 		JSONObject testJSONOb = new JSONObject();
 		testJSONOb.put("id", 2);
 		testJSONOb.put("name", "testPhone1");
@@ -47,11 +49,14 @@ public class PhoneTest {
 		testJSONOb.put("weekendAllDay", true);
 		testJSONOb.put("weekendTimes", times);
 
+		//Phones (identical)
 		testPhone1 = new Phone(testJSONOb);
 		testPhone2 = new Phone(testJSONOb, true);
 
+		//Added "time" to array...just to differentiate the contents from the empty array
 		times.put(1);
 
+		//Construct another Phone
 		testJSONOb.put("id", 3);
 		testJSONOb.put("name", "testPhone2");
 		testJSONOb.put("phoneNumber", "+15035552222");
@@ -76,6 +81,7 @@ public class PhoneTest {
 		testJSONOb.put("weekendAllDay", false);
 		testJSONOb.put("weekendTimes", times);
 
+		//Another Phone built form above constructor
 		testPhone3 = new Phone(testJSONOb, true);
 
 	}
@@ -83,16 +89,15 @@ public class PhoneTest {
 	@Test
 	public void testCompareToOverrideEqual() {
 
-		int test = testPhone.compareTo(testPhone);
+		final int test = testPhone.compareTo(testPhone);
 
 		Assert.assertEquals(0, test);
-
 	}
 
 	@Test
 	public void testCompareToOverrideGreater() {
 
-		int test = testPhone1.compareTo(testPhone);
+		final int test = testPhone1.compareTo(testPhone);
 
 		Assert.assertEquals(1, test);
 	}
@@ -100,7 +105,7 @@ public class PhoneTest {
 	@Test
 	public void testCompareToOverrideLess() {
 
-		int test = testPhone.compareTo(testPhone1);
+		final int test = testPhone.compareTo(testPhone1);
 
 		Assert.assertEquals(-1, test);
 	}
@@ -152,48 +157,48 @@ public class PhoneTest {
 
 	@Test
 	public void testCompareJSONPhoneConstructorFail() {
-		boolean testID = (testPhone3.getId() == testPhone1.getId());
-		boolean testName = testPhone3.getName().equals(testPhone1.getName());
-		boolean testPhoneNumber = testPhone3.getPhoneNumber()
+		final boolean testID = (testPhone3.getId() == testPhone1.getId());
+		final boolean testName = testPhone3.getName().equals(testPhone1.getName());
+		final boolean testPhoneNumber = testPhone3.getPhoneNumber()
 				.equals(testPhone1.getPhoneNumber());
-		boolean testBehavior = (testPhone3.getBehaviorOnRedirect() == testPhone1
+		final boolean testBehavior = (testPhone3.getBehaviorOnRedirect() == testPhone1
 				.getBehaviorOnRedirect());
-		boolean testCarrier = testPhone3.getCarrier().equals(testPhone1
+		final boolean testCarrier = testPhone3.getCarrier().equals(testPhone1
 				.getCarrier());
-		boolean testOverride = (testPhone3.getCustomOverrideState() == testPhone1
+		final boolean testOverride = (testPhone3.getCustomOverrideState() == testPhone1
 				.getCustomOverrideState());
-		boolean testFormattedNumber = testPhone3.getFormattedNumber()
+		final boolean testFormattedNumber = testPhone3.getFormattedNumber()
 				.equals(testPhone1.getFormattedNumber());
-		boolean testIncomingAccess = testPhone3.getIncomingAccessNumber()
+		final boolean testIncomingAccess = testPhone3.getIncomingAccessNumber()
 				.equals(testPhone1.getIncomingAccessNumber());
-		boolean testPolicyBit = (testPhone3.getPolicyBitmask() == testPhone1
+		final boolean testPolicyBit = (testPhone3.getPolicyBitmask() == testPhone1
 				.getPolicyBitmask());
-		boolean testType = (testPhone3.getType() == testPhone1.getType());
-		boolean testWeekDayTimes = testPhone3.getWeekdayTimes()
+		final boolean testType = (testPhone3.getType() == testPhone1.getType());
+		final boolean testWeekDayTimes = testPhone3.getWeekdayTimes()
 				.equals(testPhone1.getWeekdayTimes());
-		boolean testWeekEndTimes = testPhone3.getWeekendTimes()
+		final boolean testWeekEndTimes = testPhone3.getWeekendTimes()
 				.equals(testPhone1.getWeekendTimes());
-		boolean testActive = (testPhone3.isActive() == testPhone1.isActive());
-		boolean testDEPRECATED = (testPhone3.isdEPRECATEDDisabled() == testPhone1
+		final boolean testActive = (testPhone3.isActive() == testPhone1.isActive());
+		final boolean testDEPRECATED = (testPhone3.isdEPRECATEDDisabled() == testPhone1
 				.isdEPRECATEDDisabled());
-		boolean testEnabledForOthers = (testPhone3.isEnabledForOthers() == testPhone1
+		final boolean testEnabledForOthers = (testPhone3.isEnabledForOthers() == testPhone1
 				.isEnabledForOthers());
-		boolean testRedirectToVoiceMail = (testPhone3.isRedirectToVoicemail() == testPhone1
+		final boolean testRedirectToVoiceMail = (testPhone3.isRedirectToVoicemail() == testPhone1
 				.isRedirectToVoicemail());
-		boolean testSchedule = (testPhone3.isScheduleSet() == testPhone1
+		final boolean testSchedule = (testPhone3.isScheduleSet() == testPhone1
 				.isScheduleSet());
-		boolean testSMS = (testPhone3.isSmsEnabled() == testPhone1
+		final boolean testSMS = (testPhone3.isSmsEnabled() == testPhone1
 				.isSmsEnabled());
-		boolean testTelephony = (testPhone3.isTelephonyVerified() == testPhone1
+		final boolean testTelephony = (testPhone3.isTelephonyVerified() == testPhone1
 				.isTelephonyVerified());
-		boolean testVerified = (testPhone3.isVerified() == testPhone1
+		final boolean testVerified = (testPhone3.isVerified() == testPhone1
 				.isVerified());
-		boolean testForwardVerified = (testPhone3
+		final boolean testForwardVerified = (testPhone3
 				.isVoicemailForwardingVerified() == testPhone1
 				.isVoicemailForwardingVerified());
-		boolean testWeekDayAllDay = (testPhone3.isWeekdayAllDay() == testPhone1
+		final boolean testWeekDayAllDay = (testPhone3.isWeekdayAllDay() == testPhone1
 				.isWeekdayAllDay());
-		boolean testWeekEndAllDay = (testPhone3.isWeekendAllDay() == testPhone1
+		final boolean testWeekEndAllDay = (testPhone3.isWeekendAllDay() == testPhone1
 				.isWeekendAllDay());
 
 		Assert.assertEquals(false, testID);

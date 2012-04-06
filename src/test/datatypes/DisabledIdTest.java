@@ -11,7 +11,8 @@ import com.techventus.server.voice.datatypes.DisabledId;
 
 public class DisabledIdTest {
 	
-	DisabledId testDisabledID = new DisabledId("1", false);
+	//Golden DisabledId Object
+	final DisabledId testDisabledID = new DisabledId("1", false);
 
 	@Test
 	public void testDisabledIdJSONTrue() throws JSONException {
@@ -19,9 +20,9 @@ public class DisabledIdTest {
 		testDisabledIDJSON1.put("id", "1");
 		testDisabledIDJSON1.put("disabled", false);
 		
-		DisabledId testDisabledID1 = new DisabledId(testDisabledIDJSON1, false);
+		final DisabledId testDisabledID1 = new DisabledId(testDisabledIDJSON1, false);
 		
-		boolean test = (testDisabledID.toString().equals(testDisabledID1.toString()));
+		final boolean test = testDisabledID.toString().equals(testDisabledID1.toString());
 			
 		Assert.assertEquals(true, test);
 	}
@@ -32,9 +33,9 @@ public class DisabledIdTest {
 		testDisabledIDJSON2.put("id", "2");
 		testDisabledIDJSON2.put("disabled", false);
 		
-		DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON2, false);
+		final DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON2, false);
 		
-		boolean test = (testDisabledID.toString().equals(testDisabledID2.toString()));
+		final boolean test = testDisabledID.toString().equals(testDisabledID2.toString());
 		
 		Assert.assertEquals(false, test);
 	}
@@ -45,9 +46,9 @@ public class DisabledIdTest {
 		testDisabledIDJSON3.put("id", "1");
 		testDisabledIDJSON3.put("disabled", true);
 		
-		DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON3, false);
+		final DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON3, false);
 		
-		boolean test = (testDisabledID.toString().equals(testDisabledID2.toString()));
+		final boolean test = testDisabledID.toString().equals(testDisabledID2.toString());
 		
 		Assert.assertEquals(false, test);
 	}
