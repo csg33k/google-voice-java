@@ -12,15 +12,15 @@ import com.techventus.server.voice.datatypes.records.TranscriptElement;
  * 
  */
 public class TranscriptElementTest {
-
+	// testElement
 	TranscriptElement testElement;
-
+	//html strings representing test elements with varying recognition levels
 	String html = "<span id=\"testID\" class=\"gc-word-high\">testText</span>";
 	String html1 = "<span id=\"testID\" class=\"gc-word-med1\">testText</span>";
 	String html2 = "<span id=\"testID\" class=\"gc-word-med2\">testText</span>";
 	String html3 = "<span id=\"testID\" class=\"gc-word-bloop\">testText</span>";
 	String html4 = "<span id=\"testID\">testText</span>";
-
+	//Params for testElement (Recogition Level)
 	final TranscriptElement.RecognitionLevel testHigh = TranscriptElement.RecognitionLevel.HIGH;
 	final TranscriptElement.RecognitionLevel testMed1 = TranscriptElement.RecognitionLevel.MED1;
 	final TranscriptElement.RecognitionLevel testMed2 = TranscriptElement.RecognitionLevel.MED2;
@@ -28,6 +28,7 @@ public class TranscriptElementTest {
 
 	@Before
 	public void setUp() {
+		//Instantiate testElement
 		testElement = new TranscriptElement("testText", "testID", testHigh);
 	}
 

@@ -15,26 +15,27 @@ import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Setting;
 
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class AllSettingsTest {
-
+	//testAllSettings(s)
 	AllSettings testAllSettings;
 	AllSettings testAllSettings1;
-	
+	//Params for testAllSettings(s) 
 	Setting testSetting;
-	
 	DisabledId testDisabledID;
-	
 	Greeting testGreeting;
-	
 	Group testGroup;
-	
 	Phone testPhone;
 	Phone testPhone1;
 	Phone testPhone2;
 
 	@Before
 	public void setUp() throws Exception {
-		// Empty Objects
+		// Empty Objects for Params
 		final JSONArray emptyJSONArray = new JSONArray();
 		final JSONObject emptyJSONObject = new JSONObject();
 

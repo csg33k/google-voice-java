@@ -9,16 +9,20 @@ import org.junit.Test;
 import com.techventus.server.voice.datatypes.Contact;
 import com.techventus.server.voice.datatypes.records.SMS;
 
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class SMSTest {
-	
+	//Params for testSMSs
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
 			"testURL");
 	final Contact CONTACT1 = new Contact("testName", "testID", "testNumber",
 			"testURL");
-	
 	final Date DATE = new Date(1321038671000l);
 	final Date DATE1 = new Date(1320038671000l);
-	
+	//testSMSs toCompare
 	final SMS testSMS = new SMS(CONTACT, "testContent", DATE);
 	final SMS testSMS1 = new SMS(CONTACT1, "testContent1", DATE1);
 	final SMS testSMS2 = new SMS(CONTACT1, "testContent1", DATE);

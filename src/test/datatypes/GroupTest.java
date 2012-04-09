@@ -15,8 +15,13 @@ import org.junit.Test;
 import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class GroupTest {
-	
+	//testGroups
 	Group testGroup;
 	Group testGroup1;
 	Group testGroup2;
@@ -25,7 +30,6 @@ public class GroupTest {
 		
 	@Before
 	public void setUp() throws Exception {
-		
 		//DisabledForwardingIDs
 		final DisabledForwardingId testDisabledForwardingId = new DisabledForwardingId("2", true);
 		final DisabledForwardingId testDisabledForwardingId1 = new DisabledForwardingId("3", true);
@@ -69,13 +73,11 @@ public class GroupTest {
 		testJSONOb3.put("greetingId", 1);
 		testJSONOb3.put("disabledForwardingIds", disabledFIDs1);
 		
-		//Test groups
+		//Instantiate testGroups
 		testGroup = new Group("testID", "testName", false, testList, false, false, false, 1);
 		testGroup1 = new Group(testJSONOb1);
 		testGroup2 = new Group("testID", "testName", false, testList1, false, false, false, 1);
 		testGroup3 = new Group(testJSONOb3);
-		
-		
 
 	}
 

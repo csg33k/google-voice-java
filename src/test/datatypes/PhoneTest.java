@@ -10,9 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.techventus.server.voice.datatypes.Phone;
-
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class PhoneTest {
-
+	//testPhones
 	final Phone testPhone = new Phone(1, "testPhone", "5035551212");
 	Phone testPhone1;
 	Phone testPhone2;

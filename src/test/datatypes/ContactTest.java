@@ -6,11 +6,13 @@ import org.junit.Test;
 
 import com.techventus.server.voice.datatypes.Contact;
 
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class ContactTest {
-	
-	//Variables for Contact Object Construction
-	//noData is replacement variable to test toString override.
-	private static String noData = null;
+	//Params for Contact Object Construction
 	private static String testName = "testName";
 	private static String testName1 = "testName1";
 	private static String testID = "testID";
@@ -18,7 +20,7 @@ public class ContactTest {
 	private static String testNumber1 = "testNumber1";
 	private static String testURL = "testURL";
 	
-	//test Objects
+	//testContacts
 	Contact testContact = new Contact(testName, testID, testNumber, testURL);
 	Contact testContact1 = new Contact(testName1, testID, testNumber1, testURL);
 
@@ -31,14 +33,17 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusID() {
 		
-		testContact.setId(noData);
+		testContact.setId(null);
+
 		Assert.assertEquals("{name=testName;number=testNumber;imageUrl=testURL;}", testContact.toString());
 	}
 	
 	@Test
 	public void testToStringOverrideMinusName() {
 		
-		testContact.setName(noData);
+
+		testContact.setName(null);
+
 		Assert.assertEquals("{id=testID;number=testNumber;imageUrl=testURL;}", testContact.toString());
 
 	}
@@ -46,7 +51,8 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusNumber() {
 		
-		testContact.setNumber(noData);
+		testContact.setNumber(null);
+
 		Assert.assertEquals("{id=testID;name=testName;imageUrl=testURL;}", testContact.toString());
 
 	}
@@ -54,9 +60,10 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusURL() {
 		
-		testContact.setImageUrl(noData);
-		Assert.assertEquals("{id=testID;name=testName;number=testNumber;}", testContact.toString());
 
+		testContact.setImageUrl(null);
+
+		Assert.assertEquals("{id=testID;name=testName;number=testNumber;}", testContact.toString());
 	}
 	
 	@Test
@@ -74,6 +81,5 @@ public class ContactTest {
 		testContact1.setName(testName);
 		Assert.assertEquals(1, testContact.compareTo(testContact1));
 	}
-	
 
 }

@@ -33,12 +33,11 @@ public class VoicemailTest {
 
 	@Before
 	public void setUp() {
-
+		//Params for testVoicemail
 		final List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
 		testList.add(testElement);
-
 		final Transcript TRANSCRIPT = new Transcript(testList);
-
+		//instantiate testVoicemail
 		testVoicemail = new Voicemail(ID, TITLE, DATE, CONTACT, TRANSCRIPT,
 				true);
 	}

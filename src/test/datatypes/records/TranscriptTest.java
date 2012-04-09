@@ -16,13 +16,12 @@ import com.techventus.server.voice.datatypes.records.TranscriptElement;
  *
  */
 public class TranscriptTest {
-	
+	// testTranscripts
 	Transcript testTranscript;
 	Transcript testTranscript1;
-	
+	//Params for testTranscripts
 	final TranscriptElement.RecognitionLevel testLevel = TranscriptElement.RecognitionLevel.HIGH;
 	final TranscriptElement.RecognitionLevel testLevel1 = TranscriptElement.RecognitionLevel.MED1;
-
 	final TranscriptElement testElement = new TranscriptElement("testText",
 			"testID", testLevel);
 	final TranscriptElement testElement1 = new TranscriptElement("testText1",
@@ -30,16 +29,17 @@ public class TranscriptTest {
 	
 	@Before
 	public void setUp() {
-		
+		//Param for testTrascript
 		final List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
 		testList.add(testElement);	
-		
+		//Instantiate testTranscript
 		testTranscript = new Transcript(testList);
 		
+		//Param testTranscript1
 		final List<TranscriptElement> testList1 = new ArrayList<TranscriptElement>();
 		testList1.add(testElement);
 		testList1.add(testElement1);
-		
+		//Instantiate testTranscript1
 		testTranscript1 = new Transcript(testList1);
 	}
 	

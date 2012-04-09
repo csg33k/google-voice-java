@@ -39,7 +39,7 @@ public class RecordTest {
 	@Before
 	public void setUp() {
 		
-		List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
+		final List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
 		testList.add(testElement);
 		
 		final Transcript testTranscript = new Transcript(testList);
