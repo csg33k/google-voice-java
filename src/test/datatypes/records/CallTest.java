@@ -15,13 +15,12 @@ import com.techventus.server.voice.datatypes.records.Call;
  *
  */
 public class CallTest {
-
-	//Constructors for 
-	final String ID = "testID";
-	final String TITLE = "testTitle";
+	//Params for testCall
+	final static String ID = "testID";
+	final static String TITLE = "testTitle";
 	final Date DATE = new Date(1321038671000l);
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber", "testURL");
-	
+	//testCall
 	Call testCall = new Call(ID, TITLE, DATE, CONTACT, true);
 	
 	@Test

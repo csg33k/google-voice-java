@@ -17,28 +17,29 @@ import com.techventus.server.voice.datatypes.records.Transcript;
 import com.techventus.server.voice.datatypes.records.TranscriptElement;
 import com.techventus.server.voice.datatypes.records.Voicemail;
 
+/**
+ * 
+ * @author bFutral
+ *
+ */
 public class RecordTest {
-
+	//testRecords
 	Record testRecord;
 	Record testRecord1;
 	Record testRecord2;
 
+	//params for testRecords
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
 			"testURL");
-
 	final Date DATE = new Date(1321038671000l);
-
-	final TranscriptElement.RecognitionLevel testLevel = TranscriptElement.RecognitionLevel.HIGH;
-
+	final static TranscriptElement.RecognitionLevel testLevel = TranscriptElement.RecognitionLevel.HIGH;
 	final TranscriptElement testElement = new TranscriptElement("testText",
 			"testID", testLevel);
-	
-	public List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
-	
 	
 	@Before
 	public void setUp() {
 		
+		List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
 		testList.add(testElement);
 		
 		final Transcript testTranscript = new Transcript(testList);
