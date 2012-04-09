@@ -9,10 +9,10 @@ import com.techventus.server.voice.datatypes.Contact;
 public class ContactTest {
 	
 	//Variables for Contact Object Construction
-	//nodata is replacement variable to test toString override.
-	private static String nodata = null;
+	//noData is replacement variable to test toString override.
+	private static String noData = null;
 	private static String testName = "testName";
-	private static String testname1 = "testName1";
+	private static String testName1 = "testName1";
 	private static String testID = "testID";
 	private static String testNumber = "testNumber";
 	private static String testNumber1 = "testNumber1";
@@ -20,7 +20,7 @@ public class ContactTest {
 	
 	//test Objects
 	Contact testContact = new Contact(testName, testID, testNumber, testURL);
-	Contact testContact1 = new Contact(testname1, testID, testNumber1, testURL);
+	Contact testContact1 = new Contact(testName1, testID, testNumber1, testURL);
 
 
 	@Test
@@ -31,14 +31,14 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusID() {
 		
-		testContact.setId(nodata);
+		testContact.setId(noData);
 		Assert.assertEquals("{name=testName;number=testNumber;imageUrl=testURL;}", testContact.toString());
 	}
 	
 	@Test
 	public void testToStringOverrideMinusName() {
 		
-		testContact.setName(nodata);
+		testContact.setName(noData);
 		Assert.assertEquals("{id=testID;number=testNumber;imageUrl=testURL;}", testContact.toString());
 
 	}
@@ -46,7 +46,7 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusNumber() {
 		
-		testContact.setNumber(nodata);
+		testContact.setNumber(noData);
 		Assert.assertEquals("{id=testID;name=testName;imageUrl=testURL;}", testContact.toString());
 
 	}
@@ -54,7 +54,7 @@ public class ContactTest {
 	@Test
 	public void testToStringOverrideMinusURL() {
 		
-		testContact.setImageUrl(nodata);
+		testContact.setImageUrl(noData);
 		Assert.assertEquals("{id=testID;name=testName;number=testNumber;}", testContact.toString());
 
 	}
