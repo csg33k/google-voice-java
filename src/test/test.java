@@ -567,8 +567,8 @@ public class test {
 							
 						case 19:
 							System.out.println("*********Starting Test "+testNr+" View SMSThread Info. *******");
-							
-							Collection<SMSThread> collection19 = voice.getSMSThreads(voice.getUnreadSMS());
+							String unreads = voice.getUnreadSMS();
+							Collection<SMSThread> collection19 = voice.getSMSThreads(unreads);
 							
 							int i19 = 0;
 							
