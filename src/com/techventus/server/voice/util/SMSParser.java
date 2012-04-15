@@ -102,8 +102,26 @@ public class SMSParser {
 		// Select the threads using XPath queries.
 		@SuppressWarnings("unchecked")
 		List<Element> elements = doc.selectNodes(XPathQuery.MESSAGE_ID);
+//		int i = -1;
 		for (Element element : elements) {
+//			System.out.println(element.getStringValue());
+//			i++;
+				//DEBUG
+			if(element==null){
+				continue;
+			}
+//				Contact contact=null;
+//					try{
 			Contact contact = parseContact(element);
+//					}catch(Exception e){
+////						System.err.println("Exception element number "+i);
+////						System.err.println(element.getStringValue());
+//						e.printStackTrace();
+//					}
+//				if(contact==null){
+//					System.err.println("NULL CONTACT "+element);
+//					
+//				}
 			SMSThread smsthread = threadMap.get(element.attribute(
 					GoogleVoice.THREAD_ID).getText());
 			smsthread.setContact(contact);
@@ -296,7 +314,8 @@ public class SMSParser {
 		public static final String MESSAGE_SMS_TEXT = "descendant::span[@class='gc-message-sms-text']";
 		public static final String MESSAGE_SMS_TIME = "descendant::span[@class='gc-message-sms-time']";
 		public static final String MESSAGE_SMS_ROW = "descendant::div[@class='gc-message-sms-row']";
-		public static final String MESSAGE_NAME_LINK = "descendant::a[@class='gc-under gc-message-name-link']";
+//		public static final String MESSAGE_NAME_LINK = "descendant::a[@class='gc-under gc-message-name-link']";
+		public static final String MESSAGE_NAME_LINK = "descendant::a[contains(@class,'gc-under')]";
 		public static final String MESSAGE_TYPE = "descendant::span[@class='gc-message-type']";
 		public static final String MESSAGE_ID = "/*/*/div[@id]";
 		public static final String MESSAGE_PORTRAIT = "descendant::div[@class='gc-message-portrait']";
