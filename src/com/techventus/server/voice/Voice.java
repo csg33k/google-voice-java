@@ -51,7 +51,6 @@ import com.techventus.server.voice.exception.ERROR_CODE;
 import com.techventus.server.voice.util.ParsingUtil;
 import com.techventus.server.voice.util.SMSParser;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Voice. This class is the basis of the entire API and contains all
  * the components necessary to connect and authenticate with Google Voice, place
@@ -450,7 +449,7 @@ public class Voice {
 	}
 	
 	/**
-	 * Returns the Group list - Lazy.
+	 * Returns the Group list - Lazy.  Not yet Implemented
 	 *
 	 * @param forceUpdate the force update
 	 * @return List of Greeting objects
