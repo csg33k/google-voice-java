@@ -18,8 +18,8 @@ public class SMSTest {
 	//Params for testSMSs
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
 			"testURL");
-	final Contact CONTACT1 = new Contact("testName", "testID", "testNumber",
-			"testURL");
+	final Contact CONTACT1 = new Contact("testName1", "testID1", "testNumber1",
+			"testURL1");
 	final Date DATE = new Date(1321038671000l);
 	final Date DATE1 = new Date(1320038671000l);
 	//testSMSs toCompare
@@ -37,7 +37,7 @@ public class SMSTest {
 	@Test
 	public void testCompareToOverrideSameDateDifferentFrom() {
 		
-		Assert.assertEquals(1, testSMS.compareTo(testSMS2));
+		Assert.assertEquals(-1, testSMS.compareTo(testSMS2));
 	}
 	
 	@Test
@@ -51,5 +51,5 @@ public class SMSTest {
 		
 		Assert.assertEquals(0, testSMS.compareTo(testSMS));
 	}
-
+	
 }
