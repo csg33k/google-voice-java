@@ -24,7 +24,8 @@ import java.util.Map;
 // SMSParser.parsePhoneNumber line 258 will always == -1 due to line
 // regex filter in line 257)
 // Cannot test getSMSThreads due to private method call inside method.
-// Cannot test getSMSThreads due to private method call inside method.
+// Cannot test parseContact due to private method call inside method.
+// addSMSsToThread is void
 @SuppressWarnings("rawtypes")
 public class SMSParserTest {
 
