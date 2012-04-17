@@ -1,5 +1,8 @@
 package test.datatypes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
@@ -41,7 +44,8 @@ public class AllSettingsTest {
 
 		// BuildDisabledIDArray
 		final DisabledId testDisabledID = new DisabledId("3", true);
-		DisabledId[] testDisArray = { testDisabledID };
+		final DisabledId testDisabledID1 = new DisabledId("4", true);
+		DisabledId[] testDisArray = { testDisabledID, testDisabledID1 };
 
 		// Build groupList
 		JSONArray testGroupList = new JSONArray();
@@ -93,6 +97,7 @@ public class AllSettingsTest {
 		jsonSetting.put("useDidAsCallerId", true);
 		jsonSetting.put("useDidAsSource", false);
 		testSetting = new Setting(jsonSetting);
+		testSetting.setmDisabledIdList(null);
 		JSONObject testJSONSetting = testSetting.toJsonObject();
 		// AddDisabledIDs
 		testSetting.setmDisabledIdList(testDisArray);
@@ -162,7 +167,9 @@ public class AllSettingsTest {
 		jsonAllSettingsString.put("settings", testJSONSetting);
 
 		// BuildAllSettings1
-		JSONObject jsonAllSettingsString1 = jsonAllSettingsString;
+		JSONObject jsonAllSettingsString1 = new JSONObject();
+		jsonAllSettingsString1.put("phoneList", testPhoneList);
+		jsonAllSettingsString1.put("phones", jsonPhone);
 		jsonAllSettingsString1.put("settings", testJSONSetting1);
 
 		testAllSettings = new AllSettings(jsonAllSettingsString.toString());
@@ -193,6 +200,18 @@ public class AllSettingsTest {
 		final boolean test = testAllSettings1.isPhoneDisabled(3);
 
 		Assert.assertEquals(true, test);
+	}
+	
+	@Test
+	public void testGetPhoneListAsList() {
+		
+		List<Integer> testList = new ArrayList<Integer>();
+		testList.add(1);
+		testList.add(2);
+		testList.add(3);
+		
+		Assert.assertEquals(testList, testAllSettings.getPhoneListAsList());
+		
 	}
 
 }
