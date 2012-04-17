@@ -17,8 +17,8 @@ import java.util.Map;
 
 /**
  * 
- * @author bFutral
- * 
+ * @author Brett Futral @ Catalyst IT Services
+ *
  */
 // Holes in coverage:
 // SMSParser.parsePhoneNumber line 258 will always == -1 due to line

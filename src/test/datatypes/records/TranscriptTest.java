@@ -12,12 +12,10 @@ import com.techventus.server.voice.datatypes.records.Transcript;
 import com.techventus.server.voice.datatypes.records.TranscriptElement;
 
 /**
- * @author bFutral
  * 
+ * @author Brett Futral @ Catalyst IT Services
+ *
  */
-// Coverage holes
-// Transcript.toString ln 50 unreachable, null elements cause NPE;
-// Transcript.toString ln 52 unreachable, null elements cause NPE;
 public class TranscriptTest {
 	// testTranscripts
 	Transcript testTranscript;
@@ -30,32 +28,41 @@ public class TranscriptTest {
 	final TranscriptElement testElement1 = new TranscriptElement(null, null,
 			null);
 
-	@Before
-	public void setUp() {
-		// Param for testTrascript
-		final List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
-		testList.add(testElement);
-		// Instantiate testTranscript
+	List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
+	
+	@Test
+	public void testToStringOverrideOneNullElement() {
+		testList.add(null);
 		testTranscript = new Transcript(testList);
-
-		// Param testTranscript1
-		final List<TranscriptElement> testList1 = new ArrayList<TranscriptElement>();
-		testList1.add(testElement);
-		testList1.add(testElement1);
-		// Instantiate testTranscript1
-		testTranscript1 = new Transcript(testList1);
+		Assert.assertEquals("", testTranscript.toString());
 	}
-
+	
+	@Test
+	public void testToStringOverrideTwoElementsOneNull() {
+		testList.add(null);
+		testList.add(testElement);
+		testTranscript = new Transcript(testList);
+		Assert.assertEquals("testText", testTranscript.toString());
+	}
+	
 	@Test
 	public void testToStringOverrideOneElement() {
+		
+		testList.add(testElement);
+		testTranscript = new Transcript(testList);
 
 		Assert.assertEquals("testText", testTranscript.toString());
 	}
 
 	@Test
 	public void testToStringOverrideTwoElements() {
+		
+		testList.add(testElement);
+		testList.add(testElement1);
+		
+		testTranscript = new Transcript(testList);
 
-		Assert.assertEquals("testText null", testTranscript1.toString());
+		Assert.assertEquals("testText null", testTranscript.toString());
 
 	}
 

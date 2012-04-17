@@ -1,7 +1,11 @@
 package test.datatypes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 
+import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
@@ -11,51 +15,127 @@ import com.techventus.server.voice.datatypes.DisabledId;
 
 /**
  * 
- * @author bFutral
+ * @author Brett Futral @ Catalyst IT Services
  *
  */
 public class DisabledIdTest {
-	
-	//Golden DisabledId Object
-	final DisabledId testDisabledID = new DisabledId("1", false);
+
+	// Golden DisabledId Object
+	final DisabledId goldDisabledID = new DisabledId("1", false);
+
+	// Test Object
+	DisabledId testDisabledID;
+	JSONObject testDisabledIDJSON = new JSONObject();
+	String testString;
+	List<DisabledId> testList = new ArrayList<DisabledId>();
 
 	@Test
-	public void testDisabledIdJSONTrue() throws JSONException {
-		JSONObject testDisabledIDJSON1 = new JSONObject();
-		testDisabledIDJSON1.put("id", "1");
-		testDisabledIDJSON1.put("disabled", false);
-		
-		final DisabledId testDisabledID1 = new DisabledId(testDisabledIDJSON1, false);
-		
-		final boolean test = testDisabledID.toString().equals(testDisabledID1.toString());
-			
+	public void testDisabledIDJSONNullObjectSaveModeTrue()
+			throws JSONException {
+
+		JSONObject testDisabledIDJSON = new JSONObject();
+
+		testDisabledID = new DisabledId(testDisabledIDJSON, true);
+
+		Assert.assertNotNull(testDisabledID);
+	}
+
+	@Test
+	public void testDisabledIDJSONNullObjectSaveModeFalse() {
+
+		try {
+			testDisabledID = new DisabledId(testDisabledIDJSON, false);
+		} catch (Exception e) {
+
+		}
+
+		Assert.assertNull(testDisabledID);
+	}
+
+	@Test
+	public void testDisabledIdJSONSaveModeFalse() throws JSONException {
+
+		testDisabledIDJSON.put("id", "1");
+		testDisabledIDJSON.put("disabled", false);
+
+		testDisabledID = new DisabledId(testDisabledIDJSON, false);
+
+		final boolean test = goldDisabledID.toString().equals(
+				testDisabledID.toString());
+
+		Assert.assertEquals(true, test);
+	}
+
+	@Test
+	public void testDisabledIdJSONSaveModeTrue() throws JSONException {
+
+		testDisabledIDJSON.put("id", "1");
+		testDisabledIDJSON.put("disabled", false);
+
+		testDisabledID = new DisabledId(testDisabledIDJSON, true);
+
+		final boolean test = goldDisabledID.toString().equals(
+				testDisabledID.toString());
+
 		Assert.assertEquals(true, test);
 	}
 	
 	@Test
-	public void testDisabledIDJSONFalseID() throws JSONException {
-		JSONObject testDisabledIDJSON2 = new JSONObject();
-		testDisabledIDJSON2.put("id", "2");
-		testDisabledIDJSON2.put("disabled", false);
+	public void testCreateDisabledIdListFromJsonPartResponseEmptyString() {
 		
-		final DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON2, false);
+		testString = "";
 		
-		final boolean test = testDisabledID.toString().equals(testDisabledID2.toString());
+		Assert.assertEquals(testList, DisabledId.createDisabledIdListFromJsonPartResponse(testString));
 		
-		Assert.assertEquals(false, test);
 	}
 	
 	@Test
-	public void testDisabledIDJSONFalseNotDisabled() throws JSONException {
-		JSONObject testDisabledIDJSON3 = new JSONObject();
-		testDisabledIDJSON3.put("id", "1");
-		testDisabledIDJSON3.put("disabled", true);
+	public void testCreateDisabledIdListFromJsonPartResponseNullString() {
 		
-		final DisabledId testDisabledID2 = new DisabledId(testDisabledIDJSON3, false);
+		testString = null;
 		
-		final boolean test = testDisabledID.toString().equals(testDisabledID2.toString());
+		List<DisabledId> testListWithNullString = new ArrayList<DisabledId>();
 		
-		Assert.assertEquals(false, test);
+		try {
+			testListWithNullString = DisabledId.createDisabledIdListFromJsonPartResponse(testString);
+		}
+		catch(Exception e) {
+			
+		}
+		
+		Assert.assertEquals(testList, testListWithNullString);
+		
 	}
+	
+	@Test
+	public void testCreateDisabledIdListFromJsonPartResponse() throws JSONException {
+		
+		JSONArray testArray = new JSONArray();
+		testArray.put("1");
+		JSONObject testObject = testArray.toJSONObject(testArray);
+		testString = testObject.toString();
+		testList.add(goldDisabledID);
+				
+		Assert.assertEquals(testList.toString(), DisabledId.createDisabledIdListFromJsonPartResponse(testString).toString());
+
+	}
+	
+	@Test
+	public void testCreateDisabledIdListFromJsonObjectNullObject() throws JSONException {
+		
+		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(testDisabledIDJSON).toString());
+
+	}
+	
+	@Test
+	public void testCreateDisabledIdListFromJsonObject() throws JSONException {
+		
+		testDisabledIDJSON.put("1", false);
+		testList.add(goldDisabledID);
+				
+		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(testDisabledIDJSON).toString());
+
+	}
+	
 
 }

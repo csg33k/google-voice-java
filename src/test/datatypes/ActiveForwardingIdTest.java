@@ -2,6 +2,9 @@ package test.datatypes;
 
 import com.techventus.server.voice.datatypes.ActiveForwardingId;
 
+import gvjava.org.json.JSONArray;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -11,19 +14,56 @@ import java.util.List;
 
 /**
  * 
- * @author Brendon Shih
- *
+ * @author Brendon Shih - Catalyst IT Services
+ * 
  */
-// Coverage holes
-//	ActiveForwardingId.createActiveForwardingIdListFromJsonPartResponse line 34 not sure how to test this, do not know jsonPart format.
-//	ActiveForwardingId.createActiveForwardingIdListFromJsonPartResponse line 37 not sure how to test this, do not know jsonPart format.
 public class ActiveForwardingIdTest {
 
-    List<ActiveForwardingId> blankArrayList = new ArrayList<ActiveForwardingId>();
-    
-    @Test
-    public void testEmptyString() {
-        Assert.assertEquals(blankArrayList, ActiveForwardingId.createActiveForwardingIdListFromJsonPartResponse(""));
-    }
+	List<ActiveForwardingId> testList = new ArrayList<ActiveForwardingId>();
+	String testString;
+
+	@Test
+	public void testCreateActiveForwardingIdListFromJsonPartResponseEmptyString() {
+		testString = "";
+		Assert.assertEquals(testList, ActiveForwardingId
+				.createActiveForwardingIdListFromJsonPartResponse(testString));
+	}
+
+	@Test
+	public void testCreateActiveForwardingIdListFromJsonPartResponseNullString() {
+
+		List<ActiveForwardingId> testNullList = new ArrayList<ActiveForwardingId>();
+
+		try {
+			testNullList = ActiveForwardingId
+					.createActiveForwardingIdListFromJsonPartResponse(testString);
+		} catch (Exception e) {
+
+		}
+
+		Assert.assertEquals(testList, testNullList);
+
+	}
+
+	@Test
+	public void testCreateActiveForwardingIdListFromJsonPartResponse()
+			throws JSONException {
+
+		JSONArray testArray = new JSONArray();
+		testArray.put("1");
+		JSONObject testObject = testArray.toJSONObject(testArray);
+		testString = testObject.toString();
+
+		JSONObject testAFIDObject = new JSONObject();
+		testAFIDObject.put("id", 1);
+		testAFIDObject.put("disabled", false);
+		ActiveForwardingId testAFID = new ActiveForwardingId(testAFIDObject);
+		testList.add(testAFID);
+
+		Assert.assertEquals(testList.toString(), ActiveForwardingId
+				.createActiveForwardingIdListFromJsonPartResponse(testString)
+				.toString());
+
+	}
 
 }

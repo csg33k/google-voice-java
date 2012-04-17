@@ -15,8 +15,9 @@ import com.techventus.server.voice.datatypes.records.TranscriptElement;
 import com.techventus.server.voice.datatypes.records.Voicemail;
 
 /**
- * @author bFutral
  * 
+ * @author Brett Futral @ Catalyst IT Services
+ *
  */
 public class VoicemailTest {
 

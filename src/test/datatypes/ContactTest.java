@@ -8,7 +8,7 @@ import com.techventus.server.voice.datatypes.Contact;
 
 /**
  * 
- * @author bFutral
+ * @author Brett Futral @ Catalyst IT Services
  *
  */
 public class ContactTest {

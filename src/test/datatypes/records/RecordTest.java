@@ -19,7 +19,7 @@ import com.techventus.server.voice.datatypes.records.Voicemail;
 
 /**
  * 
- * @author bFutral
+ * @author Brett Futral @ Catalyst IT Services
  *
  */
 public class RecordTest {
@@ -27,7 +27,10 @@ public class RecordTest {
 	Record testRecord;
 	Record testRecord1;
 	Record testRecord2;
+	
+	//Record Constructors
 
+	
 	//params for testRecords
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
 			"testURL");

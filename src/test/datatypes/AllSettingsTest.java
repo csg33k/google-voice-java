@@ -20,7 +20,7 @@ import com.techventus.server.voice.datatypes.Setting;
 
 /**
  * 
- * @author bFutral
+ * @author Brett Futral @ Catalyst IT Services
  *
  */
 public class AllSettingsTest {
