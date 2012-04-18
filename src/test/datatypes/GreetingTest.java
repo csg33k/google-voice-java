@@ -1,37 +1,92 @@
 package test.datatypes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gvjava.org.json.JSONArray;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.techventus.server.voice.datatypes.Greeting;
 
 /**
  * 
- * @author bFutral
+ * @author Brett Futral @ Catalyst IT Services
  *
  */
 public class GreetingTest {
-	//testGreetings
-	Greeting testGreeting = new Greeting(1, "testName", "testJobberName");
-	Greeting testGreeting1 = new Greeting(2, "testName", "testJobberName");
+	// testGreetings
+	Greeting testGreeting = new Greeting(0, "", "System Standard");
+	Greeting testGreeting1 = new Greeting(1, "", "testName");
+	
+	List<Greeting> resultList = new ArrayList<Greeting>();
+	
+	JSONObject testJSONObject = new JSONObject();
+	
+	
+	@Before
+	public void setUp() {
+		resultList.add(testGreeting);
+		resultList.add(testGreeting1);
+	}
 
 	@Test
 	public void testCompareToOverrideEqual() {
-		
+
 		Assert.assertEquals(0, testGreeting.compareTo(testGreeting));
 	}
-	
+
 	@Test
 	public void testCompareToOverrideGreater() {
-		
+
 		Assert.assertEquals(1, testGreeting1.compareTo(testGreeting));
+	}
+
+	@Test
+	public void testCompareToOverrideLesser() {
+
+		Assert.assertEquals(-1, testGreeting.compareTo(testGreeting1));
+	}
+
+	@Test
+	public void testCreateGroupSettingsFromJsonResponse() {
+		
+		String testString = "\"greetings\":[{\"id\":0,\"name\":\"System Standard\",\"jobberName\":\"\"},{\"id\":1,\"name\":\"testName\",\"jobberName\":\"testJobberName\"}],";
+
+		Assert.assertEquals(resultList.toString(), Greeting.createGroupSettingsFromJsonResponse(testString).toString());		
 	}
 	
 	@Test
-	public void testCompareToOverrideLesser() {
+	public void testCreateListFromJsonObjectHasGreetings() throws JSONException {
 		
-		Assert.assertEquals(-1, testGreeting.compareTo(testGreeting1));
+		JSONObject testJSONGreeting = new JSONObject();
+		JSONObject testJSONGreeting1 = new JSONObject();
+		JSONArray testGreetingArray = new JSONArray();
+		testJSONGreeting.put("id", 0);
+		testJSONGreeting.put("name", "System Standard");
+		testJSONGreeting.put("jobberName", "");
+		testJSONGreeting1.put("id", 1);
+		testJSONGreeting1.put("name", "testName");
+		testJSONGreeting1.put("jobberName", "");
+		testGreetingArray.put(testJSONGreeting);
+		testGreetingArray.put(testJSONGreeting1);
+		testJSONObject.put("greetings", testGreetingArray);
+		
+		Assert.assertEquals(resultList.toString(), Greeting.createListFromJsonObject(testJSONObject).toString());
+		
+	}
+	
+	@Test
+	public void testCreateListFromJsonObjectNoGreetings() throws JSONException {
+		
+		List<Greeting> noResultList = new ArrayList<Greeting>();
+		
+		Assert.assertEquals(noResultList.toString(), Greeting.createListFromJsonObject(testJSONObject).toString());
+		
 	}
 
 }
