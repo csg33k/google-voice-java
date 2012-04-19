@@ -97,7 +97,7 @@ public class Group {
 			boolean isCustomGreeting 		= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"isCustomGreeting\":", ",", false));
 			boolean isCustomDirectConnect 	= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"isCustomDirectConnect\":", ",", false));
 			boolean directConnect 			= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"directConnect\":", ",", false));
-			int greetingId 					= Integer.parseInt(groupsStrings[i].substring(groupsStrings[i].indexOf("\"greetingId\":")+13));
+			int greetingId 					= Integer.parseInt(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"greetingId\":", ",", false));
 			String disabledForwardingIdsStr	= ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"disabledForwardingIds\":{", "!,\"", false);
 			
 			List<DisabledForwardingId> disabledForwardingIds = new ArrayList<DisabledForwardingId>();
@@ -182,7 +182,8 @@ public class Group {
 		String ret = "\"groups\":{";
 		for (Iterator<Group> iterator = pGroupSettings.iterator(); iterator.hasNext();) {
 			Group setting = (Group) iterator.next();
-			ret+=setting.toJson();
+			String id = ParsingUtil.removeUninterestingParts(setting.toString(), "{id=", ";name", false);
+			ret+= "\"" + id + "\":" + setting.toJson();
 			if(iterator.hasNext()) {
 				ret+=",";
 			}
