@@ -28,6 +28,7 @@ public class GroupTest {
 	Group testGroup3;
 	
 	String testString;
+	String resultString;
 
 	// DisabledForwardingIDs
 	final DisabledForwardingId testDisabledForwardingId = new DisabledForwardingId(
@@ -96,7 +97,7 @@ public class GroupTest {
 		
 		Group nullGroup = new Group(testGroupObject);
 		
-		String resultString = "{id=null;name=null;isCustomDirectConnect=false;directConnect=false;isCustomGreeting=false;isCustomForwarding=false;greetingId=0;disabledForwardingIds=null}";
+		resultString = "{id=null;name=null;isCustomDirectConnect=false;directConnect=false;isCustomGreeting=false;isCustomForwarding=false;greetingId=0;disabledForwardingIds=null}";
 
 		Assert.assertEquals(resultString, nullGroup.toString());
 		
@@ -154,9 +155,9 @@ public class GroupTest {
 		testGrouplist.add(testGroup1);
 		testGrouplist.add(testGroup3);
 		
-		testString = "\"groups\":{\"testID\":{\"id\":\"testID\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{},\"name\":\"testName\",\"isCustomDirectConnect\":false,\"directConnect\":false},\"testID1\":{\"id\":\"testID1\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{\"3\":true,\"2\":true},\"name\":\"testName1\",\"isCustomDirectConnect\":false,\"directConnect\":false}}";
+		resultString = "\"groups\":{\"testID\":{\"id\":\"testID\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{},\"name\":\"testName\",\"isCustomDirectConnect\":false,\"directConnect\":false},\"testID1\":{\"id\":\"testID1\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{\"3\":true,\"2\":true},\"name\":\"testName1\",\"isCustomDirectConnect\":false,\"directConnect\":false}}";
 		
-		Assert.assertEquals(testString, Group.listToJson(testGrouplist).toString());
+		Assert.assertEquals(resultString, Group.listToJson(testGrouplist).toString());
 		
 	}
 	
@@ -172,6 +173,63 @@ public class GroupTest {
 		
 	}
 	
+	@Test
+	public void testCreateJSONObjectArrayFromJsonObject() throws JSONException {
+		
+		resultString = "{\"testID\":\"{id=testID;name=testName;isCustomDirectConnect=false;directConnect=false;isCustomGreeting=false;isCustomForwarding=false;greetingId=0;disabledForwardingIds=[]}\"}";
+		
+		testGroupObject.put("obj1", testJSONOb1);
+		
+		JSONObject[] testObjectArray = Group.createJSONObjectArrayFromJsonObject(testGroupObject);
+		
+		Assert.assertEquals(resultString, testObjectArray[0].toString());
+	}
+	
+	@Test
+	public void testCreateJSONObjectFromJsonObject() throws JSONException {
+		
+		resultString = "{\"testID\":\"{id=testID;name=testName;isCustomDirectConnect=false;directConnect=false;isCustomGreeting=false;isCustomForwarding=false;greetingId=0;disabledForwardingIds=[]}\"}";
+		
+		testGroupObject.put("obj1", testJSONOb1);
+		
+		JSONObject testObject = Group.createJSONObjectFromJsonObject(testGroupObject);
+		
+		Assert.assertEquals(resultString, testObject.toString());
+		
+	}
+	
+	@Test
+	public void testGroupsArrayToJsonObject() throws JSONException {
+		
+		resultString = "{\"testID\":{\"id\":\"testID\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{},\"name\":\"testName\",\"isCustomDirectConnect\":false,\"directConnect\":false}}";
+		
+		Group[] testObjectArray = {testGroup};
+		
+		Assert.assertEquals(resultString, Group.groupsArrayToJsonObject(testObjectArray).toString());
+	}
+	
+	@Test
+	public void testIsPhoneDisabledFalseNullList() throws JSONException {
+		
+
+
+		JSONObject testJSONOb4 = new JSONObject();
+		testJSONOb4.put("id", "testID");
+		testJSONOb4.put("name", "testName");
+		testJSONOb4.put("isCustomForwarding", false);
+		testJSONOb4.put("isCustomGreeting", false);
+		testJSONOb4.put("isCustomDirectConnect", false);
+		testJSONOb4.put("directConnect", false);
+		testJSONOb4.put("greetingId", 0);
+		
+		Group testGroup4 = new Group(testJSONOb4);
+		
+		final boolean testNullList = testGroup4.isPhoneDisabled(1);
+		
+		Assert.assertEquals(false, testNullList);
+		
+		
+	}
 
 	@Test
 	public void testIsPhoneDisabledFalseEmptyList() {
