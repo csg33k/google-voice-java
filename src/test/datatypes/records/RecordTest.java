@@ -24,28 +24,27 @@ import com.techventus.server.voice.datatypes.records.Voicemail;
  */
 public class RecordTest {
 	//testRecords
-	Record testRecord;
-	Record testRecord1;
-	Record testRecord2;
+	Record testRecord; 
+	Record testRecord1; 
+	Record testRecord2; 
 	
-	//Record Constructors
-
+	Transcript testTranscript; 
 	
 	//params for testRecords
-	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
+	final static Contact CONTACT = new Contact("testName", "testID", "testNumber", 
 			"testURL");
-	final Date DATE = new Date(1321038671000l);
-	final static TranscriptElement.RecognitionLevel testLevel = TranscriptElement.RecognitionLevel.HIGH;
-	final TranscriptElement testElement = new TranscriptElement("testText",
-			"testID", testLevel);
+	final static Date DATE = new Date(1321038671000l); 
+	final static TranscriptElement.RecognitionLevel TEST_LEVEL = TranscriptElement.RecognitionLevel.HIGH; 
+	final static TranscriptElement TEST_ELEMENT = new TranscriptElement("testText", 
+			"testID", TEST_LEVEL);
+	final List<TranscriptElement> testList = new ArrayList<TranscriptElement>(); 
 	
 	@Before
 	public void setUp() {
 		
-		final List<TranscriptElement> testList = new ArrayList<TranscriptElement>();
-		testList.add(testElement);
+		testList.add(TEST_ELEMENT);
 		
-		final Transcript testTranscript = new Transcript(testList);
+		testTranscript = new Transcript(testList);
 		
 		testRecord = new Voicemail("ID1", "testTitle", DATE, CONTACT, testTranscript, true);
 		testRecord1 = new Call("ID1", "testTitle", DATE, CONTACT, true);
@@ -55,73 +54,73 @@ public class RecordTest {
 	@Test
 	public void testIsVoicMailFalseCall() {
 
-		final boolean voicemailTestFalseCall = testRecord1.isVoicemail();
+		final boolean isVMCallFalse = testRecord1.isVoicemail();
 
-		Assert.assertEquals(false, voicemailTestFalseCall);
+		Assert.assertEquals(false, isVMCallFalse);
 	}
 
 	@Test
 	public void testIsVoicMailFalseShortMessage() {
 
-		final boolean voicemailTestFalseShortMessage = testRecord2.isVoicemail();
+		final boolean isVMSMFalse = testRecord2.isVoicemail();
 
-		Assert.assertEquals(false, voicemailTestFalseShortMessage);
+		Assert.assertEquals(false, isVMSMFalse);
 	}
 	
 	@Test
 	public void testIsVoicMailTrue() {
 
-		final boolean voicemailTesttrue = testRecord.isVoicemail();
+		final boolean isVMTrue = testRecord.isVoicemail();
 
-		Assert.assertEquals(true, voicemailTesttrue);
+		Assert.assertEquals(true, isVMTrue);
 	}
 
 	@Test
 	public void testIsCallFalseVoicemail() {
 
-		final boolean callTestFalseVoicemail = testRecord.isCall();
+		final boolean isCallVMFalse = testRecord.isCall();
 
-		Assert.assertEquals(false, callTestFalseVoicemail);
+		Assert.assertEquals(false, isCallVMFalse);
 	}
 	
 	@Test
 	public void testIsCallFalseShortMessage() {
 
-		final boolean callTestFalseShortMessage = testRecord2.isCall();
+		final boolean isCallSMFalse = testRecord2.isCall();
 
-		Assert.assertEquals(false, callTestFalseShortMessage);
+		Assert.assertEquals(false, isCallSMFalse);
 	}
 
 	@Test
 	public void testIsCallTrue() {
 
-		final boolean callTestTrue = testRecord1.isCall();
+		final boolean isCallTrue = testRecord1.isCall();
 
-		Assert.assertEquals(true, callTestTrue);
+		Assert.assertEquals(true, isCallTrue);
 	}
 
 	@Test
 	public void testIsShortMessageFalseVoicemail() {
 
-		final boolean shortMessageTestFalseCall = testRecord.isShortMessage();
+		final boolean isSMVMFalse = testRecord.isShortMessage();
 
-		Assert.assertEquals(false, shortMessageTestFalseCall);
+		Assert.assertEquals(false, isSMVMFalse);
 	}
 	
 	@Test
 	public void testIsShortMessageFalseCall() {
 
-		final boolean shortMessageTestFalseCall = testRecord1.isShortMessage();
+		final boolean isSMCallFalse = testRecord1.isShortMessage();
 
-		Assert.assertEquals(false, shortMessageTestFalseCall);
+		Assert.assertEquals(false, isSMCallFalse);
 	}
 
 	@Test
 	public void testIsShortMessageTrue() {
 
-		final boolean shortMessageTestTrue = testRecord2.isShortMessage();
+		final boolean isSMTrue = testRecord2.isShortMessage();
 
-		Assert.assertEquals(true, shortMessageTestTrue);
+		Assert.assertEquals(true, isSMTrue);
 	}
 
 }

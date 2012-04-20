@@ -12,6 +12,7 @@ import com.techventus.server.voice.datatypes.records.TranscriptElement;
  * @author Brett Futral @ Catalyst IT Services
  *
  */
+@SuppressWarnings("static-access")
 public class TranscriptElementTest {
 	// testElement
 	TranscriptElement testElement;
@@ -36,7 +37,7 @@ public class TranscriptElementTest {
 	@Test
 	public void testExtractTransscriptElementHigh() {
 
-		@SuppressWarnings("static-access")
+		
 		final TranscriptElement tElementHIGH = testElement
 				.extractTransscriptElement(html);
 
@@ -48,7 +49,6 @@ public class TranscriptElementTest {
 	@Test
 	public void testExtractTransscriptElementMED1() {
 		testElement.setLevel(testMed1);
-		@SuppressWarnings("static-access")
 		final TranscriptElement tElementMED1 = testElement
 				.extractTransscriptElement(html1);
 
@@ -60,7 +60,6 @@ public class TranscriptElementTest {
 	@Test
 	public void testExtractTransscriptElementMED2() {
 		testElement.setLevel(testMed2);
-		@SuppressWarnings("static-access")
 		final TranscriptElement tElementMED2 = testElement
 				.extractTransscriptElement(html2);
 
@@ -72,7 +71,6 @@ public class TranscriptElementTest {
 	@Test
 	public void testExtractTransscriptElementUnknown() {
 		testElement.setLevel(testUnkown);
-		@SuppressWarnings("static-access")
 		final TranscriptElement tElementUnknown = testElement
 				.extractTransscriptElement(html3);
 
@@ -83,7 +81,6 @@ public class TranscriptElementTest {
 
 	@Test
 	public void testExtractTransscriptElementNull() {
-		@SuppressWarnings("static-access")
 		final TranscriptElement tElementNull = testElement
 				.extractTransscriptElement(html4);
 

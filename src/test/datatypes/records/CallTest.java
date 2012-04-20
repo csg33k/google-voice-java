@@ -15,13 +15,11 @@ import com.techventus.server.voice.datatypes.records.Call;
  *
  */
 public class CallTest {
-	//Params for testCall
-	final static String ID = "testID";
-	final static String TITLE = "testTitle";
-	final Date DATE = new Date(1321038671000l);
-	final Contact CONTACT = new Contact("testName", "testID", "testNumber", "testURL");
-	//testCall
-	Call testCall = new Call(ID, TITLE, DATE, CONTACT, true);
+	
+	private final static Date DATE = new Date(1321038671000l);
+	private final static Contact CONTACT = new Contact("testName", "testID", "testNumber", "testURL");
+	
+	private Call testCall = new Call("testID", "testTitle", DATE, CONTACT, true);
 	
 	@Test
 	public void testCallToStringOverrideFull() {

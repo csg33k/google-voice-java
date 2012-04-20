@@ -17,12 +17,11 @@ import com.techventus.server.voice.datatypes.records.ShortMessage;
 public class ShortMessageTest {
 
 	//Params for testShortMessage
-	final static String ID = "testID";
-	final static String TITLE = "testTitle";
 	final Date DATE = new Date(1321038671000l);
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber", "testURL");
+	
 	//testShortMessage
-	ShortMessage testShortMessage = new ShortMessage(ID, TITLE, DATE, CONTACT, true);
+	ShortMessage testShortMessage = new ShortMessage("testID", "testTitle", DATE, CONTACT, true);
 	
 	@Test
 	public void testShortMessageToStringOverrideFull() {
