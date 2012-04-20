@@ -23,8 +23,6 @@ public class VoicemailTest {
 
 	Voicemail testVoicemail;
 	// Params for testVoicemail
-	final static String ID = "testID";
-	final static String TITLE = "testTitle";
 	final Date DATE = new Date(1321038671000l);
 	final Contact CONTACT = new Contact("testName", "testID", "testNumber",
 			"testURL");
@@ -39,7 +37,7 @@ public class VoicemailTest {
 		testList.add(testElement);
 		final Transcript TRANSCRIPT = new Transcript(testList);
 		//instantiate testVoicemail
-		testVoicemail = new Voicemail(ID, TITLE, DATE, CONTACT, TRANSCRIPT,
+		testVoicemail = new Voicemail("testID", "testTitle", DATE, CONTACT, TRANSCRIPT,
 				true);
 	}
 
