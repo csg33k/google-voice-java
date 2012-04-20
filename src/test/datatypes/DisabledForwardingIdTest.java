@@ -20,49 +20,49 @@ import com.techventus.server.voice.datatypes.DisabledForwardingId;
 public class DisabledForwardingIdTest {
 
 	// Golden DisabledForwardingId Object
-	final DisabledForwardingId goldDisabledForwardingId = new DisabledForwardingId(
+	final DisabledForwardingId goldDFId = new DisabledForwardingId(
 			"1", true);
 
 	// test Objects
-	DisabledForwardingId testDisabledForwardingId;
-	JSONObject testJSONDisabledForwardingId = new JSONObject();
+	DisabledForwardingId testDFId;
+	JSONObject testJsonDFId = new JSONObject();
 	JSONArray testJSArray = new JSONArray();
 
 	@Test
 	public void testDisabledForwardingNullObjectSaveModeTrue()
 			throws JSONException {
 
-		testDisabledForwardingId = new DisabledForwardingId(
-				testJSONDisabledForwardingId, true);
+		testDFId = new DisabledForwardingId(
+				testJsonDFId, true);
 
-		Assert.assertEquals("{id=null;disabled=false}", testDisabledForwardingId.toString());
+		Assert.assertEquals("{id=null;disabled=false}", testDFId.toString());
 	}
 
 	@Test
 	public void testDisabledForwardingNullObjectSaveModefalse() {
 
 		try {
-			testDisabledForwardingId = new DisabledForwardingId(
-					testJSONDisabledForwardingId, false);
+			testDFId = new DisabledForwardingId(
+					testJsonDFId, false);
 		} catch (Exception e) {
-
+			testDFId = goldDFId;
 		}
 
-		Assert.assertNull(testDisabledForwardingId);
+		Assert.assertEquals(goldDFId, testDFId);
 
 	}
 
 	@Test
 	public void testDisabledForwardingIdSaveModeFalse() throws JSONException {
 
-		testJSONDisabledForwardingId.put("id", "1");
-		testJSONDisabledForwardingId.put("disabled", true);
+		testJsonDFId.put("id", "1");
+		testJsonDFId.put("disabled", true);
 
-		testDisabledForwardingId = new DisabledForwardingId(
-				testJSONDisabledForwardingId, false);
+		testDFId = new DisabledForwardingId(
+				testJsonDFId, false);
 
-		final boolean test = goldDisabledForwardingId.toString().equals(
-				testDisabledForwardingId.toString());
+		final boolean test = goldDFId.toString().equals(
+				testDFId.toString());
 
 		Assert.assertEquals(true, test);
 	}
@@ -71,14 +71,14 @@ public class DisabledForwardingIdTest {
 	public void testDisabledForwardingIdTrueSaveModeTrue()
 			throws JSONException {
 
-		testJSONDisabledForwardingId.put("id", "1");
-		testJSONDisabledForwardingId.put("disabled", true);
+		testJsonDFId.put("id", "1");
+		testJsonDFId.put("disabled", true);
 
-		testDisabledForwardingId = new DisabledForwardingId(
-				testJSONDisabledForwardingId, true);
+		testDFId = new DisabledForwardingId(
+				testJsonDFId, true);
 
-		final boolean test = goldDisabledForwardingId.toString().equals(
-				testDisabledForwardingId.toString());
+		final boolean test = goldDFId.toString().equals(
+				testDFId.toString());
 
 		Assert.assertEquals(true, test);
 	}
@@ -87,11 +87,11 @@ public class DisabledForwardingIdTest {
 	public void testCreateDisabledForwardingIdListFromJsonPartResponse()
 			throws JSONException {
 
-		List<DisabledForwardingId> testList = new ArrayList<DisabledForwardingId>();
-		testList.add(goldDisabledForwardingId);
+		final List<DisabledForwardingId> testList = new ArrayList<DisabledForwardingId>();
+		testList.add(goldDFId);
 
 		testJSArray.put(1);
-		JSONObject disabledFIDs = testJSArray.toJSONObject(testJSArray);
+		final JSONObject disabledFIDs = testJSArray.toJSONObject(testJSArray);
 
 		Assert.assertEquals(
 				testList.toString(),
@@ -104,10 +104,10 @@ public class DisabledForwardingIdTest {
 	public void testCreateDisabledForwardingIdArrayFromJsonPartResponse()
 			throws JSONException {
 
-		DisabledForwardingId[] goldArray = { goldDisabledForwardingId };
+		final DisabledForwardingId[] goldArray = { goldDFId };
 
 		testJSArray.put(1);
-		JSONObject disabledFIDs = testJSArray.toJSONObject(testJSArray);
+		final JSONObject disabledFIDs = testJSArray.toJSONObject(testJSArray);
 
 		Assert.assertEquals(
 				goldArray[0].toString(),
@@ -120,12 +120,12 @@ public class DisabledForwardingIdTest {
 	@Test
 	public void testArrayToJsonObject() throws JSONException {
 
-		List<DisabledForwardingId> testList = new ArrayList<DisabledForwardingId>();
-		testList.add(goldDisabledForwardingId);	
+		final List<DisabledForwardingId> testList = new ArrayList<DisabledForwardingId>();
+		testList.add(goldDFId);	
 
-		testJSONDisabledForwardingId.put("1", true);
+		testJsonDFId.put("1", true);
 		
-		Assert.assertEquals(testJSONDisabledForwardingId.toString(), DisabledForwardingId
+		Assert.assertEquals(testJsonDFId.toString(), DisabledForwardingId
 				.arrayToJsonObject(testList).toString());
 
 	}

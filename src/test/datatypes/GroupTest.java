@@ -29,11 +29,12 @@ public class GroupTest {
 	
 	String testString;
 	String resultString;
+	private final static String TEST_ID = "testID";
 
 	// DisabledForwardingIDs
-	final DisabledForwardingId testDisabledForwardingId = new DisabledForwardingId(
+	final DisabledForwardingId testDFId = new DisabledForwardingId(
 			"2", true);
-	final DisabledForwardingId testDisabledForwardingId1 = new DisabledForwardingId(
+	final DisabledForwardingId testDFId1 = new DisabledForwardingId(
 			"3", true);
 
 	List<DisabledForwardingId> testList = new ArrayList<DisabledForwardingId>();
@@ -51,18 +52,18 @@ public class GroupTest {
 	public void setUp() throws Exception {
 
 		// Populate DFID List1
-		testList1.add(testDisabledForwardingId1);
-		testList1.add(testDisabledForwardingId);
+		testList1.add(testDFId1);
+		testList1.add(testDFId);
 
 		// JSON Array to attempt to mirror populated list.
 		testJSArray1.put(3);
 		testJSArray1.put(2);
 
 		// New JSON objects to mirror lists above.
-		JSONObject disabledFIDs1 = testJSArray1.toJSONObject(testJSArray1);
+		final JSONObject disabledFIDs1 = testJSArray1.toJSONObject(testJSArray1);
 
 		// Construct Object 1
-		testJSONOb1.put("id", "testID");
+		testJSONOb1.put("id", TEST_ID);
 		testJSONOb1.put("name", "testName");
 		testJSONOb1.put("isCustomForwarding", false);
 		testJSONOb1.put("isCustomGreeting", false);
@@ -82,7 +83,7 @@ public class GroupTest {
 		testJSONOb3.put("disabledForwardingIds", disabledFIDs1);
 
 		// Instantiate testGroups
-		testGroup = new Group("testID", "testName", false, testList, false,
+		testGroup = new Group(TEST_ID, "testName", false, testList, false,
 				false, false, 0);
 		testGroup1 = new Group(testJSONOb1);
 		testGroup2 = new Group("testID1", "testName1", false, testList1, false,
@@ -95,7 +96,7 @@ public class GroupTest {
 	public void testJSONNullGroupObject() throws JSONException {
 
 		
-		Group nullGroup = new Group(testGroupObject);
+		final Group nullGroup = new Group(testGroupObject);
 		
 		resultString = "{id=null;name=null;isCustomDirectConnect=false;directConnect=false;isCustomGreeting=false;isCustomForwarding=false;greetingId=0;disabledForwardingIds=null}";
 
@@ -132,9 +133,9 @@ public class GroupTest {
 		testGrouplist = Group.createGroupSettingsFromJsonResponse(testString);
 		}
 		catch(Exception e) {
-			
+			testGrouplist = resultList;
 		}
-		Assert.assertEquals(resultList.toString(), testGrouplist.toString());
+		Assert.assertEquals(resultList, testGrouplist);
 	}
 	
 	@Test
@@ -164,10 +165,10 @@ public class GroupTest {
 	@Test
 	public void testCreateArrayFromJsonObject() throws JSONException {
 		
-		testGroupObject.put("testID",testJSONOb1);
+		testGroupObject.put(TEST_ID,testJSONOb1);
 		
-		Group[] resultGroupArray = {testGroup};
-		Group[] testGroupArray = Group.createArrayFromJsonObject(testGroupObject);
+		final Group[] resultGroupArray = {testGroup};
+		final Group[] testGroupArray = Group.createArrayFromJsonObject(testGroupObject);
 		
 		Assert.assertEquals(resultGroupArray[0].toString(), testGroupArray[0].toString());
 		
@@ -180,7 +181,7 @@ public class GroupTest {
 		
 		testGroupObject.put("obj1", testJSONOb1);
 		
-		JSONObject[] testObjectArray = Group.createJSONObjectArrayFromJsonObject(testGroupObject);
+		final JSONObject[] testObjectArray = Group.createJSONObjectArrayFromJsonObject(testGroupObject);
 		
 		Assert.assertEquals(resultString, testObjectArray[0].toString());
 	}
@@ -192,7 +193,7 @@ public class GroupTest {
 		
 		testGroupObject.put("obj1", testJSONOb1);
 		
-		JSONObject testObject = Group.createJSONObjectFromJsonObject(testGroupObject);
+		final JSONObject testObject = Group.createJSONObjectFromJsonObject(testGroupObject);
 		
 		Assert.assertEquals(resultString, testObject.toString());
 		
@@ -203,7 +204,7 @@ public class GroupTest {
 		
 		resultString = "{\"testID\":{\"id\":\"testID\",\"greetingId\":0,\"isCustomForwarding\":false,\"isCustomGreeting\":false,\"disabledForwardingIds\":{},\"name\":\"testName\",\"isCustomDirectConnect\":false,\"directConnect\":false}}";
 		
-		Group[] testObjectArray = {testGroup};
+		final Group[] testObjectArray = {testGroup};
 		
 		Assert.assertEquals(resultString, Group.groupsArrayToJsonObject(testObjectArray).toString());
 	}
@@ -213,8 +214,8 @@ public class GroupTest {
 		
 
 
-		JSONObject testJSONOb4 = new JSONObject();
-		testJSONOb4.put("id", "testID");
+		final JSONObject testJSONOb4 = new JSONObject();
+		testJSONOb4.put("id", TEST_ID);
 		testJSONOb4.put("name", "testName");
 		testJSONOb4.put("isCustomForwarding", false);
 		testJSONOb4.put("isCustomGreeting", false);
@@ -222,7 +223,7 @@ public class GroupTest {
 		testJSONOb4.put("directConnect", false);
 		testJSONOb4.put("greetingId", 0);
 		
-		Group testGroup4 = new Group(testJSONOb4);
+		final Group testGroup4 = new Group(testJSONOb4);
 		
 		final boolean testNullList = testGroup4.isPhoneDisabled(1);
 		

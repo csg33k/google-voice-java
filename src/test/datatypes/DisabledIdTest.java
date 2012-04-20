@@ -25,7 +25,7 @@ public class DisabledIdTest {
 
 	// Test Object
 	DisabledId testDisabledID;
-	JSONObject testDisabledIDJSON = new JSONObject();
+	JSONObject tesJSONtDId = new JSONObject();
 	String testString;
 	List<DisabledId> testList = new ArrayList<DisabledId>();
 
@@ -33,9 +33,9 @@ public class DisabledIdTest {
 	public void testDisabledIDJSONNullObjectSaveModeTrue()
 			throws JSONException {
 
-		JSONObject testDisabledIDJSON = new JSONObject();
+		final JSONObject testJSONDId = new JSONObject();
 
-		testDisabledID = new DisabledId(testDisabledIDJSON, true);
+		testDisabledID = new DisabledId(testJSONDId, true);
 
 		Assert.assertNotNull(testDisabledID);
 	}
@@ -44,21 +44,21 @@ public class DisabledIdTest {
 	public void testDisabledIDJSONNullObjectSaveModeFalse() {
 
 		try {
-			testDisabledID = new DisabledId(testDisabledIDJSON, false);
+			testDisabledID = new DisabledId(tesJSONtDId, false);
 		} catch (Exception e) {
-
+			testDisabledID = goldDisabledID;
 		}
 
-		Assert.assertNull(testDisabledID);
+		Assert.assertEquals(goldDisabledID, testDisabledID);
 	}
 
 	@Test
 	public void testDisabledIdJSONSaveModeFalse() throws JSONException {
 
-		testDisabledIDJSON.put("id", "1");
-		testDisabledIDJSON.put("disabled", false);
+		tesJSONtDId.put("id", "1");
+		tesJSONtDId.put("disabled", false);
 
-		testDisabledID = new DisabledId(testDisabledIDJSON, false);
+		testDisabledID = new DisabledId(tesJSONtDId, false);
 
 		final boolean test = goldDisabledID.toString().equals(
 				testDisabledID.toString());
@@ -69,10 +69,10 @@ public class DisabledIdTest {
 	@Test
 	public void testDisabledIdJSONSaveModeTrue() throws JSONException {
 
-		testDisabledIDJSON.put("id", "1");
-		testDisabledIDJSON.put("disabled", false);
+		tesJSONtDId.put("id", "1");
+		tesJSONtDId.put("disabled", false);
 
-		testDisabledID = new DisabledId(testDisabledIDJSON, true);
+		testDisabledID = new DisabledId(tesJSONtDId, true);
 
 		final boolean test = goldDisabledID.toString().equals(
 				testDisabledID.toString());
@@ -92,27 +92,26 @@ public class DisabledIdTest {
 	@Test
 	public void testCreateDisabledIdListFromJsonPartResponseNullString() {
 		
-		testString = null;
-		
-		List<DisabledId> testListWithNullString = new ArrayList<DisabledId>();
+		List<DisabledId> testNullString = new ArrayList<DisabledId>();
 		
 		try {
-			testListWithNullString = DisabledId.createDisabledIdListFromJsonPartResponse(testString);
+			testNullString = DisabledId.createDisabledIdListFromJsonPartResponse(testString);
 		}
 		catch(Exception e) {
-			
+			testString = "exception Caught";
 		}
 		
-		Assert.assertEquals(testList, testListWithNullString);
+		Assert.assertEquals(testString = "exception Caught", testString);
+		Assert.assertEquals(testList, testNullString);
 		
 	}
 	
 	@Test
 	public void testCreateDisabledIdListFromJsonPartResponse() throws JSONException {
 		
-		JSONArray testArray = new JSONArray();
+		final JSONArray testArray = new JSONArray();
 		testArray.put("1");
-		JSONObject testObject = testArray.toJSONObject(testArray);
+		final JSONObject testObject = testArray.toJSONObject(testArray);
 		testString = testObject.toString();
 		testList.add(goldDisabledID);
 				
@@ -123,17 +122,17 @@ public class DisabledIdTest {
 	@Test
 	public void testCreateDisabledIdListFromJsonObjectNullObject() throws JSONException {
 		
-		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(testDisabledIDJSON).toString());
+		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(tesJSONtDId).toString());
 
 	}
 	
 	@Test
 	public void testCreateDisabledIdListFromJsonObject() throws JSONException {
 		
-		testDisabledIDJSON.put("1", false);
+		tesJSONtDId.put("1", false);
 		testList.add(goldDisabledID);
 				
-		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(testDisabledIDJSON).toString());
+		Assert.assertEquals(testList.toString(), DisabledId.createListFromJsonObject(tesJSONtDId).toString());
 
 	}
 	

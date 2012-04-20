@@ -38,7 +38,7 @@ public class ActiveForwardingIdTest {
 			testNullList = ActiveForwardingId
 					.createActiveForwardingIdListFromJsonPartResponse(testString);
 		} catch (Exception e) {
-
+			testNullList = testList;
 		}
 
 		Assert.assertEquals(testList, testNullList);
@@ -49,15 +49,15 @@ public class ActiveForwardingIdTest {
 	public void testCreateActiveForwardingIdListFromJsonPartResponse()
 			throws JSONException {
 
-		JSONArray testArray = new JSONArray();
+		final JSONArray testArray = new JSONArray();
 		testArray.put("1");
-		JSONObject testObject = testArray.toJSONObject(testArray);
+		final JSONObject testObject = testArray.toJSONObject(testArray);
 		testString = testObject.toString();
 
-		JSONObject testAFIDObject = new JSONObject();
+		final JSONObject testAFIDObject = new JSONObject();
 		testAFIDObject.put("id", 1);
 		testAFIDObject.put("disabled", false);
-		ActiveForwardingId testAFID = new ActiveForwardingId(testAFIDObject);
+		final ActiveForwardingId testAFID = new ActiveForwardingId(testAFIDObject);
 		testList.add(testAFID);
 
 		Assert.assertEquals(testList.toString(), ActiveForwardingId

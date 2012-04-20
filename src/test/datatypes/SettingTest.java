@@ -3,11 +3,6 @@
  */
 package test.datatypes;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import gvjava.org.json.JSONArray;
 import gvjava.org.json.JSONException;
@@ -16,7 +11,6 @@ import gvjava.org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.DisabledId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Setting;
@@ -32,13 +26,44 @@ public class SettingTest {
 	Setting testSetting2;
 	Group testGroup;
 	String resultString;
-
+	
+	final static String DIRECT_CONNECT = "directConnect";
+	final static String A_F_IDS = "activeForwardingIds";
+	final static String BASE_URL = "baseUrl";
+	final static String TEST_URL = "testURL";
+	final static String CREDITS = "credits";
+	final static String DFID = "defaultGreetingId";
+	final static String DID_INFOS = "didInfos";
+	final static String DID_MAP = "disabledIdMap";
+	final static String D_N_D = "doNotDisturb";
+	final static String EMAIL_ADD = "emailAddresses";
+	final static String EMAIL_NOTE_ACTIVE = "emailNotificationActive";
+	final static String TEST_E_ADDRESS = "testEmailAddress";
+	final static String EMAIL_NOTE_ADD = "emailNotificationAddress";
+	final static String GREETINGS = "greetings";
+	final static String GROUPLIST = "groupList";
+	final static String GROUPS = "groups";
+	final static String LANGUAGE = "language";
+	final static String ENGLISH = "English";
+	final static String PRIME_DID = "primaryDid";
+	final static String TEST_DID = "testDiD";
+	final static String SCREEN_BEHAVE = "screenBehavior";
+	final static String SHOW_TRANS = "showTranscripts";
+	final static String SMS_NOTE = "smsNotifications";
+	final static String SMS_EMAIL_ACTIVE = "smsToEmailActive";
+	final static String SMS_EMAIL_SUB = "smsToEmailSubject";
+	final static String SPAM = "spam";
+	final static String TIME_ZONE = "timezone";
+	final static String TEST_T_ZONE = "testTimeZone";
+	final static String USE_DID_CID = "useDidAsCallerId";
+	final static String USE_DID_SOURCE = "useDidAsSource";
+	
 	final JSONArray emptyJSONArray = new JSONArray();
 	JSONArray testGroupList = new JSONArray();
-	JSONArray testGroupArray = new JSONArray();
-	
+	JSONArray testGroupArray = new JSONArray();	
 
 	final JSONObject emptyJSONObject = new JSONObject();
+	final static JSONObject TEST_NULL_OBJECT = null;
 	JSONObject testJSONGroupOb = new JSONObject();
 	JSONObject testJSONGroupOb1 = new JSONObject();
 	JSONObject jsonPreSetting = new JSONObject();
@@ -59,7 +84,7 @@ public class SettingTest {
 		testJSONGroupOb.put("isCustomForwarding", false);
 		testJSONGroupOb.put("isCustomGreeting", false);
 		testJSONGroupOb.put("isCustomDirectConnect", false);
-		testJSONGroupOb.put("directConnect", false);
+		testJSONGroupOb.put(DIRECT_CONNECT, false);
 		testJSONGroupOb.put("greetingId", 1);
 		testJSONGroupOb.put("disabledForwardingIds", emptyJSONObject);
 		testGroup = new Group(testJSONGroupOb);
@@ -71,31 +96,31 @@ public class SettingTest {
 		testGroupList.put("testID");
 		testGroupList.put("testID1");
 		
-		jsonPreSetting.put("activeForwardingIds", emptyJSONArray);
-		jsonPreSetting.put("baseUrl", "testURL");
-		jsonPreSetting.put("credits", 1);
-		jsonPreSetting.put("defaultGreetingId", 1);
-		jsonPreSetting.put("didInfos", emptyJSONArray);
-		jsonPreSetting.put("directConnect", true);
-		jsonPreSetting.put("disabledIdMap", emptyJSONObject);
-		jsonPreSetting.put("doNotDisturb", false);
-		jsonPreSetting.put("emailAddresses", emptyJSONObject);
-		jsonPreSetting.put("emailNotificationActive", true);
-		jsonPreSetting.put("emailNotificationAddress", "testEmailAddress");
-		jsonPreSetting.put("greetings", emptyJSONObject);
-		jsonPreSetting.put("groupList", testGroupList);
-		jsonPreSetting.put("groups", testJSONGroupOb1);
-		jsonPreSetting.put("language", "English");
-		jsonPreSetting.put("primaryDid", "testDiD");
-		jsonPreSetting.put("screenBehavior", 1);
-		jsonPreSetting.put("showTranscripts", false);
-		jsonPreSetting.put("smsNotifications", emptyJSONArray);
-		jsonPreSetting.put("smsToEmailActive", true);
-		jsonPreSetting.put("smsToEmailSubject", false);
-		jsonPreSetting.put("spam", "spam");
-		jsonPreSetting.put("timezone", "testTimeZone");
-		jsonPreSetting.put("useDidAsCallerId", true);
-		jsonPreSetting.put("useDidAsSource", false);
+		jsonPreSetting.put(A_F_IDS, emptyJSONArray);
+		jsonPreSetting.put(BASE_URL, TEST_URL);
+		jsonPreSetting.put(CREDITS, 1);
+		jsonPreSetting.put(DFID, 1);
+		jsonPreSetting.put(DID_INFOS, emptyJSONArray);
+		jsonPreSetting.put(DIRECT_CONNECT, true);
+		jsonPreSetting.put(DID_MAP, emptyJSONObject);
+		jsonPreSetting.put(D_N_D, false);
+		jsonPreSetting.put(EMAIL_ADD, emptyJSONObject);
+		jsonPreSetting.put(EMAIL_NOTE_ACTIVE, true);
+		jsonPreSetting.put(EMAIL_NOTE_ADD, TEST_E_ADDRESS);
+		jsonPreSetting.put(GREETINGS, emptyJSONObject);
+		jsonPreSetting.put(GROUPLIST, testGroupList);
+		jsonPreSetting.put(GROUPS, testJSONGroupOb1);
+		jsonPreSetting.put(LANGUAGE, ENGLISH);
+		jsonPreSetting.put(PRIME_DID, TEST_DID);
+		jsonPreSetting.put(SCREEN_BEHAVE, 1);
+		jsonPreSetting.put(SHOW_TRANS, false);
+		jsonPreSetting.put(SMS_NOTE, emptyJSONArray);
+		jsonPreSetting.put(SMS_EMAIL_ACTIVE, true);
+		jsonPreSetting.put(SMS_EMAIL_SUB, false);
+		jsonPreSetting.put(SPAM, SPAM);
+		jsonPreSetting.put(TIME_ZONE, TEST_T_ZONE);
+		jsonPreSetting.put(USE_DID_CID, true);
+		jsonPreSetting.put(USE_DID_SOURCE, false);
 		testSetting = new Setting(jsonPreSetting);
 		testSetting.setmDisabledIdList(null);
 
@@ -118,7 +143,7 @@ public class SettingTest {
 	}
 	
 	@Test
-	public void testSetting() throws JSONException {
+	public void testSettings() throws JSONException {
 
 		Assert.assertEquals(1,testSetting.getCredits());
 
@@ -131,34 +156,32 @@ public class SettingTest {
 	 */
 	@Test
 	public void testToJsonObjectNullEmailAndDiD() throws JSONException {
-		
-		JSONObject testNullJSONObject = null;
 
-		jsonPreSetting.put("activeForwardingIds", emptyJSONArray);
-		jsonPreSetting.put("baseUrl", "testURL");
-		jsonPreSetting.put("credits", 1);
-		jsonPreSetting.put("defaultGreetingId", 1);
-		jsonPreSetting.put("didInfos", emptyJSONArray);
-		jsonPreSetting.put("directConnect", true);
-		jsonPreSetting.put("disabledIdMap", emptyJSONObject);
-		jsonPreSetting.put("doNotDisturb", false);
-		jsonPreSetting.put("emailAddresses", testNullJSONObject);
-		jsonPreSetting.put("emailNotificationActive", true);
-		jsonPreSetting.put("emailNotificationAddress", "testEmailAddress");
-		jsonPreSetting.put("greetings", emptyJSONObject);
-		jsonPreSetting.put("groupList", testGroupList);
-		jsonPreSetting.put("groups", testJSONGroupOb1);
-		jsonPreSetting.put("language", "English");
-		jsonPreSetting.put("primaryDid", "testDiD");
-		jsonPreSetting.put("screenBehavior", 1);
-		jsonPreSetting.put("showTranscripts", false);
-		jsonPreSetting.put("smsNotifications", emptyJSONArray);
-		jsonPreSetting.put("smsToEmailActive", true);
-		jsonPreSetting.put("smsToEmailSubject", false);
-		jsonPreSetting.put("spam", "spam");
-		jsonPreSetting.put("timezone", "testTimeZone");
-		jsonPreSetting.put("useDidAsCallerId", true);
-		jsonPreSetting.put("useDidAsSource", false);
+		jsonPreSetting.put(A_F_IDS, emptyJSONArray);
+		jsonPreSetting.put(BASE_URL, TEST_URL);
+		jsonPreSetting.put(CREDITS, 1);
+		jsonPreSetting.put(DFID, 1);
+		jsonPreSetting.put(DID_INFOS, emptyJSONArray);
+		jsonPreSetting.put(DIRECT_CONNECT, true);
+		jsonPreSetting.put(DID_MAP, emptyJSONObject);
+		jsonPreSetting.put(D_N_D, false);
+		jsonPreSetting.put(EMAIL_ADD, TEST_NULL_OBJECT);
+		jsonPreSetting.put(EMAIL_NOTE_ACTIVE, true);
+		jsonPreSetting.put(EMAIL_NOTE_ADD, TEST_E_ADDRESS);
+		jsonPreSetting.put(GREETINGS, emptyJSONObject);
+		jsonPreSetting.put(GROUPLIST, testGroupList);
+		jsonPreSetting.put(GROUPS, testJSONGroupOb1);
+		jsonPreSetting.put(LANGUAGE, ENGLISH);
+		jsonPreSetting.put(PRIME_DID, TEST_DID);
+		jsonPreSetting.put(SCREEN_BEHAVE, 1);
+		jsonPreSetting.put(SHOW_TRANS, false);
+		jsonPreSetting.put(SMS_NOTE, emptyJSONArray);
+		jsonPreSetting.put(SMS_EMAIL_ACTIVE, true);
+		jsonPreSetting.put(SMS_EMAIL_SUB, false);
+		jsonPreSetting.put(SPAM, SPAM);
+		jsonPreSetting.put(TIME_ZONE, TEST_T_ZONE);
+		jsonPreSetting.put(USE_DID_CID, true);
+		jsonPreSetting.put(USE_DID_SOURCE, false);
 		
 		testSetting = new Setting(jsonPreSetting);
 		testSetting.setmDisabledIdList(null);
@@ -179,37 +202,37 @@ public class SettingTest {
 	@Test
 	public void testToJsonObject() throws JSONException {
 		
-		JSONArray testEmailArray = new JSONArray();
+		final JSONArray testEmailArray = new JSONArray();
 		testEmailArray.put("test@email.com");
 		
-		JSONObject testDiDObject = new JSONObject();
+		final JSONObject testDiDObject = new JSONObject();
 		testDiDObject.put("1", true);
 
-		jsonPreSetting.put("activeForwardingIds", emptyJSONArray);
-		jsonPreSetting.put("baseUrl", "testURL");
-		jsonPreSetting.put("credits", 1);
-		jsonPreSetting.put("defaultGreetingId", 1);
-		jsonPreSetting.put("didInfos", emptyJSONArray);
-		jsonPreSetting.put("directConnect", true);
-		jsonPreSetting.put("disabledIdMap", testDiDObject);
-		jsonPreSetting.put("doNotDisturb", false);
-		jsonPreSetting.put("emailAddresses", testEmailArray);
-		jsonPreSetting.put("emailNotificationActive", true);
-		jsonPreSetting.put("emailNotificationAddress", "testEmailAddress");
-		jsonPreSetting.put("greetings", emptyJSONObject);
-		jsonPreSetting.put("groupList", testGroupList);
-		jsonPreSetting.put("groups", testJSONGroupOb1);
-		jsonPreSetting.put("language", "English");
-		jsonPreSetting.put("primaryDid", "testDiD");
-		jsonPreSetting.put("screenBehavior", 1);
-		jsonPreSetting.put("showTranscripts", false);
-		jsonPreSetting.put("smsNotifications", emptyJSONArray);
-		jsonPreSetting.put("smsToEmailActive", true);
-		jsonPreSetting.put("smsToEmailSubject", false);
-		jsonPreSetting.put("spam", "spam");
-		jsonPreSetting.put("timezone", "testTimeZone");
-		jsonPreSetting.put("useDidAsCallerId", true);
-		jsonPreSetting.put("useDidAsSource", false);
+		jsonPreSetting.put(A_F_IDS, emptyJSONArray);
+		jsonPreSetting.put(BASE_URL, TEST_URL);
+		jsonPreSetting.put(CREDITS, 1);
+		jsonPreSetting.put(DFID, 1);
+		jsonPreSetting.put(DID_INFOS, emptyJSONArray);
+		jsonPreSetting.put(DIRECT_CONNECT, true);
+		jsonPreSetting.put(DID_MAP, testDiDObject);
+		jsonPreSetting.put(D_N_D, false);
+		jsonPreSetting.put(EMAIL_ADD, testEmailArray);
+		jsonPreSetting.put(EMAIL_NOTE_ACTIVE, true);
+		jsonPreSetting.put(EMAIL_NOTE_ADD, TEST_E_ADDRESS);
+		jsonPreSetting.put(GREETINGS, emptyJSONObject);
+		jsonPreSetting.put(GROUPLIST, testGroupList);
+		jsonPreSetting.put(GROUPS, testJSONGroupOb1);
+		jsonPreSetting.put(LANGUAGE, ENGLISH);
+		jsonPreSetting.put(PRIME_DID, TEST_DID);
+		jsonPreSetting.put(SCREEN_BEHAVE, 1);
+		jsonPreSetting.put(SHOW_TRANS, false);
+		jsonPreSetting.put(SMS_NOTE, emptyJSONArray);
+		jsonPreSetting.put(SMS_EMAIL_ACTIVE, true);
+		jsonPreSetting.put(SMS_EMAIL_SUB, false);
+		jsonPreSetting.put(SPAM, SPAM);
+		jsonPreSetting.put(TIME_ZONE, TEST_T_ZONE);
+		jsonPreSetting.put(USE_DID_CID, true);
+		jsonPreSetting.put(USE_DID_SOURCE, false);
 		
 		testSetting = new Setting(jsonPreSetting);
 		
@@ -230,37 +253,37 @@ public class SettingTest {
 	@Test
 	public void testGetGroupListAsList() throws JSONException {
 		
-		JSONArray testEmailArray = new JSONArray();
+		final JSONArray testEmailArray = new JSONArray();
 		testEmailArray.put("test@email.com");
 		
-		JSONObject testDiDObject = new JSONObject();
+		final JSONObject testDiDObject = new JSONObject();
 		testDiDObject.put("1", true);
 
-		jsonPreSetting.put("activeForwardingIds", emptyJSONArray);
-		jsonPreSetting.put("baseUrl", "testURL");
-		jsonPreSetting.put("credits", 1);
-		jsonPreSetting.put("defaultGreetingId", 1);
-		jsonPreSetting.put("didInfos", emptyJSONArray);
-		jsonPreSetting.put("directConnect", true);
-		jsonPreSetting.put("disabledIdMap", testDiDObject);
-		jsonPreSetting.put("doNotDisturb", false);
-		jsonPreSetting.put("emailAddresses", testEmailArray);
-		jsonPreSetting.put("emailNotificationActive", true);
-		jsonPreSetting.put("emailNotificationAddress", "testEmailAddress");
-		jsonPreSetting.put("greetings", emptyJSONObject);
-		jsonPreSetting.put("groupList", testGroupList);
-		jsonPreSetting.put("groups", testJSONGroupOb1);
-		jsonPreSetting.put("language", "English");
-		jsonPreSetting.put("primaryDid", "testDiD");
-		jsonPreSetting.put("screenBehavior", 1);
-		jsonPreSetting.put("showTranscripts", false);
-		jsonPreSetting.put("smsNotifications", emptyJSONArray);
-		jsonPreSetting.put("smsToEmailActive", true);
-		jsonPreSetting.put("smsToEmailSubject", false);
-		jsonPreSetting.put("spam", "spam");
-		jsonPreSetting.put("timezone", "testTimeZone");
-		jsonPreSetting.put("useDidAsCallerId", true);
-		jsonPreSetting.put("useDidAsSource", false);
+		jsonPreSetting.put(A_F_IDS, emptyJSONArray);
+		jsonPreSetting.put(BASE_URL, TEST_URL);
+		jsonPreSetting.put(CREDITS, 1);
+		jsonPreSetting.put(DFID, 1);
+		jsonPreSetting.put(DID_INFOS, emptyJSONArray);
+		jsonPreSetting.put(DIRECT_CONNECT, true);
+		jsonPreSetting.put(DID_MAP, testDiDObject);
+		jsonPreSetting.put(D_N_D, false);
+		jsonPreSetting.put(EMAIL_ADD, testEmailArray);
+		jsonPreSetting.put(EMAIL_NOTE_ACTIVE, true);
+		jsonPreSetting.put(EMAIL_NOTE_ADD, TEST_E_ADDRESS);
+		jsonPreSetting.put(GREETINGS, emptyJSONObject);
+		jsonPreSetting.put(GROUPLIST, testGroupList);
+		jsonPreSetting.put(GROUPS, testJSONGroupOb1);
+		jsonPreSetting.put(LANGUAGE, ENGLISH);
+		jsonPreSetting.put(PRIME_DID, TEST_DID);
+		jsonPreSetting.put(SCREEN_BEHAVE, 1);
+		jsonPreSetting.put(SHOW_TRANS, false);
+		jsonPreSetting.put(SMS_NOTE, emptyJSONArray);
+		jsonPreSetting.put(SMS_EMAIL_ACTIVE, true);
+		jsonPreSetting.put(SMS_EMAIL_SUB, false);
+		jsonPreSetting.put(SPAM, SPAM);
+		jsonPreSetting.put(TIME_ZONE, TEST_T_ZONE);
+		jsonPreSetting.put(USE_DID_CID, true);
+		jsonPreSetting.put(USE_DID_SOURCE, false);
 		
 		testSetting = new Setting(jsonPreSetting);
 		

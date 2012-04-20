@@ -25,6 +25,8 @@ public class GreetingTest {
 	
 	List<Greeting> resultList = new ArrayList<Greeting>();
 	
+	final static String TEST_STRING = "\"greetings\":[{\"id\":0,\"name\":\"System Standard\",\"jobberName\":\"\"},{\"id\":1,\"name\":\"testName\",\"jobberName\":\"testJobberName\"}],";
+	
 	JSONObject testJSONObject = new JSONObject();
 	
 	
@@ -55,17 +57,15 @@ public class GreetingTest {
 	@Test
 	public void testCreateGroupSettingsFromJsonResponse() {
 		
-		String testString = "\"greetings\":[{\"id\":0,\"name\":\"System Standard\",\"jobberName\":\"\"},{\"id\":1,\"name\":\"testName\",\"jobberName\":\"testJobberName\"}],";
-
-		Assert.assertEquals(resultList.toString(), Greeting.createGroupSettingsFromJsonResponse(testString).toString());		
+		Assert.assertEquals(resultList.toString(), Greeting.createGroupSettingsFromJsonResponse(TEST_STRING).toString());		
 	}
 	
 	@Test
 	public void testCreateListFromJsonObjectHasGreetings() throws JSONException {
 		
-		JSONObject testJSONGreeting = new JSONObject();
-		JSONObject testJSONGreeting1 = new JSONObject();
-		JSONArray testGreetingArray = new JSONArray();
+		final JSONObject testJSONGreeting = new JSONObject();
+		final JSONObject testJSONGreeting1 = new JSONObject();
+		final JSONArray testGreetingArray = new JSONArray();
 		testJSONGreeting.put("id", 0);
 		testJSONGreeting.put("name", "System Standard");
 		testJSONGreeting.put("jobberName", "");
@@ -83,7 +83,7 @@ public class GreetingTest {
 	@Test
 	public void testCreateListFromJsonObjectNoGreetings() throws JSONException {
 		
-		List<Greeting> noResultList = new ArrayList<Greeting>();
+		final List<Greeting> noResultList = new ArrayList<Greeting>();
 		
 		Assert.assertEquals(noResultList.toString(), Greeting.createListFromJsonObject(testJSONObject).toString());
 		

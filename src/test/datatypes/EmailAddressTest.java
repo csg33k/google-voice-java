@@ -19,11 +19,12 @@ import com.techventus.server.voice.datatypes.EmailAddress;
  */
 public class EmailAddressTest {
 	
-	EmailAddress goldEmail = new EmailAddress("test@email.com");
-	
-	EmailAddress testEmail;
+	String testEmailString = "test@email.com"; 
 	String testString;
 	
+	EmailAddress goldEmail = new EmailAddress("test@email.com");
+	EmailAddress testEmailAdd;
+		
 	List<EmailAddress> testList = new ArrayList<EmailAddress>();
 	
 	//Generic Phone JSON construction
@@ -38,7 +39,7 @@ public class EmailAddressTest {
 	@Before
 	public void setUp() throws JSONException {
 		
-		emailAddresses.put("test@email.com");
+		emailAddresses.put("testEmailAddress");
 		
 		testJSONPhone.put("id", 2);
 		testJSONPhone.put("name", "testPhone1");
@@ -69,9 +70,9 @@ public class EmailAddressTest {
 	@Test
 	public void testEmailAddressNoEmail() throws JSONException {
 
-		testEmail = new EmailAddress(testJSONPhone);
+		testEmailAdd = new EmailAddress(testJSONPhone);
 		
-		Assert.assertEquals("{address=null}", testEmail.toString());
+		Assert.assertEquals("{address=null}", testEmailAdd.toString());
 	}
 	
 	@Test
@@ -79,9 +80,9 @@ public class EmailAddressTest {
 		
 		testJSONPhone.put("emailAddresses", emailAddresses);
 
-		testEmail = new EmailAddress(testJSONPhone);
+		testEmailAdd = new EmailAddress(testJSONPhone);
 		
-		Assert.assertEquals("{address=[\"test@email.com\"]}", testEmail.toString());
+		Assert.assertEquals("{address=[\"testEmailAddress\"]}", testEmailAdd.toString());
 	}
 	
 	@Test
@@ -102,7 +103,7 @@ public class EmailAddressTest {
 			nullList = EmailAddress.createEmailAddressListFromJsonPartResponse(testString);
 		}
 		catch(Exception e) {
-			
+			nullList = testList;
 		}
 		
 		Assert.assertEquals(testList, nullList);		
@@ -112,9 +113,9 @@ public class EmailAddressTest {
 	@Test
 	public void testCreateEmailAddressListFromJsonPartResponse() throws JSONException {
 		
-		JSONArray testArray = new JSONArray();
-		testArray.put("test@email.com");
-		JSONObject testObject = testArray.toJSONObject(testArray);
+		final JSONArray testArray = new JSONArray();
+		testArray.put(testEmailString);
+		final JSONObject testObject = testArray.toJSONObject(testArray);
 		testString = testObject.toString();
 		
 		testList.add(goldEmail);
@@ -126,12 +127,12 @@ public class EmailAddressTest {
 	@Test
 	public void testCreateArrayFromJsonObject() throws JSONException {
 		
-		JSONArray testArray = new JSONArray();
-		testArray.put("test@email.com");
-		JSONObject testObject = new JSONObject();
+		final JSONArray testArray = new JSONArray();
+		testArray.put(testEmailString);
+		final JSONObject testObject = new JSONObject();
 		testObject.put("emailAddresses", testArray);
 		
-		EmailAddress[] testEmailArray = {goldEmail};
+		final EmailAddress[] testEmailArray = {goldEmail};
 		
 		Assert.assertEquals(testEmailArray[0].toString(), EmailAddress.createArrayFromJsonObject(testObject)[0].toString());
 		

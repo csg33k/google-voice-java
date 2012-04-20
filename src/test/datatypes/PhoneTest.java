@@ -26,6 +26,8 @@ public class PhoneTest {
 
 	JSONObject testJSONOb = new JSONObject();
 	JSONObject testJSONOb1 = new JSONObject();
+	
+	final static String RESULT_STRING = "{\"2\":{\"voicemailForwardingVerified\":false,\"weekendAllDay\":false,\"redirectToVoicemail\":false,\"smsEnabled\":false,\"customOverrideState\":0,\"type\":0,\"policyBitmask\":0,\"id\":2,\"phoneNumber\":\"+15035552121\",\"verified\":false,\"dEPRECATEDDisabled\":false,\"name\":\"testPhone1\",\"active\":false,\"enabledForOthers\":false,\"weekdayAllDay\":false,\"telephonyVerified\":false,\"behaviorOnRedirect\":0,\"scheduleSet\":false}}";
 
 	@Before
 	public void setUp() throws JSONException {
@@ -62,18 +64,18 @@ public class PhoneTest {
 		try {
 			testPhone2 = new Phone(testJSONOb);
 		} catch (Exception e) {
-
+			testPhone2 = testPhone;
 		}
-		Assert.assertNull(testPhone2);
+		Assert.assertEquals(testPhone, testPhone2);
 	}
 
 	@Test
-	public void testPhone() throws JSONException {
+	public void testPhoneEquality() throws JSONException {
 
 		try {
 			testPhone2 = new Phone(testJSONOb1);
 		} catch (Exception e) {
-
+			testPhone2 = testPhone;
 		}
 		
 		Assert.assertEquals(testPhone1.getId(), testPhone2.getId());
@@ -85,11 +87,11 @@ public class PhoneTest {
 	@Test
 	public void testCreateArrayFromJsonObject() throws JSONException {
 
-		Phone[] resultArray = {testPhone1};
+		final Phone[] resultArray = {testPhone1};
 		
 		testJSONOb.put("testPhone2", testJSONOb1);
 		
-		Phone[] testArray = Phone.createArrayFromJsonObject(testJSONOb);
+		final Phone[] testArray = Phone.createArrayFromJsonObject(testJSONOb);
 		
 		Assert.assertEquals(resultArray[0].getId(), testArray[0].getId());
 		Assert.assertEquals(resultArray[0].getName(), testArray[0].getName());
@@ -100,12 +102,11 @@ public class PhoneTest {
 	@Test
 	public void testPhonesArrayToJsonObject() throws JSONException {
 		
-		Phone[] testArray = {testPhone1};
+		final Phone[] testArray = {testPhone1};
 		
-		String resultString = "{\"2\":{\"voicemailForwardingVerified\":false,\"weekendAllDay\":false,\"redirectToVoicemail\":false,\"smsEnabled\":false,\"customOverrideState\":0,\"type\":0,\"policyBitmask\":0,\"id\":2,\"phoneNumber\":\"+15035552121\",\"verified\":false,\"dEPRECATEDDisabled\":false,\"name\":\"testPhone1\",\"active\":false,\"enabledForOthers\":false,\"weekdayAllDay\":false,\"telephonyVerified\":false,\"behaviorOnRedirect\":0,\"scheduleSet\":false}}";
-		String testString = Phone.phonesArrayToJsonObject(testArray).toString();
+		final String testString = Phone.phonesArrayToJsonObject(testArray).toString();
 		
-		Assert.assertEquals(resultString, testString);
+		Assert.assertEquals(RESULT_STRING, testString);
 		
 	}
 

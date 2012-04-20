@@ -21,40 +21,50 @@ import com.techventus.server.voice.datatypes.Setting;
 /**
  * 
  * @author Brett Futral @ Catalyst IT Services
- *
+ * 
  */
 public class AllSettingsTest {
-	//testAllSettings(s)
+	// testAllSettings(s)
 	AllSettings testAllSettings;
 	AllSettings testAllSettings1;
-	//Params for testAllSettings(s) 
+	// Params for testAllSettings(s)
 	Setting testSetting;
-	DisabledId testDisabledID;
 	Greeting testGreeting;
 	Group testGroup;
 	Phone testPhone;
 	Phone testPhone1;
 	Phone testPhone2;
 
+	
+	final JSONObject emptyJSONObject = new JSONObject();
+	JSONObject testJSONGroupOb = new JSONObject();
+	JSONObject testJSONGroupOb1 = new JSONObject();
+	JSONObject jsonSetting = new JSONObject();
+	JSONObject testJSONPhoneOb = new JSONObject();
+	JSONObject jsonPhone = new JSONObject();
+	
+	final JSONArray emptyJSONArray = new JSONArray();
+	JSONArray testGroupList = new JSONArray();
+	JSONArray testGroupArray = new JSONArray();
+	JSONArray testPhoneList = new JSONArray();
+	
+	final DisabledId testDisabledID = new DisabledId("3", true);
+	final DisabledId testDisabledID1 = new DisabledId("4", true);
+	
+	DisabledId[] testDisArray = { testDisabledID, testDisabledID1 };
+	
+	private final static String NAME = "name";
+
 	@Before
 	public void setUp() throws Exception {
-		// Empty Objects for Params
-		final JSONArray emptyJSONArray = new JSONArray();
-		final JSONObject emptyJSONObject = new JSONObject();
-
-		// BuildDisabledIDArray
-		final DisabledId testDisabledID = new DisabledId("3", true);
-		final DisabledId testDisabledID1 = new DisabledId("4", true);
-		DisabledId[] testDisArray = { testDisabledID, testDisabledID1 };
 
 		// Build groupList
-		JSONArray testGroupList = new JSONArray();
+		
 		testGroupList.put("testID");
 
 		// Build groups
-		JSONObject testJSONGroupOb = new JSONObject();
 		testJSONGroupOb.put("id", "testID");
-		testJSONGroupOb.put("name", "testName");
+		testJSONGroupOb.put(NAME, "testName");
 		testJSONGroupOb.put("isCustomForwarding", false);
 		testJSONGroupOb.put("isCustomGreeting", false);
 		testJSONGroupOb.put("isCustomDirectConnect", false);
@@ -63,14 +73,11 @@ public class AllSettingsTest {
 		testJSONGroupOb.put("disabledForwardingIds", emptyJSONObject);
 		testGroup = new Group(testJSONGroupOb);
 		// Insert testGroup into an array
-		JSONArray testGroupArray = new JSONArray();
 		testGroupArray.put(testGroup);
 		// And move it into a new Object
-		JSONObject testJSONGroupOb1 = new JSONObject();
 		testJSONGroupOb1.put("testID", testJSONGroupOb);
 
 		// Build Setting
-		JSONObject jsonSetting = new JSONObject();
 		jsonSetting.put("activeForwardingIds", emptyJSONArray);
 		jsonSetting.put("baseUrl", "testURL");
 		jsonSetting.put("credits", 1);
@@ -98,22 +105,20 @@ public class AllSettingsTest {
 		jsonSetting.put("useDidAsSource", false);
 		testSetting = new Setting(jsonSetting);
 		testSetting.setmDisabledIdList(null);
-		JSONObject testJSONSetting = testSetting.toJsonObject();
+		final JSONObject testJSONSetting = testSetting.toJsonObject();
 		// AddDisabledIDs
 		testSetting.setmDisabledIdList(testDisArray);
-		JSONObject testJSONSetting1 = testSetting.toJsonObject();
+		final JSONObject testJSONSetting1 = testSetting.toJsonObject();
 
 		// Build PhoneList
-		JSONArray testPhoneList = new JSONArray();
 		testPhoneList.put(1);
 		testPhoneList.put(2);
 		testPhoneList.put(3);
 
 		// Build Phones
 		// Build testPhone
-		JSONObject testJSONPhoneOb = new JSONObject();
 		testJSONPhoneOb.put("id", 1);
-		testJSONPhoneOb.put("name", "testPhone");
+		testJSONPhoneOb.put(NAME, "testPhone");
 		testJSONPhoneOb.put("phoneNumber", "+15035552121");
 		testJSONPhoneOb.put("active", true);
 		testJSONPhoneOb.put("behaviorOnRedirect", 1);
@@ -137,43 +142,42 @@ public class AllSettingsTest {
 		testJSONPhoneOb.put("weekendTimes", emptyJSONArray);
 		// testPhone
 		testPhone = new Phone(testJSONPhoneOb);
-		JSONObject testJSONPhone = testPhone.toJsonObject();
+		final JSONObject testJSONPhone = testPhone.toJsonObject();
 		// Build testPhone1
 		testJSONPhoneOb.put("id", 2);
-		testJSONPhoneOb.put("name", "testPhone1");
+		testJSONPhoneOb.put(NAME, "testPhone1");
 		testJSONPhoneOb.put("phoneNumber", "+15035551212");
 		testJSONPhoneOb.put("formattedNumber", "+15035551212");
 		// testPhone
 		testPhone1 = new Phone(testJSONPhoneOb);
-		JSONObject testJSONPhone1 = testPhone1.toJsonObject();
+		final JSONObject testJSONPhone1 = testPhone1.toJsonObject();
 		// Build testPhone2
 		testJSONPhoneOb.put("id", 3);
-		testJSONPhoneOb.put("name", "testPhone2");
+		testJSONPhoneOb.put(NAME, "testPhone2");
 		testJSONPhoneOb.put("phoneNumber", "+15035552123");
 		testJSONPhoneOb.put("formattedNumber", "+15035552123");
 		// testPhone
 		testPhone2 = new Phone(testJSONPhoneOb);
-		JSONObject testJSONPhone2 = testPhone2.toJsonObject();
+		final JSONObject testJSONPhone2 = testPhone2.toJsonObject();
 		// And put them in an Object
-		JSONObject jsonPhone = new JSONObject();
 		jsonPhone.put("1", testJSONPhone);
 		jsonPhone.put("2", testJSONPhone1);
 		jsonPhone.put("3", testJSONPhone2);
 
 		// BuildAllSettings
-		JSONObject jsonAllSettingsString = new JSONObject();
-		jsonAllSettingsString.put("phoneList", testPhoneList);
-		jsonAllSettingsString.put("phones", jsonPhone);
-		jsonAllSettingsString.put("settings", testJSONSetting);
+		final JSONObject jsAllSettings = new JSONObject();
+		jsAllSettings.put("phoneList", testPhoneList);
+		jsAllSettings.put("phones", jsonPhone);
+		jsAllSettings.put("settings", testJSONSetting);
 
 		// BuildAllSettings1
-		JSONObject jsonAllSettingsString1 = new JSONObject();
-		jsonAllSettingsString1.put("phoneList", testPhoneList);
-		jsonAllSettingsString1.put("phones", jsonPhone);
-		jsonAllSettingsString1.put("settings", testJSONSetting1);
+		final JSONObject jsAllSettings1 = new JSONObject();
+		jsAllSettings1.put("phoneList", testPhoneList);
+		jsAllSettings1.put("phones", jsonPhone);
+		jsAllSettings1.put("settings", testJSONSetting1);
 
-		testAllSettings = new AllSettings(jsonAllSettingsString.toString());
-		testAllSettings1 = new AllSettings(jsonAllSettingsString1.toString());
+		testAllSettings = new AllSettings(jsAllSettings.toString());
+		testAllSettings1 = new AllSettings(jsAllSettings1.toString());
 
 	}
 
@@ -185,7 +189,7 @@ public class AllSettingsTest {
 		Assert.assertEquals(false, test);
 
 	}
-	
+
 	@Test
 	public void testIsPhoneDisabledFalse() throws JSONException {
 
@@ -193,7 +197,7 @@ public class AllSettingsTest {
 
 		Assert.assertEquals(false, test);
 	}
-	
+
 	@Test
 	public void testIsPhoneDisabledTrue() throws JSONException {
 
@@ -201,17 +205,17 @@ public class AllSettingsTest {
 
 		Assert.assertEquals(true, test);
 	}
-	
+
 	@Test
 	public void testGetPhoneListAsList() {
-		
-		List<Integer> testList = new ArrayList<Integer>();
+
+		final List<Integer> testList = new ArrayList<Integer>();
 		testList.add(1);
 		testList.add(2);
 		testList.add(3);
-		
+
 		Assert.assertEquals(testList, testAllSettings.getPhoneListAsList());
-		
+
 	}
 
 }
