@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * 
  * @author Brett Futral @ Catalyst IT Services
- *
+ * 
  */
 // Holes in coverage:
 // SMSParser.parsePhoneNumber line 258 will always == -1 due to line
@@ -30,26 +30,24 @@ import java.util.Map;
 public class SMSParserTest {
 
 	// TestSMSParser
-	private SMSParser testSMSParser;
+	final SMSParser testSMSParser = new SMSParser("test", "5030000000");
+	private static final long DATE_LONG = 1334348667447L;
 
 	// Reflection Setup buildSMSThreadMap
 	private Method bSMSTM;
+	private static final String TEST_PPN = "parsePhoneNumber";
 	private static final String TEST_BSMSTM = "buildSMSThreadMap";
-	private Class[] bSMSTMParamTypes;
-	private Object[] bSMSTMParams;
+	private Class[] bSMSTMParamTypes = new Class[1];
+	private Object[] bSMSTMParams = new Object[1];
 
 	@Before
 	public void setUp() throws NoSuchMethodException, SecurityException {
-		// Instantiate testSMSParser
-		testSMSParser = new SMSParser("test", "5030000000");
 
 		// Reflect class/method buildSMSThreadMap
-		bSMSTMParamTypes = new Class[1];
 		bSMSTMParamTypes[0] = java.lang.String.class;
 		bSMSTM = testSMSParser.getClass().getDeclaredMethod(TEST_BSMSTM,
 				bSMSTMParamTypes);
 		bSMSTM.setAccessible(true);
-		bSMSTMParams = new Object[1];
 	}
 
 	@Test
@@ -57,19 +55,14 @@ public class SMSParserTest {
 			SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		// Reflection Setup parsePhoneNumber
-		Method pPN;
-		String testPPN = "parsePhoneNumber";
-		Class[] pPNParamTypes;
-		Object[] pPNParams;
-
 		// Reflect class/method parsePhoneNumber
-		pPNParamTypes = new Class[1];
+		Method pPN;
+		Class[] pPNParamTypes = new Class[1];
+		Object[] pPNParams = new Object[1];
 		pPNParamTypes[0] = java.lang.String.class;
-		pPN = testSMSParser.getClass()
-				.getDeclaredMethod(testPPN, pPNParamTypes);
+		pPN = testSMSParser.getClass().getDeclaredMethod(TEST_PPN,
+				pPNParamTypes);
 		pPN.setAccessible(true);
-		pPNParams = new Object[1];
 		pPNParams[0] = "5035551212";
 
 		final String testPPNumber = (String) pPN.invoke(testSMSParser,
@@ -83,23 +76,30 @@ public class SMSParserTest {
 	public void testBuildSMSThreadMap() throws IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		long dateLong = 1334348667447L;
-		final Date validDate = new Date(dateLong);
-
-		final SMSThread testSMSThread = new SMSThread("testID", "test note",
-				validDate, null, true, true);
-
-		String testSMSResponse = "<json><![CDATA[{\"messages\":{\"testID\":{\"id\":\"testID\",\"phoneNumber\":\"+15035551212\",\"displayNumber\":\"(503) 555-1212\",\"startTime\":\"1334348667447\",\"displayStartDateTime\":\"4/13/12 1:24 PM\",\"displayStartTime\":\"1:24 PM\",\"relativeStartTime\":\"3 minutes ago\",\"note\":\"test note\",\"isRead\":true,\"isSpam\":false,\"isTrash\":false,\"star\":true,\"messageText\":\"testSMS\",\"labels\":[\"sms\",\"all\"],\"type\":11,\"children\":\"\"}},\"totalSize\":1,\"unreadCounts\":{\"all\":0,\"inbox\":0,\"sms\":0,\"unread\":0,\"voicemail\":0},\"resultsPerPage\":10}]]></json>";
-
-		final Map<String, SMSThread> testMap = new HashMap<String, SMSThread>();
-		testMap.put("testID", testSMSThread);
-
+		// Reflect class/method parsePhoneNumber
+		final String testSMSResponse = "<json><![CDATA[{\"messages\":{\"testID\""
+				+ ":{\"id\":\"testID\",\"phoneNumber\":\"+15035551212\",\""
+				+ "displayNumber\":\"(503) 555-1212\",\"startTime\":\""
+				+ "1334348667447\",\"displayStartDateTime\":\"4/13/12 1:24 PM\""
+				+ ",\"displayStartTime\":\"1:24 PM\",\"relativeStartTime\":\""
+				+ "3 minutes ago\",\"note\":\"test note\",\"isRead\":true,\""
+				+ "isSpam\":false,\"isTrash\":false,\"star\":true,\"messageText\""
+				+ ":\"testSMS\",\"labels\":[\"sms\",\"all\"],\"type\":11,\""
+				+ "children\":\"\"}},\"totalSize\":1,\"unreadCounts\":{\"all\""
+				+ ":0,\"inbox\":0,\"sms\":0,\"unread\":0,\"voicemail\":0},\""
+				+ "resultsPerPage\":10}]]></json>";
 		bSMSTMParams[0] = testSMSResponse;
-
 		final Map testBSMSTMap = (Map) bSMSTM.invoke(testSMSParser,
 				bSMSTMParams);
 
-		Assert.assertEquals(testMap.toString(), testBSMSTMap.toString());
+		// Expected object
+		final Date validDate = new Date(DATE_LONG);
+		final SMSThread expectedSMSThread = new SMSThread("testID",
+				"test note", validDate, null, true, true);
+		final Map<String, SMSThread> expectedMap = new HashMap<String, SMSThread>();
+		expectedMap.put("testID", expectedSMSThread);
+
+		Assert.assertEquals(expectedMap.toString(), testBSMSTMap.toString());
 
 	}
 
@@ -107,22 +107,28 @@ public class SMSParserTest {
 	public void testBuildSMSThreadMapNoInputs() throws IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		final Date epochDate = new Date(0);
-
-		final SMSThread testSMSThread1 = new SMSThread("", "", epochDate, null,
-				false, false);
-
-		String testSMSResponse1 = "<json><![CDATA[{\"messages\":{\"testID\":{\"phoneNumber\":\"+15035551212\",\"displayNumber\":\"(503) 555-1212\",\"displayStartDateTime\":\"4/13/12 1:24 PM\",\"displayStartTime\":\"1:24 PM\",\"relativeStartTime\":\"3 minutes ago\",\"isSpam\":false,\"isTrash\":false,\"messageText\":\"testSMS\",\"labels\":[\"sms\",\"all\"],\"type\":11,\"children\":\"\"}},\"totalSize\":1,\"unreadCounts\":{\"all\":0,\"inbox\":0,\"sms\":0,\"unread\":0,\"voicemail\":0},\"resultsPerPage\":10}]]></json>";
-
-		final Map<String, SMSThread> testMap1 = new HashMap<String, SMSThread>();
-		testMap1.put("", testSMSThread1);
-
-		bSMSTMParams[0] = testSMSResponse1;
-
-		final Map testBSMSTMNoInputs = (Map) bSMSTM.invoke(testSMSParser,
+		// Reflect class/method parsePhoneNumber
+		final String testSMSResponse = "<json><![CDATA[{\"messages\":{\"testID\""
+				+ ":{\"phoneNumber\":\"+15035551212\",\"displayNumber\":\""
+				+ "(503) 555-1212\",\"displayStartDateTime\":\"4/13/12 1:24 PM\""
+				+ ",\"displayStartTime\":\"1:24 PM\",\"relativeStartTime\":\""
+				+ "3 minutes ago\",\"isSpam\":false,\"isTrash\":false,\""
+				+ "messageText\":\"testSMS\",\"labels\":[\"sms\",\"all\"],\""
+				+ "type\":11,\"children\":\"\"}},\"totalSize\":1,\"unreadCounts\""
+				+ ":{\"all\":0,\"inbox\":0,\"sms\":0,\"unread\":0,\"voicemail\""
+				+ ":0},\"resultsPerPage\":10}]]></json>"; 
+		bSMSTMParams[0] = testSMSResponse;
+		final Map testNoInputs = (Map) bSMSTM.invoke(testSMSParser,
 				bSMSTMParams);
 
-		Assert.assertEquals(testMap1.toString(), testBSMSTMNoInputs.toString());
+		// Expected object
+		final Date epochDate = new Date(0);
+		final SMSThread expectedSMSThread = new SMSThread("", "", epochDate,
+				null, false, false);
+		final Map<String, SMSThread> expectedMap = new HashMap<String, SMSThread>();
+		expectedMap.put("", expectedSMSThread);
+
+		Assert.assertEquals(expectedMap.toString(), testNoInputs.toString());
 
 	}
 
