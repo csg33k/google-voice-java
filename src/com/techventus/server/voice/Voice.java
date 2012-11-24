@@ -842,6 +842,18 @@ public class Voice {
 		return parser.getSMSThreads();
 	}
 	
+	/**
+	 * Gets a collection of SMS threads. Each SMS thread has a collection of SMS
+	 * objects which contains contact, text and timestamp information.
+	 *
+	 * @return a collection of SMS threads.
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Collection<SMSThread> getSMSThreads(int page ) throws IOException {
+		SMSParser parser = new SMSParser(get(smsURLString, page), phoneNumber);
+		return parser.getSMSThreads();
+	}
+	
 	
 	/**
 	 * Gets the SMS threads from a given Response Page.
@@ -1836,7 +1848,7 @@ public class Voice {
 	 * @return the string
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	String get(String urlString,int page) throws IOException {
+	public String get(String urlString,int page) throws IOException {
 		URL url = new URL(urlString + "?page=p"+page);
 		//url+="&page="+page;
 		URLConnection conn = url.openConnection();
