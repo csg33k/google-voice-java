@@ -58,6 +58,46 @@ public class AllSettings{
  		}
  		return ret;
    	}
+   	
+   	public void setPhoneDisabled(int phoneId) {
+   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
+			if(lDisId.getId().equals(phoneId+"")) {
+				lDisId.setDisabled(true);
+				return;
+			}
+		}
+   		// if not in array we create a new one
+   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];	
+   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+		}
+   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", true);
+   		settings.setmDisabledIdList(lNewDisabledList);
+   	}
+   	
+	public void setPhoneEnabled(int phoneId) {
+   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
+			if(lDisId.getId().equals(phoneId+"")) {
+				lDisId.setDisabled(false);
+				return;
+			}
+		}
+   		// if not in array we create a new one
+   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];
+   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+		}
+   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", false);
+   		settings.setmDisabledIdList(lNewDisabledList);
+   	}
+	
+	private String printArray(DisabledId[] pArray) {
+		String printer = "";
+		for (int i = 0; i < pArray.length; i++) {
+			printer+=pArray[i].toString();
+		}
+		return printer;
+	}
 
 	/**
 	 * @return the phoneList
