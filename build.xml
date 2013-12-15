@@ -34,8 +34,6 @@
 	<!-- Clean Build dir -->
 	<target name="clean">		
 		<delete dir="${dir.bin}" />		
-		<!--  <delete file="${gvjava.home.absolute.path}${commonJar.home}/${file.jar}" /> 
-		<delete file="${gvjava.home.absolute.path}${ConfShareLib.home}/${file.jar}" />-->
 	</target>
 
 	<!-- Init -->
@@ -46,7 +44,7 @@
 	<!-- Compile -->
 	<target name="compile" depends="clean, init">
 		<echo message="compile.path" />
-		<javac debug="true" destdir="${dir.bin}" source="${source}" target="${target}">
+		<javac debug="true" destdir="${dir.bin}" includeantruntime="false" source="${source}" target="${target}">
 			<src path="${dir.src}" />
 			<classpath refid="compile.path" />
 		</javac>
