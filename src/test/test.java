@@ -135,6 +135,7 @@ public class test {
 		System.out.println("18. List Starred Conversations. ");
 		System.out.println("19. View SMSThread Info");
 		System.out.println("20. SMS to Existing Conversation");
+		System.out.println("21. Phone SMS enable/disable");
 		
 		int testNr = 0;
 		try {
@@ -176,7 +177,7 @@ public class test {
 								System.out.println("Current phone status:");
 								for (int j = 0; j < phones.length; j++) {
 									phonesToChangeStatus[j] = phones[j].getId();
-									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
 								}
 								
 								//Disable all phones
@@ -189,7 +190,7 @@ public class test {
 								// Output
 								System.out.println("After deactivate multi:");
 								for (int j = 0; j < phones.length; j++) {
-									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
 								}
 								
 								//Enable all phones 
@@ -201,7 +202,7 @@ public class test {
 								phones = voice.getSettings(true).getPhones();
 								System.out.println("After activate multi:");
 								for (int j = 0; j < phones.length; j++) {
-									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
 								}
 								
 								System.out.println("******** Finished Test "+testNr+" ********");
@@ -645,6 +646,48 @@ public class test {
 							}
 							break;
 							
+						case 21: // 1: phone smsEnable
+						{
+							System.out.println("******** Starting Test "+testNr+" ********");
+							Phone[] phones = voice.getSettings(false).getPhones();
+							// create int Array from all phone ids
+							int[] phonesToChangeStatus = new int[phones.length];
+							
+							System.out.println("Current phone status:");
+							for (int j = 0; j < phones.length; j++) {
+								phonesToChangeStatus[j] = phones[j].getId();
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("Disable sms all phones:");
+							for (int j = 0; j < phones.length; j++) {
+								voice.setSmsEnabled(false,phones[j].getId());
+							}
+							
+							
+							phones = voice.getSettings(true).getPhones();
+							// Output
+							System.out.println("After deactivate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("Enable sms all phones:");
+							for (int j = 0; j < phones.length; j++) {
+								voice.setSmsEnabled(true,phones[j].getId());
+							}
+							
+							// Output
+							phones = voice.getSettings(true).getPhones();
+							System.out.println("After activate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("******** Finished Test "+testNr+" ********");
+						}
+						break;
+							
 							
 							
 						default: 						
@@ -656,8 +699,10 @@ public class test {
 	
 		} catch (IOException e) {	
 			e.printStackTrace();
+			System.exit(1);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		listTests(); // List the Tests again
 	}

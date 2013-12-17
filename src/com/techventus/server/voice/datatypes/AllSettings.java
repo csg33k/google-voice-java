@@ -91,13 +91,25 @@ public class AllSettings{
    		settings.setmDisabledIdList(lNewDisabledList);
    	}
 	
-	private String printArray(DisabledId[] pArray) {
-		String printer = "";
-		for (int i = 0; i < pArray.length; i++) {
-			printer+=pArray[i].toString();
+	/**
+  	 *
+  	 * Query smsEnabled status - if id not found, then it returnes false
+  	 * @param phoneId
+  	 * @return true if the Phone is smsEnabled. Otherwise it returns false.
+  	 */
+  	public boolean isPhoneSmsEnabled(int phoneId) {
+  		boolean ret = false;
+  		try {
+			for (int i = 0; i < phones.length; i++) {
+				if(phones[i].getId() == phoneId) {
+					ret = phones[i].getSmsEnabled();
+				}
+			}
+		} catch (NullPointerException e) {
+			ret = false;
 		}
-		return printer;
-	}
+		return ret;
+  	}
 
 	/**
 	 * @return the phoneList

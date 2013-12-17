@@ -237,6 +237,14 @@ public class Phone implements Comparable<Phone>{
 	public int getId() {
 		return id;
 	}
+	
+	/**
+	 * returns the value for smsEnabled for this phone
+	 * @return
+	 */
+	public boolean getSmsEnabled() {
+		return smsEnabled;
+	}
 
 	/**
 	 * @return the incomingAccessNumber

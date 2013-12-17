@@ -1,0 +1,6 @@
+This is a straight copy of https://code.google.com/archive/p/google-voice-java/.
+
+Everything in master will diverge from this library.  I don't agree with much of the choices they made and will 
+strive to mdernize the app a bit.  
+
+This should be the last commit to ever be made in this branch.

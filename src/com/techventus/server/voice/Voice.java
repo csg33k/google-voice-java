@@ -45,6 +45,7 @@ import java.util.List;
 import com.techventus.server.voice.datatypes.AllSettings;
 import com.techventus.server.voice.datatypes.Greeting;
 import com.techventus.server.voice.datatypes.Group;
+import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.records.SMSThread;
 import com.techventus.server.voice.exception.AuthenticationException;
 import com.techventus.server.voice.exception.ERROR_CODE;
@@ -201,6 +202,9 @@ public class Voice {
 	
 	/** The Constant generalSettingsURLString. */
 	final static String generalSettingsURLString = "https://www.google.com/voice/b/0/settings/editGeneralSettings/";
+	
+	/** The Constant editForwardingSMSURLString. */
+	final static String editForwardingSMSURLString = "https://www.google.com/voice/b/0/settings/editForwardingSms/";
 	
 	/** The Constant phonesInfoURLString. */
 	final static String phonesInfoURLString = "https://www.google.com/voice/b/0/settings/tab/phones";
@@ -1362,6 +1366,8 @@ public class Voice {
 		// page]
 
 		//
+		if (PRINT_TO_CONSOLE) System.out.println(phoneEnableURLString);
+		if (PRINT_TO_CONSOLE) System.out.println(paraString);
 		URL requestURL = new URL(phoneEnableURLString);
 
 		URLConnection conn = requestURL.openConnection();
@@ -1518,6 +1524,58 @@ public class Voice {
 
 
 		return postSettings(requestURL, paraString);
+	}
+	
+	/**
+	 * Activated or deactivated the SMS Forwarding for a particular phone
+	 *
+	 * @param smsEnable true to enable sms forwarding, false to disable it
+	 * @param ID The id of the phone to enable/disable
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public String setSmsEnabled(boolean smsEnable, int ID) throws IOException {
+
+		// only allow editing of type 2 phones
+		for (int i = 0; i < settings.getPhones().length; i++) {
+			Phone ph = settings.getPhones()[i];
+			if(ph.getId() == ID) {
+				if(ph.getType() != 2) {
+					if (PRINT_TO_CONSOLE) System.out.println("Cannot change sms Enabled on phone of type "+ph.getType() + " only availible on type 2");
+					return null;
+				}
+			}
+		}
+
+		String enabled;
+
+		if(smsEnable &! settings.isPhoneSmsEnabled(ID)) {
+			if (PRINT_TO_CONSOLE) System.out.println("Enabling sms for phone "+ID);
+			enabled = "1";
+		} else if(settings.isPhoneSmsEnabled(ID)) {
+			if (PRINT_TO_CONSOLE) System.out.println("Disabling sms for phone "+ID);
+			enabled = "0";
+		} else {
+			// do not make changes to phones that are already in the same state
+			if (PRINT_TO_CONSOLE) System.out.println("Phone "+ID + " is already in the requested state. "+smsEnable);
+			return null;
+		}
+		
+		URL requestURL = new URL(editForwardingSMSURLString);
+
+		String paraString = "";
+		paraString += URLEncoder.encode("enabled", enc) + "="
+				+ URLEncoder.encode(enabled+"", enc);
+		paraString += "&" + URLEncoder.encode("phoneId", enc) + "="
+				+ URLEncoder.encode(ID+"", enc);
+		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
+				+ URLEncoder.encode(rnrSEE, enc);
+		
+		if (PRINT_TO_CONSOLE) System.out.println(requestURL);
+		if (PRINT_TO_CONSOLE) System.out.println(paraString);
+		
+		return postSettings(requestURL, paraString);
+
 	}
 	
 	/**
