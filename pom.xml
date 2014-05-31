@@ -1,15 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.googlecode.google-voice-java</groupId>
 	<artifactId>google-voice-java</artifactId>
 	<packaging>jar</packaging>
 	<version>2.0-SNAPSHOT</version>
 	<name>Unofficial Google Voice API Library</name>
-	
+
 	<description>An Unofficial Java API for Google Voice</description>
 	<url>http://google-voice-java.googlecode.com</url>
-	
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, Version 3.0</name>
@@ -17,22 +18,22 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<issueManagement>
 		<system>Google Code</system>
 		<url>http://code.google.com/p/google-voice-java/issues</url>
 	</issueManagement>
-	
+
 	<scm>
 		<connection>scm:svn:http://google-voice-java.googlecode.com/svn/trunk/</connection>
 		<developerConnection>scm:svn:https://google-voice-java.googlecode.com/svn/trunk/</developerConnection>
 		<url>http://google-voice-java.googlecode.com/svn/trunk/</url>
 	</scm>
-	
+
 	<organization>
 		<name>Techventus, LLC</name>
 	</organization>
-	
+
 	<developers>
 		<developer>
 			<id>malone.joseph</id>
@@ -50,35 +51,38 @@
 			<email>matt.blanchette@gmail.com</email>
 		</developer>
 	</developers>
-	
+
 	<dependencies>
-	<dependency>
-		<groupId>dom4j</groupId>
-		<artifactId>dom4j</artifactId>
-		<version>1.6.1</version>
-	</dependency>
-	<dependency>
-		<groupId>jaxen</groupId>
-		<artifactId>jaxen</artifactId>
-		<version>1.1.1</version>
-	</dependency>
-	<dependency>
-		<groupId>net.sf.jtidy</groupId>
-		<artifactId>jtidy</artifactId>
-		<version>r938</version>
-	</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jtidy</groupId>
+			<artifactId>jtidy</artifactId>
+			<version>r938</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
-	
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>sonatype</id>
@@ -109,7 +113,9 @@
 									<rules>
 										<requireMavenVersion>
 											<version>(,2.1.0),(2.1.0,2.2.0),(2.2.0,)</version>
-											<message>Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures and checksums respectively.</message>
+											<message>Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures and
+												checksums respectively.
+											</message>
 										</requireMavenVersion>
 									</rules>
 								</configuration>
@@ -121,10 +127,10 @@
 						<artifactId>maven-release-plugin</artifactId>
 						<version>2.0</version>
 						<configuration>
-								<mavenExecutorId>forked-path</mavenExecutorId>
-								<useReleaseProfile>false</useReleaseProfile>
-								<arguments>-Psonatype</arguments>
-							</configuration>
+							<mavenExecutorId>forked-path</mavenExecutorId>
+							<useReleaseProfile>false</useReleaseProfile>
+							<arguments>-Psonatype</arguments>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -169,5 +175,5 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 </project>
