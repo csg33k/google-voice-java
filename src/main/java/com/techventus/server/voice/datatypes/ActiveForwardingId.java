@@ -1,40 +1,44 @@
 /**
- * 
+ *
  */
 package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
  */
 public class ActiveForwardingId {
+	private Gson gson = new Gson();
 	String id;
 	boolean disabled;
-	
-	public ActiveForwardingId(JSONObject jsonObject) throws JSONException {
-		id = jsonObject.getString("id");
-		disabled = jsonObject.getBoolean("disabled");
+
+	public ActiveForwardingId(JsonObject jsonObject) {
+		id = jsonObject.get("id").getAsString();
+		disabled = jsonObject.get("disabled").getAsBoolean();
 	}
 	public ActiveForwardingId(String pId, boolean pDisabled) {
 		id = pId;
 		disabled = pDisabled;
 	}
 
-	public final static List<ActiveForwardingId> createActiveForwardingIdListFromJsonPartResponse(String jsonPart){ 
+	public final static List<ActiveForwardingId> createActiveForwardingIdListFromJsonPartResponse(String jsonPart){
 		//TODO do with json parser
-		List<ActiveForwardingId> activeForwardingIds = new ArrayList<ActiveForwardingId>();
-		if(jsonPart!=null &! jsonPart.equals("")) {
+		List<ActiveForwardingId> activeForwardingIds = new ArrayList<>();
+		if(StringUtils.isNotEmpty(jsonPart)) {
 			jsonPart = jsonPart.replaceAll(",\"", ",#");
 			String[] activeForwardingIdsStrings = jsonPart.split(Pattern.quote(","));
-			for (int j = 0; j < activeForwardingIdsStrings.length; j++) {			
+			for (int j = 0; j < activeForwardingIdsStrings.length; j++) {
 				String gId = ParsingUtil.removeUninterestingParts(activeForwardingIdsStrings[j], "\"", "\"", false);
 				boolean gState = Boolean.parseBoolean(activeForwardingIdsStrings[j].substring(activeForwardingIdsStrings[j].indexOf(":")+1));
 				activeForwardingIds.add(new ActiveForwardingId(gId, gState));
@@ -42,21 +46,18 @@ public class ActiveForwardingId {
 		}
 		return activeForwardingIds;
 	}
-	
+
 	public String toString() {
-		try {
 			return getAsJsonObject().toString();
-		} catch (JSONException e) {
-			return null;
-		}
 	}
-	
-	public JSONObject getAsJsonObject() throws JSONException {
-		JSONObject retO = new JSONObject();
-		retO.put("id", id);
-		retO.put("disabled", disabled);
-		return retO;
+
+	public JsonObject getAsJsonObject() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("id", id);
+		jsonObject.addProperty("disabled", disabled);
+		return jsonObject;
 	}
+
 	public String getId() {
 		return id;
 	}
@@ -69,5 +70,5 @@ public class ActiveForwardingId {
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
-	
+
 }
