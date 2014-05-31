@@ -3,9 +3,12 @@ package com.techventus.server.voice.datatypes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -14,25 +17,44 @@ public class AllSettings{
 	private int[] phoneList;
    	private Phone[] phones;
    	private Setting settings;
-	
-   	public AllSettings(String json) throws JSONException {
-   		JSONObject lObj = new JSONObject(json);
-   		
-   		phoneList = ParsingUtil.jsonIntArrayToIntArray(lObj.getJSONArray("phoneList"));
-   		
-   		phones  = Phone.createArrayFromJsonObject(lObj.getJSONObject("phones"));
 
-   		settings  = new Setting(lObj.getJSONObject("settings"));
+
+	@VisibleForTesting
+	public AllSettings(JsonObject jsonObject) {
+	   	phoneList = ParsingUtil.jsonIntArrayToIntArray(jsonObject.get("phoneList").getAsJsonArray());
+
+   		phones  = Phone.createArrayFromJsonObject(jsonObject.get("phones").getAsJsonObject());
+
+   		settings  = new Setting(jsonObject.get("settings").getAsJsonObject());
+	}
+
+   	public AllSettings(String json) {
+	    if(ParsingUtil.isJsonEmpty(json))
+		    return;
+
+   		JsonObject lObj = new Gson().fromJson(json, JsonObject.class);
+
+   		phoneList = ParsingUtil.jsonIntArrayToIntArray(lObj.get("phoneList").getAsJsonArray());
+
+   		phones  = Phone.createArrayFromJsonObject(lObj.get("phones").getAsJsonObject());
+
+   		settings  = new Setting(lObj.get("settings").getAsJsonObject());
    	}
-   	
-   	public JSONObject toJsonObject() throws JSONException {
-   		JSONObject lObj = new JSONObject();
-   		lObj.put("phoneList",phoneList);
-   		lObj.put("phones",Phone.phonesArrayToJsonObject(phones));
-   		lObj.put("settings",settings.toJsonObject());
-   		return lObj;
-   	}
-   	
+
+   	public JsonObject toJsonObject() {
+	    Map map = Maps.newHashMap();
+
+	    if(phoneList != null)
+		    map.put("phoneList", phoneList);
+	    if(phones != null) {
+		    map.put("phones",Phone.phonesArrayToJsonObject(phones));
+	    }
+	    if(settings != null ) {
+		    map.put("settings", settings.toJsonObject());
+	    }
+	    return new Gson().toJsonTree(map).getAsJsonObject();
+    }
+
    	//TODO Perhaps this should throw an Exception rather than return false
    	/**
    	 *
@@ -58,7 +80,7 @@ public class AllSettings{
  		}
  		return ret;
    	}
-   	
+
    	public void setPhoneDisabled(int phoneId) {
    		for (DisabledId lDisId : settings.getmDisabledIdList()) {
 			if(lDisId.getId().equals(phoneId+"")) {
@@ -67,14 +89,14 @@ public class AllSettings{
 			}
 		}
    		// if not in array we create a new one
-   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];	
+   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];
    		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
    			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
 		}
    		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", true);
    		settings.setmDisabledIdList(lNewDisabledList);
    	}
-   	
+
 	public void setPhoneEnabled(int phoneId) {
    		for (DisabledId lDisId : settings.getmDisabledIdList()) {
 			if(lDisId.getId().equals(phoneId+"")) {
@@ -90,7 +112,7 @@ public class AllSettings{
    		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", false);
    		settings.setmDisabledIdList(lNewDisabledList);
    	}
-	
+
 	/**
   	 *
   	 * Query smsEnabled status - if id not found, then it returnes false
@@ -117,7 +139,7 @@ public class AllSettings{
 	public int[] getPhoneList() {
 		return phoneList;
 	}
-	
+
 	/**
 	 * @return the phoneList sorted
 	 */
@@ -125,7 +147,7 @@ public class AllSettings{
 		Arrays.sort(phoneList);
 		return phoneList;
 	}
-	
+
 	/**
 	 * @return the phoneList as List<Integer>
 	 */
@@ -143,7 +165,7 @@ public class AllSettings{
 	public Phone[] getPhones() {
 		return phones;
 	}
-	
+
 	/**
 	 * @return the phones sorted by their id number
 	 */
@@ -179,10 +201,10 @@ public class AllSettings{
 	public void setSettings(Setting settings) {
 		this.settings = settings;
 	}
-   	
-	
-   	
-   	
+
+
+
+
    	/*
 {
     "phoneList": [
@@ -386,6 +408,6 @@ public class AllSettings{
 }
 
 	*/
-   	
-   	
+
+
 }

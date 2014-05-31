@@ -1,8 +1,16 @@
 package com.techventus.server.voice.util;
 
-import gvjava.org.json.JSONArray;
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.techventus.server.voice.datatypes.Contact;
+import com.techventus.server.voice.datatypes.records.SMS;
+import com.techventus.server.voice.datatypes.records.SMSThread;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.DOMReader;
+import org.w3c.tidy.Tidy;
 
 import java.io.StringReader;
 import java.text.ParseException;
@@ -14,37 +22,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.io.DOMReader;
-import org.w3c.tidy.Tidy;
-
-import com.techventus.server.voice.datatypes.Contact;
-import com.techventus.server.voice.datatypes.records.SMS;
-import com.techventus.server.voice.datatypes.records.SMSThread;
-
 /**
  * This class parses the SMS messages from the Google Voice XML response.
- * 
+ *
  * @author Tiago Proenca (tproenca)
- * 
  */
 public class SMSParser {
+	private Gson gson = new Gson();
 
-	/** The server's response. */
+	/**
+	 * The server's response.
+	 */
 	private String xmlResponse;
 
-	/** My contact information. */
+	/**
+	 * My contact information.
+	 */
 	private Contact me;
 
 	/**
 	 * Creates a SMSParser instance.
-	 * 
-	 * @param response
-	 *            the server's HTML response.
-	 * @param me
-	 *            my Contact information.
+	 *
+	 * @param response the server's HTML response.
+	 * @param me       my Contact information.
 	 */
 	public SMSParser(String response, Contact me) {
 		this.xmlResponse = response;
@@ -53,11 +53,9 @@ public class SMSParser {
 
 	/**
 	 * Creates a SMSParser instance.
-	 * 
-	 * @param response
-	 *            the server's HTML response.
-	 * @param myPhoneNumber
-	 *            my Google Voice phone number.
+	 *
+	 * @param response      the server's HTML response.
+	 * @param myPhoneNumber my Google Voice phone number.
 	 */
 	public SMSParser(String response, String myPhoneNumber) {
 		this(response, new Contact(GoogleVoice.CONTACT_ME, "", myPhoneNumber,
@@ -66,7 +64,7 @@ public class SMSParser {
 
 	/**
 	 * Returns the SMS threads.
-	 * 
+	 *
 	 * @return the SMS threads.
 	 */
 	public Collection<SMSThread> getSMSThreads() {
@@ -106,8 +104,8 @@ public class SMSParser {
 		for (Element element : elements) {
 //			System.out.println(element.getStringValue());
 //			i++;
-				//DEBUG
-			if(element==null){
+			//DEBUG
+			if (element == null) {
 				continue;
 			}
 //				Contact contact=null;
@@ -120,7 +118,7 @@ public class SMSParser {
 //					}
 //				if(contact==null){
 //					System.err.println("NULL CONTACT "+element);
-//					
+//
 //				}
 			SMSThread smsthread = threadMap.get(element.attribute(
 					GoogleVoice.THREAD_ID).getText());
@@ -133,9 +131,8 @@ public class SMSParser {
 
 	/**
 	 * Parses the contact information from the DOM Element.
-	 * 
-	 * @param element
-	 *            the DOM Element
+	 *
+	 * @param element the DOM Element
 	 * @return the Contact
 	 */
 	private Contact parseContact(Element element) {
@@ -147,37 +144,35 @@ public class SMSParser {
 				.selectSingleNode(XPathQuery.MESSAGE_PORTRAIT));
 		String phoneNumber = phoneNumberNode == null ? name
 				: parsePhoneNumber(phoneNumberNode.getText());
-		
-		
+
+
 		//TODO TEST SIMPLIFY
 //		System.out.println("Parsing Contact...");
 		//JLM Phone Number Correction
 		List e = element.selectNodes(XPathQuery.MESSAGE_QUICKCALL);
-		
-		for(Object o:e){
-			Node n = (Node)o;
+
+		for (Object o : e) {
+			Node n = (Node) o;
 			String res = n.selectSingleNode(XPathQuery.MESSAGE_BOLD).getText();
 			//System.out.println(o);
-			res =res.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
+			res = res.replace("(", "").replace(")", "").replace(" ", "").replace("-", "");
 			phoneNumber = res;
 			if (phoneNumber.indexOf("+") == -1) {
 				phoneNumber = "+1" + phoneNumber;
 			}
 //			System.out.println(phoneNumber);
-			
-		}	
-		
-		
+
+		}
+
+
 		return new Contact(name, "", phoneNumber, imgURL);
 	}
 
 	/**
 	 * Adds SMSs to their respective thread.
-	 * 
-	 * @param thread
-	 *            the SMSThread object.
-	 * @param messages
-	 *            the DOM Element that contain all the thread's messages.
+	 *
+	 * @param thread   the SMSThread object.
+	 * @param messages the DOM Element that contain all the thread's messages.
 	 */
 	private void addSMSsToThread(SMSThread thread, Element messages) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -196,9 +191,9 @@ public class SMSParser {
 //						XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
 				//SEE ISSUE 19 Comment 5
 				String text = "";
-				 if (element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT) != null) {
-				     text = element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
-				 }
+				if (element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT) != null) {
+					text = element.selectSingleNode(XPathQuery.MESSAGE_SMS_TEXT).getText().trim();
+				}
 				String dateTime = element.selectSingleNode(
 						XPathQuery.MESSAGE_SMS_TIME).getText().trim();
 				Contact contact = thread.getContact();
@@ -224,51 +219,45 @@ public class SMSParser {
 	 * Builds a map between the thread id and a SMSThread object. Since we need
 	 * to look for a SMSThread object quite often, this approach is preferable
 	 * than a List, since it reduces the lookup operations from O(n) to O(1).
-	 * 
-	 * @param response
-	 *            the server's HTML response.
+	 *
+	 * @param response the server's HTML response.
 	 * @return a map between the thread id and a SMSThread object.
 	 */
 	private Map<String, SMSThread> buildSMSThreadMap(String response) {
-		Map<String, SMSThread> result = new HashMap<String, SMSThread>();
+		Map<String, SMSThread> result = new HashMap<>();
 		String jsonResponse = ParsingUtil.removeUninterestingParts(response,
 				FilterResponse.JSON_BEGIN, FilterResponse.JSON_END, false);
-		try {
-			JSONObject json = new JSONObject(jsonResponse);
-			JSONObject messages = json.getJSONObject(JSONContants.MESSAGES);
-			JSONArray names = messages.names();
-			for (int i = 0; i < names.length(); i++) {
-				JSONObject jsonSmsThread = messages.getJSONObject(names
-						.getString(i));
-				String id = jsonSmsThread.has(JSONContants.ID) ? jsonSmsThread
-						.getString(JSONContants.ID) : "";
-				long startTime = jsonSmsThread.has(JSONContants.START_TIME) ? jsonSmsThread
-						.getLong(JSONContants.START_TIME)
-						: 0;
-				String note = jsonSmsThread.has(JSONContants.NOTE) ? jsonSmsThread
-						.getString(JSONContants.NOTE)
-						: "";
-				boolean isRead = jsonSmsThread.has(JSONContants.IS_READ) ? jsonSmsThread
-						.getBoolean(JSONContants.IS_READ)
-						: false;
-				boolean isStarred = jsonSmsThread.has(JSONContants.STARRED) ? jsonSmsThread
-						.getBoolean(JSONContants.STARRED)
-						: false;
-				SMSThread smsThread = new SMSThread(id, note, new Date(
-						startTime), null, isRead, isStarred);
-				result.put(id, smsThread);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+
+
+		JsonObject json = gson.fromJson(jsonResponse, JsonObject.class);
+		JsonObject messages = json.get(JSONContants.MESSAGES).getAsJsonObject();
+		List<String> names = ParsingUtil.names(messages.getAsJsonObject());
+		for (String name : names) {
+			JsonObject jsonSmsThread = messages.get(name).getAsJsonObject();
+			String id = jsonSmsThread.has(JSONContants.ID) ? jsonSmsThread
+					.get(JSONContants.ID).getAsString() : "";
+			long startTime = jsonSmsThread.has(JSONContants.START_TIME) ? jsonSmsThread
+					.get(JSONContants.START_TIME).getAsLong()
+					: 0;
+			String note = jsonSmsThread.has(JSONContants.NOTE) ? jsonSmsThread
+					.get(JSONContants.NOTE).getAsString()
+					: "";
+			boolean isRead = jsonSmsThread.has(JSONContants.IS_READ) && jsonSmsThread
+					.get(JSONContants.IS_READ).getAsBoolean();
+			boolean isStarred = jsonSmsThread.has(JSONContants.STARRED) && jsonSmsThread
+					.get(JSONContants.STARRED).getAsBoolean();
+			SMSThread smsThread = new SMSThread(id, note, new Date(
+					startTime), null, isRead, isStarred);
+			result.put(id, smsThread);
 		}
+
 		return result;
 	}
 
 	/**
 	 * Parses the contact's phone number from the server's HTML response.
-	 * 
-	 * @param phoneNumber
-	 *            the phone number from the server's HTML response.
+	 *
+	 * @param phoneNumber the phone number from the server's HTML response.
 	 * @return the contact's phone number.
 	 */
 	private String parsePhoneNumber(String phoneNumber) {
@@ -281,9 +270,8 @@ public class SMSParser {
 
 	/**
 	 * Parses the contact's image URL from the DOM Element.
-	 * 
-	 * @param element
-	 *            the DOM Element
+	 *
+	 * @param element the DOM Element
 	 * @return the contact's image URL.
 	 */
 	private String parseImgURL(Element element) {
@@ -293,7 +281,9 @@ public class SMSParser {
 				+ img.attribute(GoogleVoice.IMG_SRC).getText();
 	}
 
-	/** General Google Voice Constants. */
+	/**
+	 * General Google Voice Constants.
+	 */
 	private final class GoogleVoice {
 		public static final String THREAD_ID = "id";
 		public static final String DATE_FORMAT = "MM/dd/yy";
@@ -308,13 +298,15 @@ public class SMSParser {
 		public static final String DEFAULT_COUNTRY_CODE = "+1";
 	}
 
-	/** XPath queries constants. */
+	/**
+	 * XPath queries constants.
+	 */
 	private final class XPathQuery {
 		public static final String MESSAGE_SMS_FROM = "descendant::span[@class='gc-message-sms-from']";
 		public static final String MESSAGE_SMS_TEXT = "descendant::span[@class='gc-message-sms-text']";
 		public static final String MESSAGE_SMS_TIME = "descendant::span[@class='gc-message-sms-time']";
 		public static final String MESSAGE_SMS_ROW = "descendant::div[@class='gc-message-sms-row']";
-//		public static final String MESSAGE_NAME_LINK = "descendant::a[@class='gc-under gc-message-name-link']";
+		//		public static final String MESSAGE_NAME_LINK = "descendant::a[@class='gc-under gc-message-name-link']";
 		public static final String MESSAGE_NAME_LINK = "descendant::a[contains(@class,'gc-under')]";
 		public static final String MESSAGE_TYPE = "descendant::span[@class='gc-message-type']";
 		public static final String MESSAGE_ID = "/*/*/div[@id]";
@@ -324,7 +316,9 @@ public class SMSParser {
 		public static final String MESSAGE_QUICKCALL = "descendant::form[@name='quickcall']";
 	}
 
-	/** Filter responses constants. */
+	/**
+	 * Filter responses constants.
+	 */
 	private final class FilterResponse {
 		public static final String HTML_BEGIN = "<html><![CDATA[";
 		public static final String HTML_END = "]]></html>";

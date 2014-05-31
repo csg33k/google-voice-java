@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import gvjava.org.json.JSONArray;
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
 
 /**
- * 
- * TODO Add jobberName 
+ *
+ * TODO Add jobberName
  * @author Tobias Eisentraeger
  *
  */
 public class Greeting implements Comparable<Greeting> {
-	
-	
+
+
 	private int id;
 	private String name;
 	private String jobberName;
@@ -28,21 +29,21 @@ public class Greeting implements Comparable<Greeting> {
 		this.name = name;
 		this.jobberName = "";
 	}
-	
+
 	public Greeting(int id,String jobberName, String name){
 		this.id = id;
 		this.name = name;
 		this.jobberName = jobberName;
 	}
-	
+
 	public String toString(){
 		String ret="{id="+id+";";
-		ret+="name="+name+",";	
-		ret+="jobberName="+jobberName+"}";	
+		ret+="name="+name+",";
+		ret+="jobberName="+jobberName+"}";
 		return ret;
 	}
-	
-	
+
+
 	public final static List<Greeting> createGroupSettingsFromJsonResponse(String json) {
 		List<Greeting> result = new ArrayList<Greeting>();
 		json = ParsingUtil.removeUninterestingParts(json, "\"greetings\":[", "],", false);
@@ -57,7 +58,7 @@ public class Greeting implements Comparable<Greeting> {
 		}
 		return result;
 	}
-	
+
 	/*
 "greetings": [
             {
@@ -77,23 +78,20 @@ public class Greeting implements Comparable<Greeting> {
             }
         ],
 	 */
-	public final static List<Greeting> createListFromJsonObject(JSONObject settingsJSON) { 
-		List<Greeting> greetingss = new ArrayList<Greeting>();
+	public static List<Greeting> createListFromJsonObject(JsonObject settingsJSON) throws IllegalStateException {
+		List<Greeting> greetingss = Lists.newArrayList();
 		if(settingsJSON.has("greetings")) {
-			try {
-				JSONArray lArray = (JSONArray) settingsJSON.getJSONArray("greetings");
-				for (int i = 0; i < lArray.length(); i++) {
-					int lId = lArray.getJSONObject(i).getInt("id");
-					String lJobberName = lArray.getJSONObject(i).getString("jobberName");
-					String lName = lArray.getJSONObject(i).getString("name");
-					greetingss.add(new Greeting(lId,lJobberName,lName));
-				}
-			} catch (JSONException e1) {
-				// Nothing - will return empty List at exception
-			}
+			JsonElement greetingObject = settingsJSON.get("greetings");
 
+			JsonArray lArray = greetingObject.isJsonArray() ?  settingsJSON.get("greetings").getAsJsonArray() : new JsonArray();
+			for (int i = 0; i < lArray.size(); i++) {
+				int lId = lArray.get(i).getAsJsonObject().get("id").getAsInt();
+				String lJobberName= lArray.get(i).getAsJsonObject().get("jobberName").getAsString();
+				String lName = lArray.get(i).getAsJsonObject().get("name").getAsString();
+				greetingss.add(new Greeting(lId,lJobberName,lName));
+			}
 		}
-		
+
 		return greetingss;
 	}
 
@@ -110,14 +108,14 @@ public class Greeting implements Comparable<Greeting> {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * @return the jobberName
 	 */
 	public String getJobberName() {
 		return jobberName;
 	}
-	
+
 
 	/**
 	 * @param id the id to set
@@ -141,7 +139,7 @@ public class Greeting implements Comparable<Greeting> {
 	}
 
 	//TODO dotn create list first, direct transform
-	public final static Greeting[] createArrayFromJsonObject(JSONObject settingsJSON) { 
+	public final static Greeting[] createArrayFromJsonObject(JsonObject settingsJSON) {
 		List<Greeting> tList = createListFromJsonObject(settingsJSON);
 		return (Greeting[]) tList.toArray(new Greeting[tList.size()]);
 	}
@@ -155,11 +153,11 @@ public class Greeting implements Comparable<Greeting> {
             return -1;
         if( id > (o.getId() ))
             return 1;
-            
+
         return 0;
 	}
-	
-	
-	
-	
+
+
+
+
 }

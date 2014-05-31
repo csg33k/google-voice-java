@@ -2,14 +2,20 @@ package com.techventus.server.voice.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import gvjava.org.json.JSONArray;
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Collection of useful html parsing methods
- * 
+ *
  * @author Tobias Eisentraeger
  *
  */
@@ -35,7 +41,7 @@ public abstract class ParsingUtil {
 		String ret="";
 		try {
 			if(text!=null&&startBorder!=null&&endBorder!=null&&(text.indexOf(startBorder)!=-1)&&(text.indexOf(endBorder)!=-1) ) {
-				
+
 				if(includeBorders) {
 					text = text.substring(text.indexOf(startBorder));
 					if(text!=null) {
@@ -51,7 +57,7 @@ public abstract class ParsingUtil {
 						ret = null;
 					}
 				}
-			
+
 			} else {
 				ret = null;
 			}
@@ -65,8 +71,8 @@ public abstract class ParsingUtil {
 		}
 		return ret;
 	}
-	
-	
+
+
 	//TODO use Apache commons StringEscapeUtils.unescapeHTML() ?
 	/**
 	 * Replaces some speciel htmlEntities with a corresponding String.
@@ -75,92 +81,101 @@ public abstract class ParsingUtil {
 	 * @return the Decoded HTML in String format
 	 */
 	public static String htmlEntitiesDecode(String s) {
-		s=s.replaceAll("&#39;", "'"); 
+		s=s.replaceAll("&#39;", "'");
 		return s;
 	}
-	
+
+	public static boolean isJsonEmpty(String value) {
+		return StringUtils.isEmpty(value) || "{}".equals(value);
+	}
+
 	/**
 	 * Json int array to int array.
-	 * 
+	 *
 	 * @param array the array
 	 * @return the int[]
 	 */
-	public static final int[] jsonIntArrayToIntArray(JSONArray array) {
-		int[] result = new int[array.length()];
-		for (int i = 0; i < array.length(); i++) {
-			try {
-				result[i] = array.getInt(i);
-			} catch (JSONException e) {
-				return null;
-			}
+	public static final int[] jsonIntArrayToIntArray(JsonArray array) {
+		int[] result = new int[array.size()];
+		for (int i = 0; i < array.size(); i++) {
+				result[i] = array.get(i).getAsInt();
 		}
 		return result;
 	}
-	
+
+
+	public static List<String> names(JsonObject object) {
+
+		Set<Map.Entry<String, JsonElement>> set = object.entrySet();
+		List<String> list = Lists.newArrayList();
+		for(Map.Entry<String, JsonElement> entry : set) {
+			list.add(entry.getKey());
+		}
+
+		return list;
+	}
+
 	/**
 	 * Json string array to string array.
-	 * 
+	 *
 	 * @param array the array
 	 * @return the string[]
 	 */
-	public static final String[] jsonStringArrayToStringArray(JSONArray array) {
-		String[] result = new String[array.length()];
-		for (int i = 0; i < array.length(); i++) {
-			try {
-				result[i] = array.getString(i);
-			} catch (JSONException e) {
-				return null;
-			}
+	public static String[] jsonStringArrayToStringArray(JsonArray array) {
+		String[] result = new String[array.size()];
+		for (int i = 0; i < array.size(); i++) {
+			result[i] = array.get(i).getAsString();
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Json string array to string list.
-	 * 
+	 *
 	 * @param settingsJSON the settings json
 	 * @param stringList the string list
 	 * @param key the key
 	 * @return the list
-	 * @throws JSONException the jSON exception
 	 */
-	public static final List<String> jsonStringArrayToStringList(JSONObject settingsJSON, List<String> stringList, String key) throws JSONException {
-		stringList = new ArrayList<String>();
-		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
-			stringList.add(((JSONArray) settingsJSON.get(key)).getString(i));
+	public static final List<String> jsonStringArrayToStringList(JsonObject settingsJSON, List<String> stringList, String key) {
+		stringList = new ArrayList<>();
+		for (int i = 0; i < (settingsJSON.get(key)).getAsJsonArray().size(); i++) {
+			stringList.add((settingsJSON.get(key)).getAsJsonArray().get(i).getAsString());
 		}
 		return stringList;
 	}
-	
+
 	/**
 	 * Converts a Json Integer array to an ArrayList of Integers.
-	 * 
+	 *
 	 * @param settingsJSON the settings json
 	 * @param integerList the integer list
 	 * @param key the key corresponding to the JSON formatted integer array
 	 * @return the list
-	 * @throws JSONException the jSON exception
 	 */
-	public static final List<Integer> jsonIntArrayToIntegerList(JSONObject settingsJSON, List<Integer> integerList, String key) throws JSONException {
+	public static final List<Integer> jsonIntArrayToIntegerList(JsonObject settingsJSON, List<Integer> integerList, String key) {
 		//TODO Why are we taking integerList as input, if we replace with new one?
-		integerList = new ArrayList<Integer>();
-		for (int i = 0; i < ((JSONArray) settingsJSON.get(key)).length(); i++) {
-			integerList.add(((JSONArray) settingsJSON.get(key)).getInt(i));
+		integerList = new ArrayList<>();
+		for (int i = 0; i < (settingsJSON.get(key)).getAsJsonArray().size(); i++) {
+			integerList.add((settingsJSON.get(key)).getAsJsonArray().get(i).getAsInt());
 		}
 		return integerList;
 	}
-	
+
 	/**
 	 * String list to JSON array.
-	 * 
+	 *
 	 * @param stringList the string list input
 	 * @return the JSON array
-	 * @throws JSONException the JSON exception
 	 */
-	public static final JSONArray stringListToJsonArray(List<String> stringList) throws JSONException {	
-		String[] lArray = (String[]) stringList.toArray(new String[stringList.size()]);
-		return new JSONArray(lArray);
+	public static final JsonArray stringListToJsonArray(List<String> stringList) {
+		JsonArray jArray = new JsonArray();
+		for(String element : stringList) {
+			jArray.add(new JsonPrimitive(element));
+		}
+
+		return jArray;
 	}
-	
-	
+
+
 }

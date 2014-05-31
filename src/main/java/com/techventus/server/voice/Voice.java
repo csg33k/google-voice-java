@@ -4,29 +4,28 @@
  * Created: Sat Mar  13 14:41:11 2010
  *
  * Copyright (C) 2010-2012 Techventus, LLC
- * 
+ *
  * Techventus, LLC is not responsible for any use or misuse of this product.
  * In using this software you agree to hold harmless Techventus, LLC and any other
- * contributors to this project from any damages or liabilities which might result 
+ * contributors to this project from any damages or liabilities which might result
  * from its use.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package com.techventus.server.voice;
 
-import gvjava.org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -56,7 +55,7 @@ import com.techventus.server.voice.util.SMSParser;
  * The Class Voice. This class is the basis of the entire API and contains all
  * the components necessary to connect and authenticate with Google Voice, place
  * calls and SMS, and pull in the raw data from the account.
- * 
+ *
  * @author Techventus, LLC
  */
 @SuppressWarnings("deprecation")
@@ -64,20 +63,20 @@ public class Voice {
 
 	/** The PRINT to Console FLAG setting. */
 	public boolean PRINT_TO_CONSOLE;
-	
+
 	/** keeps the list of phones - lazy. */
 
 	private AllSettings settings;
-	
+
 	/** The general. */
 	String general = null;
-	
+
 	/** The phones info. */
 	String phonesInfo = null;
-	
+
 	/** The rnr see. */
 	String rnrSEE = null;
-	
+
 	/** The error. */
 	private ERROR_CODE error;
 
@@ -99,146 +98,146 @@ public class Voice {
    */
   private String phoneNumber = null;
 	/**
-	 * Once the login information has been successfully authenticated, Google returns a token, which your 
+	 * Once the login information has been successfully authenticated, Google returns a token, which your
 	 * application will reference each time it requests access to the user's account.
-	 * This token must be included in all subsequent requests to the Google service for this account. 
-	 * Authorization tokens should be closely guarded and should not be given to any other application, 
-	 * as they represent access to the user's account. The time limit on the token varies depending on 
+	 * This token must be included in all subsequent requests to the Google service for this account.
+	 * Authorization tokens should be closely guarded and should not be given to any other application,
+	 * as they represent access to the user's account. The time limit on the token varies depending on
 	 * which service issued it.
 	 */
 	private String authToken = null;
 	/**
-	 * (optional) Token representing the specific CAPTCHA challenge. Google supplies this token and the 
+	 * (optional) Token representing the specific CAPTCHA challenge. Google supplies this token and the
 	 * CAPTCHA image URL in a login failed response with the error code "CaptchaRequired".
 	 */
 	private String captchaToken = null;
-	
+
 	/** Url of the image with the captcha - only filled after a captacha response to a login try. */
 	private String captchaUrl = null;
-	
+
 	/** The captcha url2. */
 	private String captchaUrl2 = null;
-	
+
 	/** Counts the amount of redirects we are doing in the get(String url) method to avoid infinite loop. */
 	private int redirectCounter = 0;
-	
+
 	/** Maximum amount of redirects before we throw an exception. */
 	private static int MAX_REDIRECTS = 5;
-	
+
 	/** The Constant enc. */
 	final static String enc = "UTF-8";
-	
+
 	/** The Constant USER_AGENT. */
 	final static String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13";
-	
+
 	/** The Constant GOOGLE. */
 	public final static String GOOGLE = "GOOGLE";
-	
+
 	/** The Constant HOSTED. */
 	public final static String HOSTED = "HOSTED";
-	
+
 	/** The Constant HOSTED_OR_GOOGLE. */
 	public final static String HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
 	/**
 	 * Type of account to request authorization for. Possible values are: <br/><br/>
 	 * -<b>GOOGLE</b> (get authorization for a Google account only) <br/>
 	 * -<b>HOSTED</b> (get authorization for a hosted account only) <br/>
-	 * -<b>HOSTED_OR_GOOGLE</b> (get authorization first for a hosted account; if attempt fails, get 
-	 * authorization for a Google account)<br/><br/>		
-	 * Use <b>HOSTED_OR_GOOGLE</b> if you're not sure which type of account you want authorization for. 
+	 * -<b>HOSTED_OR_GOOGLE</b> (get authorization first for a hosted account; if attempt fails, get
+	 * authorization for a Google account)<br/><br/>
+	 * Use <b>HOSTED_OR_GOOGLE</b> if you're not sure which type of account you want authorization for.
 	 * If the user information matches both a hosted and a Google account, only the hosted account is authorized.
 	 */
-	private String account_type = GOOGLE; 
-	
+	private String account_type = GOOGLE;
+
 	/**
-	 * Name of the Google service you're requesting authorization for. Each service using the Authorization 
-	 * service is assigned a name value; for example, the name associated with Google Calendar is 'cl'. 
-	 * This parameter is required when accessing services based on Google Data APIs. For specific service 
+	 * Name of the Google service you're requesting authorization for. Each service using the Authorization
+	 * service is assigned a name value; for example, the name associated with Google Calendar is 'cl'.
+	 * This parameter is required when accessing services based on Google Data APIs. For specific service
 	 * names, refer to the service documentation.
 	 */
 	final static String SERVICE = "grandcentral";
-	
+
 	/** The Constant generalURLString. */
 	final static String generalURLString = "https://www.google.com/voice/b/0";
-	
+
 	/** The Constant loginURLString. */
 	final static String loginURLString = "https://www.google.com/accounts/ClientLogin";
-	
+
 	/** The Constant inboxURLString. */
 	final static String inboxURLString = "https://www.google.com/voice/b/0/inbox/recent/inbox/";
-	
+
 	/** The Constant starredURLString. */
 	final static String starredURLString = "https://www.google.com/voice/b/0/inbox/recent/starred/";
-	
+
 	/** The Constant recentAllURLString. */
 	final static String recentAllURLString = "https://www.google.com/voice/b/0/inbox/recent/all/";
-	
+
 	/** The Constant spamURLString. */
 	final static String spamURLString = "https://www.google.com/voice/b/0/inbox/recent/spam/";
-	
+
 	/** The Constant trashURLString. */
 	final static String trashURLString = "https://www.google.com/voice/b/0/inbox/recent/spam/";
-	
+
 	/** The Constant voicemailURLString. */
 	final static String voicemailURLString = "https://www.google.com/voice/b/0/inbox/recent/voicemail/";
-	
+
 	/** The Constant smsURLString. */
 	final static String smsURLString = "https://www.google.com/voice/b/0/inbox/recent/sms/";
-	
+
 	/** The Constant recordedURLString. */
 	final static String recordedURLString = "https://www.google.com/voice/b/0/inbox/recent/recorded/";
-	
+
 	/** The Constant placedURLString. */
 	final static String placedURLString = "https://www.google.com/voice/b/0/inbox/recent/placed/";
-	
+
 	/** The Constant receivedURLString. */
 	final static String receivedURLString = "https://www.google.com/voice/b/0/inbox/recent/received/";
-	
+
 	/** The Constant missedURLString. */
 	final static String missedURLString = "https://www.google.com/voice/b/0/inbox/recent/missed/";
-	
+
 	/** The Constant phoneEnableURLString. */
 	final static String phoneEnableURLString = "https://www.google.com/voice/b/0/settings/editDefaultForwarding/";
-	
+
 	/** The Constant generalSettingsURLString. */
 	final static String generalSettingsURLString = "https://www.google.com/voice/b/0/settings/editGeneralSettings/";
-	
+
 	/** The Constant editForwardingSMSURLString. */
 	final static String editForwardingSMSURLString = "https://www.google.com/voice/b/0/settings/editForwardingSms/";
-	
+
 	/** The Constant phonesInfoURLString. */
 	final static String phonesInfoURLString = "https://www.google.com/voice/b/0/settings/tab/phones";
-	
+
 	/** The Constant groupsInfoURLString. */
 	final static String groupsInfoURLString = "https://www.google.com/voice/b/0/settings/tab/groups";
-	
+
 	/** The Constant voicemailInfoURLString. */
 	final static String voicemailInfoURLString = "https://www.google.com/voice/b/0/settings/tab/voicemailsettings";
-	
+
 	/** The Constant groupsSettingsURLString. */
 	final static String groupsSettingsURLString = "https://www.google.com/voice/b/0/settings/editGroup/";
-	
+
 	/** The Constant voicemailDownloadURLString. */
 	final static String voicemailDownloadURLString = "https://www.google.com/voice/media/send_voicemail/";
-	
+
 	/** The Constant markAsReadString. */
 	final static String markAsReadString = "https://www.google.com/voice/b/0/inbox/mark/";
-	
+
 	/** The Constant unreadSMSString. */
 	final static String unreadSMSString = "https://www.google.com/voice/b/0/inbox/recent/sms/unread/";
-  
+
 	//Experimental  keyFlag is just there to overload method
 	public Voice(String authToken ) throws IOException{
 		this.authToken = authToken;
 		this.pass = "UNKNOWN";
 		this.user = "UNKNOWN";
-		
+
 		this.source = "GoogleVoiceJava";
-		
-	
+
+
 		this.general = 	getGeneral();
 		this.setRNRSEE();
-			
+
 		String response = this.getRawPhonesInfo();
 		int phoneIndex = response.indexOf("gc-user-number-value\">");
 		this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
@@ -253,7 +252,7 @@ public class Voice {
 	 * Instantiates a new voice. This constructor is deprecated. Try
 	 * Voice(String user, String pass) which automatically determines rnrSee and
 	 * assigns a source.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 * @param pass
@@ -280,7 +279,7 @@ public class Voice {
 	/**
 	 * A constructor which which allows a custom source.
 	 * This Constructor enables verbose output.
-	 * 
+	 *
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
@@ -299,7 +298,7 @@ public class Voice {
 	/**
 	 * Instantiates a new Voice Object. This is generally the simplest and
 	 * preferred constructor. This Constructor enables verbose output.
-	 * 
+	 *
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
@@ -314,7 +313,7 @@ public class Voice {
 	/**
 	 * Instantiates a new voice. Custom Source Variable allowed, and
 	 * printDebugIntoSystemOut which allows for Verbose output.
-	 * 
+	 *
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
@@ -330,11 +329,11 @@ public class Voice {
 			boolean printDebugIntoToSystemOut) throws IOException {
 		init(user, pass, source, printDebugIntoToSystemOut, GOOGLE, null, null);
 	}
-	
+
 	/**
 	 * Instantiates a new voice. Custom Source Variable allowed, and
 	 * printDebugIntoSystemOut which allows for Verbose output.
-	 * 
+	 *
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
@@ -345,8 +344,8 @@ public class Voice {
 	 *            the print debug into to system out
 	 * @param accountType
 	 * 			  Type of account to request authorization for. Possible values are:
-	 *			Voice.GOOGLE (get authorization for a Google account only) 
-	 *			Voice.HOSTED (get authorization for a hosted account only) 
+	 *			Voice.GOOGLE (get authorization for a Google account only)
+	 *			Voice.HOSTED (get authorization for a hosted account only)
 	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
 	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
 	 *
@@ -357,11 +356,11 @@ public class Voice {
 			boolean printDebugIntoToSystemOut, String accountType) throws IOException {
 		init(user, pass, source, printDebugIntoToSystemOut, accountType, null, null);
 	}
-	
+
 	/**
 	 * Instantiates a new voice. Custom Source Variable allowed, and
 	 * printDebugIntoSystemOut which allows for Verbose output.
-	 * 
+	 *
 	 * @param user
 	 *            the username in the format of user@gmail.com or user@googlemail.com
 	 * @param pass
@@ -372,8 +371,8 @@ public class Voice {
 	 *            the print debug into to system out
 	 * @param accountType
 	 * 			  Type of account to request authorization for. Possible values are:
-	 *			Voice.GOOGLE (get authorization for a Google account only) 
-	 *			Voice.HOSTED (get authorization for a hosted account only) 
+	 *			Voice.GOOGLE (get authorization for a Google account only)
+	 *			Voice.HOSTED (get authorization for a hosted account only)
 	 *			Voice.HOSTED_OR_GOOGLE (get authorization first for a hosted account; if attempt fails, get authorization for a Google account)
 	 *			Use Voice.HOSTED_OR_GOOGLE if you're not sure which type of account you want authorization for. If the user information matches both a hosted and a Google account, only the hosted account is authorized.
 	 * @param captchaResponse
@@ -418,7 +417,7 @@ public class Voice {
 			} else {
 				this.source = "GoogleVoiceJava";
 			}
-			
+
 			login(captchaResponse,captchaToken);
 			this.general = getGeneral();
 			setRNRSEE();
@@ -426,7 +425,7 @@ public class Voice {
 			throw new IOException("AccountType not valid");
 		}
 	}
-	
+
         /**
          * Returns the username
          * @return username for gvoice account
@@ -435,15 +434,14 @@ public class Voice {
         {
             return this.user;
         }
-	
+
 	/**
 	 * Returns the Greeting list - Lazy
 	 * @param forceUpdate set to true to force a List update from the server
 	 * @return List of Greeting objects
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws JSONException the jSON exception
 	 */
-	public List<Greeting> getVoicemailList(boolean forceUpdate) throws IOException, JSONException {
+	public List<Greeting> getVoicemailList(boolean forceUpdate) throws IOException {
 		List<Greeting> lGList = new ArrayList<Greeting>();
 		Greeting[] lGArray = getSettings(forceUpdate).getSettings().getGreetings();
 		for (int i = 0; i < lGArray.length; i++) {
@@ -451,7 +449,7 @@ public class Voice {
 		}
 		return lGList;
 	}
-	
+
 	/**
 	 * Returns the Group list - Lazy.  Not yet Implemented
 	 *
@@ -470,16 +468,15 @@ public class Voice {
 		//TODO implement getGroupSettingsList
 		return null;
 	}
-	
+
 	/**
 	 * returns all users settings - lazy.
 	 *
 	 * @param forceUpdate the force update
 	 * @return the settings
-	 * @throws JSONException the jSON exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public AllSettings getSettings(boolean forceUpdate) throws JSONException, IOException {
+	public AllSettings getSettings(boolean forceUpdate) throws IOException {
 		if(settings==null || forceUpdate) {
 			if(isLoggedIn()==false || forceUpdate) {
 				login();
@@ -493,11 +490,7 @@ public class Voice {
 			if(PRINT_TO_CONSOLE) System.out.println("Fetching Settings.");
 			// remove html overhead
 			String lJson = ParsingUtil.removeUninterestingParts(get(groupsInfoURLString), "<json><![CDATA[", "]]></json>", false);
-			try {
-				settings = new AllSettings(lJson);
-			} catch (JSONException e) {
-				throw new JSONException(e.getMessage()+lJson);
-			}
+			settings = new AllSettings(lJson);
 		}
 		return settings;
 	}
@@ -508,7 +501,7 @@ public class Voice {
 
 	/**
 	 * Fetches and returns the raw page source code for the Inbox.
-	 * 
+	 *
 	 * @return the inbox
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -516,7 +509,7 @@ public class Voice {
 	public String getInbox() throws IOException {
 		return get(inboxURLString);
 	}
-	
+
 	/**
 	 * Gets the inbox page.
 	 *
@@ -532,7 +525,7 @@ public class Voice {
 	 * Fetches the page Source Code for the Voice homepage. This file contains
 	 * most of the useful information for the Google Voice Account such as
 	 * attached PhoneOld info and Contacts.
-	 * 
+	 *
 	 * @return the general
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -540,9 +533,9 @@ public class Voice {
 	public String getGeneral() throws IOException {
 		return get(generalURLString);
 	}
-	
+
 	/**
-	 * The main Google Voice section is paginated.  Access the raw HTML for 
+	 * The main Google Voice section is paginated.  Access the raw HTML for
 	 * specific page of the main section.
 	 *
 	 * @param page the page
@@ -555,7 +548,7 @@ public class Voice {
 
 	/**
 	 * Gets the raw page source code for the starred items.
-	 * 
+	 *
 	 * @return the starred item page source
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -563,7 +556,7 @@ public class Voice {
 	public String getStarred() throws IOException {
 		return get(starredURLString);
 	}
-	
+
 	/**
 	 * Gets the starred page.
 	 *
@@ -578,7 +571,7 @@ public class Voice {
 
 	/**
 	 * Gets the raw page source code for the recent items.
-	 * 
+	 *
 	 * @return the recent raw source code
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -586,7 +579,7 @@ public class Voice {
 	public String getRecent() throws IOException {
 		return get(recentAllURLString);
 	}
-	
+
 	/**
 	 * Gets the recent page.
 	 *
@@ -600,7 +593,7 @@ public class Voice {
 
 	/**
 	 * Gets the page source for the spam.
-	 * 
+	 *
 	 * @return the spam
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -608,7 +601,7 @@ public class Voice {
 	public String getSpam() throws IOException {
 		return get(spamURLString);
 	}
-	
+
 	/**
 	 * Gets the spam page.
 	 *
@@ -622,7 +615,7 @@ public class Voice {
 
 	/**
 	 * Gets the page source for the recorded calls.
-	 * 
+	 *
 	 * @return the recorded
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -630,7 +623,7 @@ public class Voice {
 	public String getRecorded() throws IOException {
 		return get(recordedURLString);
 	}
-	
+
 	/**
 	 * Gets the recorded page.
 	 *
@@ -644,7 +637,7 @@ public class Voice {
 
 	/**
 	 * Gets the raw source code for the placed calls page.
-	 * 
+	 *
 	 * @return the placed calls source code
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -652,7 +645,7 @@ public class Voice {
 	public String getPlaced() throws IOException {
 		return get(placedURLString);
 	}
-	
+
 	/**
 	 * Gets the placed page.
 	 *
@@ -666,7 +659,7 @@ public class Voice {
 
 	/**
 	 * Gets the received calls source code.
-	 * 
+	 *
 	 * @return the received
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -674,7 +667,7 @@ public class Voice {
 	public String getReceived() throws IOException {
 		return get(receivedURLString);
 	}
-	
+
 	/**
 	 * Gets the received page.
 	 *
@@ -688,7 +681,7 @@ public class Voice {
 
 	/**
 	 * Gets the missed calls source code.
-	 * 
+	 *
 	 * @return the missed
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -696,7 +689,7 @@ public class Voice {
 	public String getMissed() throws IOException {
 		return get(missedURLString);
 	}
-	
+
 	/**
 	 * Gets the missed page.
 	 *
@@ -708,7 +701,7 @@ public class Voice {
 		return get(missedURLString,page);
 	}
 
-	
+
 	/**
 	 * Gets the unread sms.
 	 *
@@ -718,7 +711,7 @@ public class Voice {
 	public String getUnreadSMS() throws IOException{
 		return get(unreadSMSString);
 	}
-	
+
 	/**
 	 * Gets the unread sms page.
 	 *
@@ -729,14 +722,14 @@ public class Voice {
 	public String getUnreadSMSPage(int page) throws IOException{
 		return get(unreadSMSString,page);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
   /**
 	 * Gets the Voicemail page raw source code.
 	 *
@@ -795,7 +788,7 @@ public class Voice {
 
         outputStream.flush();
       }
-               
+
       huc.disconnect ();
 
       return outputStream;
@@ -810,7 +803,7 @@ public class Voice {
 
 	/**
 	 * Gets the SMS page raw source code.
-	 * 
+	 *
 	 * @return the sMS
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -819,8 +812,8 @@ public class Voice {
 		return get(smsURLString);
 	}
 
-	
-	
+
+
 	/**
 	 * Gets the SMS page.
 	 *
@@ -831,9 +824,9 @@ public class Voice {
 	public String getSMSPage(int page) throws IOException {
 		return get(smsURLString,page);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Gets a collection of SMS threads. Each SMS thread has a collection of SMS
 	 * objects which contains contact, text and timestamp information.
@@ -845,7 +838,7 @@ public class Voice {
 		SMSParser parser = new SMSParser(get(smsURLString), phoneNumber);
 		return parser.getSMSThreads();
 	}
-	
+
 	/**
 	 * Gets a collection of SMS threads. Each SMS thread has a collection of SMS
 	 * objects which contains contact, text and timestamp information.
@@ -857,8 +850,8 @@ public class Voice {
 		SMSParser parser = new SMSParser(get(smsURLString, page), phoneNumber);
 		return parser.getSMSThreads();
 	}
-	
-	
+
+
 	/**
 	 * Gets the SMS threads from a given Response Page.
 	 *
@@ -869,8 +862,8 @@ public class Voice {
 		SMSParser parser= new SMSParser(response, phoneNumber);
 		return parser.getSMSThreads();
 	}
-	
-	
+
+
 	/**
 	 * Gets the rNRSEE.
 	 *
@@ -879,7 +872,7 @@ public class Voice {
 	public String getRNRSEE(){
 		return rnrSEE;
 	}
-	
+
 	/**
 	 * Internal method which parses the Homepage source code to determine the
 	 * rnrsee variable, this variable is passed into most fuctions for placing
@@ -896,7 +889,7 @@ public class Voice {
 					System.out.println("Successfully Received rnr_se.");
 				p1 = null;
 			} else if(general.contains("<div class=\"gc-notice\">")) {
-				String gcNotice = ParsingUtil.removeUninterestingParts(general, "<div class=\"gc-notice\">", "</div>", false);	
+				String gcNotice = ParsingUtil.removeUninterestingParts(general, "<div class=\"gc-notice\">", "</div>", false);
 				System.out.println(gcNotice+ "(Answer did not contain rnr_se)");
 				throw new IOException(gcNotice + "(Answer did not contain rnr_se)");
 			} else {
@@ -929,10 +922,10 @@ public class Voice {
 	public String getRawPhonesInfo() throws IOException{
 		return get(phonesInfoURLString);
 	}
-	
+
 	/**
 	 * Place a call.
-	 * 
+	 *
 	 * @param originNumber
 	 *            the origin number
 	 * @param destinationNumber
@@ -947,16 +940,16 @@ public class Voice {
 			String phoneType) throws IOException {
 		String out = "";
 		StringBuffer calldata = new StringBuffer();
-		
-		
-		// POST /voice/call/connect/ 
+
+
+		// POST /voice/call/connect/
 		// outgoingNumber=[number to call]
 		// &forwardingNumber=[forwarding number]
 		// &subscriberNumber=undefined
 		// &phoneType=[phone type from google]
 		// &remember=0
 		// &_rnr_se=[pull from page]
-		
+
 		calldata.append("outgoingNumber=");
 		calldata.append(URLEncoder.encode(destinationNumber, enc));
 		calldata.append("&forwardingNumber=");
@@ -967,8 +960,8 @@ public class Voice {
 		calldata.append("&remember=0");
 		calldata.append("&_rnr_se=");
 		calldata.append(URLEncoder.encode(rnrSEE, enc));
-		
-		
+
+
 		URL callURL = new URL("https://www.google.com/voice/b/0/call/connect/");
 
 		URLConnection callconn = callURL.openConnection();
@@ -1004,7 +997,7 @@ public class Voice {
 
 	/**
 	 * Cancel a call that was just placed.
-	 * 
+	 *
 	 * @param originNumber
 	 *            the origin number
 	 * @param destinationNumber
@@ -1067,7 +1060,7 @@ public class Voice {
 		return out;
 
 	}
-	
+
 	/**
 	 * Mark a Conversation with a known Message ID as read.
 	 *
@@ -1080,12 +1073,12 @@ public class Voice {
     String out = "";
 		StringBuffer calldata = new StringBuffer();
 
-		
-        // POST /voice/inbox/mark/ 
+
+        // POST /voice/inbox/mark/
         // messages=[messageID]
         // &read=1
         // &_rnr_se=[pull from page]
-		
+
 		calldata.append("messages=");
 		calldata.append(URLEncoder.encode(msgID, enc));
 		calldata.append("&read=1");
@@ -1124,7 +1117,7 @@ public class Voice {
 
 		return out;
   }
-	
+
 	/**
 	 * Mark a Conversation with a known Message ID as unread.
 	 *
@@ -1136,49 +1129,49 @@ public class Voice {
 	{
 	    String out = "";
 	        StringBuffer calldata = new StringBuffer();
-	
-	
-	        // POST /voice/inbox/mark/ 
+
+
+	        // POST /voice/inbox/mark/
 	        // messages=[messageID]
 	        // &read=0
 	        // &_rnr_se=[pull from page]
-	
+
 	        calldata.append("messages=");
 	        calldata.append(URLEncoder.encode(msgID, enc));
 	        calldata.append("&read=0");
 	        calldata.append("&_rnr_se=");
 	        calldata.append(URLEncoder.encode(rnrSEE, enc));
-	
-	
+
+
 	        URL callURL = new URL("https://www.google.com/voice/b/0/inbox/mark");
-	
+
 	        URLConnection callconn = callURL.openConnection();
 	        callconn.setRequestProperty("Authorization","GoogleLogin auth="+authToken);
 	        callconn.setRequestProperty("User-agent",USER_AGENT);
-	
+
 	        callconn.setDoOutput(true);
 	        OutputStreamWriter callwr = new OutputStreamWriter(callconn
 	                .getOutputStream());
-	
+
 	        callwr.write(calldata.toString());
 	        callwr.flush();
-	
+
 	        BufferedReader callrd = new BufferedReader(new InputStreamReader(
 	                callconn.getInputStream()));
-	
+
 	        String line;
 	        while ((line = callrd.readLine()) != null) {
 	            out += line + "\n\r";
-	
+
 	        }
-	
+
 	        callwr.close();
 	        callrd.close();
-	
+
 	        if (out.equals("")) {
 	            throw new IOException("No Response Data Received.");
 	        }
-	
+
 	        return out;
 	}
 
@@ -1238,10 +1231,10 @@ public class Voice {
 
 		return out;
   }
-	
+
 	/**
 	 * Enables multiple phones in one post
-	 * 
+	 *
 	 * TODO Test this with multiple phones in an account
 	 * Best would be to be able to construct a url which can switch multiple phones at a time.
 	 *
@@ -1253,7 +1246,7 @@ public class Voice {
 		if(IDs.length<1) {
 			return;
 		} else if(IDs.length==1) {
-			//launch single (no thread overhead)	
+			//launch single (no thread overhead)
 			phoneEnable(IDs[0]);
 		} else {
 			for (int i = 0; i < IDs.length; i++) {
@@ -1265,18 +1258,18 @@ public class Voice {
 						+ URLEncoder.encode(Integer.toString(j), enc);
 				paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
 					+ URLEncoder.encode(rnrSEE, enc);
-			
+
 				phonesEnableDisableApply(paraString);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Enables one of the the phones attached to the account from ringing.
 	 * Requires the internal ID for that phone, as an integer, usually 1,2,3,
 	 * etc.
-	 * 
+	 *
 	 * @param ID
 	 *            the iD
 	 * @return the raw response of the enable action.
@@ -1292,10 +1285,10 @@ public class Voice {
 				+ URLEncoder.encode(rnrSEE, enc);
 		return phonesEnableDisableApply(paraString);
 	}
-	
+
 	/**
 	 * Disables multiple phones in one post
-	 * 
+	 *
 	 * TODO Test this with multiple phones in an account
 	 * Make faster - spawn threads
 	 * Best would be to be able to construct a url which can switch multiple phones at a time.
@@ -1305,11 +1298,11 @@ public class Voice {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void phonesDisable(int[] IDs) throws IOException {
-		
+
 		if(IDs.length<1) {
 			return;
 		} else if(IDs.length==1) {
-			//launch single (no thread overhead)	
+			//launch single (no thread overhead)
 			phoneDisable(IDs[0]);
 		} else {
 			for (int i = 0; i < IDs.length; i++) {
@@ -1321,7 +1314,7 @@ public class Voice {
 						+ URLEncoder.encode(Integer.toString(j), enc);
 				paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
 					+ URLEncoder.encode(rnrSEE, enc);
-			
+
 				phonesEnableDisableApply(paraString);
 			}
 		}
@@ -1332,7 +1325,7 @@ public class Voice {
 	 * Disable one of the the phones attached to the account from ringing.
 	 * Requires the internal ID for that phone, as an integer, usually 1,2,3,
 	 * etc.
-	 * 
+	 *
 	 * @param ID
 	 *            the iD
 	 * @return the raw response of the disable action.
@@ -1359,7 +1352,7 @@ public class Voice {
 	private String phonesEnableDisableApply(String paraString) throws IOException {
 		String out = "";
 
-		
+
 		// POST /voice/call/connect/ outgoingNumber=[number to
 		// call]&forwardingNumber=[forwarding
 		// number]&subscriberNumber=undefined&remember=0&_rnr_se=[pull from
@@ -1405,7 +1398,7 @@ public class Voice {
 		return out;
 
 	}
-	
+
 	/**
 	 * Enables/disables the call Announcement setting (general for all phones).
 	 *
@@ -1430,7 +1423,7 @@ public class Voice {
 			announceCallerStr = "1";
 			if (PRINT_TO_CONSOLE) System.out.println("Turning caller announcement off.");
 		}
-		
+
 		String paraString = "";
 		paraString += URLEncoder.encode("directConnect", enc) + "="
 				+ URLEncoder.encode(announceCallerStr, enc);
@@ -1467,7 +1460,7 @@ public class Voice {
 
 		return out;
 	}
-	
+
 	/**
 	 * This is the general voicemail greeting callers hear.
 	 *
@@ -1492,7 +1485,7 @@ public class Voice {
 
 		return postSettings(requestURL, paraString);
 	}
-	
+
 	/**
 	 * Activated or deactivated the Do Not disturb function.<br>
 	 * Enable this to send to voicemail all calls made to your Google number.
@@ -1504,7 +1497,7 @@ public class Voice {
 	public String setDoNotDisturb(boolean dndEnabled) throws IOException {
 
 		URL requestURL = new URL(generalSettingsURLString);
-		
+
 		String enabled;
 
 		if(dndEnabled) {
@@ -1525,7 +1518,7 @@ public class Voice {
 
 		return postSettings(requestURL, paraString);
 	}
-	
+
 	/**
 	 * Activated or deactivated the SMS Forwarding for a particular phone
 	 *
@@ -1560,7 +1553,7 @@ public class Voice {
 			if (PRINT_TO_CONSOLE) System.out.println("Phone "+ID + " is already in the requested state. "+smsEnable);
 			return null;
 		}
-		
+
 		URL requestURL = new URL(editForwardingSMSURLString);
 
 		String paraString = "";
@@ -1570,14 +1563,14 @@ public class Voice {
 				+ URLEncoder.encode(ID+"", enc);
 		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
 				+ URLEncoder.encode(rnrSEE, enc);
-		
+
 		if (PRINT_TO_CONSOLE) System.out.println(requestURL);
 		if (PRINT_TO_CONSOLE) System.out.println(paraString);
-		
+
 		return postSettings(requestURL, paraString);
 
 	}
-	
+
 	/**
 	 * Applies the settings for this group.
 	 *
@@ -1590,48 +1583,48 @@ public class Voice {
 
 		String paraString = "";
 		// URLEncoder.encode("auth", enc) + "="+ URLEncoder.encode(authToken, enc);;
-		
-		// 1=true 0=false 
+
+		// 1=true 0=false
 		int isCustomGreeting = 0;
 		if(group.isCustomGreeting()) {
 			isCustomGreeting = 1;
 		}
 		paraString += URLEncoder.encode("isCustomGreeting", enc) + "="
 			+ URLEncoder.encode(isCustomGreeting+"", enc);
-		
+
 		int greetingId = group.getGreetingId();
 		paraString += "&" + URLEncoder.encode("greetingId", enc) + "="
 			+ URLEncoder.encode(greetingId+"", enc);
-		
+
 		for (int i = 0; i < group.getDisabledForwardingIds().size(); i++) {
 			paraString += "&" + URLEncoder.encode("disabledPhoneIds", enc) + "="
 				+ URLEncoder.encode(group.getDisabledForwardingIds().get(i).getId(), enc);
 		}
-		
+
 		int directConnect = 0;
 		if(group.isDirectConnect()) {
 			directConnect = 1;
 		}
 		paraString += "&" + URLEncoder.encode("directConnect", enc) + "="
 			+ URLEncoder.encode(directConnect+"", enc);
-		
+
 		int isCustomDirectConnect = 0;
 		if(group.isCustomDirectConnect()) {
 			isCustomDirectConnect = 1;
 		}
 		paraString += "&" + URLEncoder.encode("isCustomDirectConnect", enc) + "="
 			+ URLEncoder.encode(isCustomDirectConnect+"", enc);
-		
+
 		int isCustomForwarding = 0;
 		if(group.isCustomForwarding()) {
 			isCustomForwarding = 1;
 		}
 		paraString += "&" + URLEncoder.encode("isCustomForwarding", enc) + "="
 			+ URLEncoder.encode(isCustomForwarding+"", enc);
-		
+
 		paraString += "&" + URLEncoder.encode("id", enc) + "="
 			+ URLEncoder.encode(group.getId(), enc);
-		
+
 		paraString += "&" + URLEncoder.encode("_rnr_se", enc) + "="
 				+ URLEncoder.encode(rnrSEE, enc);
 
@@ -1675,7 +1668,7 @@ public class Voice {
 		}
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader callrd = new BufferedReader(isr);
-		
+
 		String line;
 		while ((line = callrd.readLine()) != null) {
 			out += line + "\n\r";
@@ -1687,7 +1680,7 @@ public class Voice {
 		if (out.equals("")) {
 			throw new IOException("No Response Data Received.");
 		}
-		
+
 		if(PRINT_TO_CONSOLE) System.out.println(out);
 
 		return out;
@@ -1719,7 +1712,7 @@ public class Voice {
 		smsdata += "&" + URLEncoder.encode("_rnr_se", enc) + "="
 				+ URLEncoder.encode(rnrSEE, enc);
 		System.out.println("smsdata: "+smsdata);
-		
+
 		URL smsurl = new URL("https://www.google.com/voice/b/0/sms/send/");
 
 		URLConnection smsconn = smsurl.openConnection();
@@ -1753,8 +1746,8 @@ public class Voice {
 
 		return out;
 	}
-	
-	
+
+
 	/**
 	 * Send an SMS.
 	 *
@@ -1766,13 +1759,13 @@ public class Voice {
 	 */
 	public String sendSMS(String destinationNumber, String txt, SMSThread thread)
 			throws IOException {
-		
+
 		String id = thread.getId();
 		return sendSMS(destinationNumber,txt,id);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Send an SMS.
 	 *
@@ -1826,11 +1819,11 @@ public class Voice {
 
 		return out;
 	}
-	
+
 
 	/**
 	 * HTTP GET request for a given URL String.
-	 * 
+	 *
 	 * @param urlString
 	 *            the url string
 	 * @return the string
@@ -1874,16 +1867,16 @@ public class Voice {
 			is = conn.getErrorStream();
 		}
 		redirectCounter = 0;
-		
+
 		if(is==null) {
 			throw new IOException(urlString + " : " + conn.getResponseMessage() + "("+responseCode+") : InputStream was null : exiting.");
 		}
-		
+
 		String result="";
 		try {
 			// Get the response
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			
+
 			StringBuffer sb = new StringBuffer();
 			String line;
 			while ((line = rd.readLine()) != null) {
@@ -1896,8 +1889,8 @@ public class Voice {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * HTTP GET request for a given URL String and a given page number.
 	 *
@@ -1930,19 +1923,19 @@ public class Voice {
 
 		return result;
 	}
-	
+
 	/**
 	 * Login Method to refresh authentication with Google Voice.
-	 * 
+	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void login()  throws IOException {
 		login(null,null);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Use this login method to login - use captchaAnswer to answer a captcha challenge
 	 * @param pCaptchaAnswer (optional) String entered by the user as an answer to a CAPTCHA challenge. - null to make a normal login attempt
@@ -1975,7 +1968,7 @@ public class Voice {
 		.setRequestProperty(
 				"User-agent",
 				USER_AGENT);
-		
+
 		conn.setDoOutput(true);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		wr.write(data);
@@ -1996,12 +1989,12 @@ public class Voice {
 		BufferedReader rd = new BufferedReader(isr);
 		String line;
 		String completelineDebug="";
-		
+
 		/*
-		 * A failure response contains an error code and a URL to an error page that can be displayed to the user. 
-		 * If the error code is a CAPTCHA challenge, the response also includes a URL to a CAPTCHA image and a special 
-		 * token. Your application should be able to solicit an answer from the user and then retry the login request. 
-		 * To display the CAPTCHA image to the user, prefix the CaptchaUrl value with "http://www.google.com/accounts/", 
+		 * A failure response contains an error code and a URL to an error page that can be displayed to the user.
+		 * If the error code is a CAPTCHA challenge, the response also includes a URL to a CAPTCHA image and a special
+		 * token. Your application should be able to solicit an answer from the user and then retry the login request.
+		 * To display the CAPTCHA image to the user, prefix the CaptchaUrl value with "http://www.google.com/accounts/",
 		 * for example: " http://www.google.com/accounts/Captcha?ctoken=HiteT4b0Bk5Xg18_AcVoP6-yFkHPibe7O9EqxeiI7lUSN".
 		 */
 		String lErrorString = "Unknown Connection Error."; // ex: Error=CaptchaRequired
@@ -2020,20 +2013,20 @@ public class Voice {
 				error = ERROR_CODE.valueOf(lErrorString);
 				if (PRINT_TO_CONSOLE)
 					System.out.println("Login error - "+lErrorString);
-				
-				
+
+
 			}
 			if (line.contains("CaptchaToken=")) {
 				captchaToken = line.split("=", 2)[1].trim();
-			} 
-			
+			}
+
 			if (line.contains("CaptchaUrl=")) {
 				captchaUrl = "http://www.google.com/accounts/" + line.split("=", 2)[1].trim();
 			}
 			if (line.contains("Url=")) {
 				captchaUrl2 = line.split("=", 2)[1].trim();
 			}
-			
+
 
 		}
 		wr.close();
@@ -2042,11 +2035,11 @@ public class Voice {
 //		if (PRINT_TO_CONSOLE){
 //			System.out.println(completelineDebug);
 //		}
-		
+
 		if (this.authToken == null) {
 			AuthenticationException.throwProperException(error, captchaToken, captchaUrl);
 		}
-		
+
 		String response = this.getRawPhonesInfo();
 		int phoneIndex = response.indexOf("gc-user-number-value\">");
 		this.phoneNumber = response.substring(phoneIndex + 22, phoneIndex + 36);
@@ -2082,7 +2075,7 @@ public class Voice {
 			return ERROR_CODE.Unknown;
 		}
 	}
-	
+
 	/**
 	 * Gets the error.
 	 *
@@ -2092,7 +2085,7 @@ public class Voice {
 	public ERROR_CODE getError() {
 		return error;
 	}
-	
+
 	/**
 	 * Gets the captcha url.
 	 *
@@ -2101,7 +2094,7 @@ public class Voice {
 	public String getCaptchaUrl() {
 		return captchaUrl;
 	}
-	
+
 	/**
 	 * Gets the captcha token.
 	 *
@@ -2116,11 +2109,11 @@ public class Voice {
 	 * authentication or if an exception is thrown, a false is returned,
 	 * otherwise if arbitrary text is contained for a logged in account, a true
 	 * is returned.
-	 * 
-	 *TODO Examine methodology. Perhaps Could Establish greater persistence with 
+	 *
+	 *TODO Examine methodology. Perhaps Could Establish greater persistence with
 	 *an option to force an update.  Currently this is an expensive
 	 *and slow method.
-	 * 
+	 *
 	 * @return true, if is logged in
 	 */
 	public boolean isLoggedIn() {
@@ -2142,5 +2135,5 @@ public class Voice {
 			}
 		}
 		return false;
-	}	
+	}
 }

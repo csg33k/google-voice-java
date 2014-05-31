@@ -5,20 +5,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import gvjava.org.json.JSONArray;
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
 
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.techventus.server.voice.util.ParsingUtil;
+import org.apache.commons.lang.NotImplementedException;
 
 /**
- * 
- * 
+ *
+ *
  * @author Tobias Eisentraeger
  *
  */
 public class Group {
-	
+	private Gson gson = new Gson();
+
 	private boolean saveMode = true;
 	private String id;
 	private String name;
@@ -29,7 +33,7 @@ public class Group {
 	private boolean directConnect;
 	private boolean isCustomGreeting;
 	private int greetingId;
-	
+
 	public Group(String id, String name, boolean isCustomForwarding,
 			List<DisabledForwardingId> disabledForwardingIds,
 			boolean isCustomDirectConnect, boolean directConnect,
@@ -44,7 +48,7 @@ public class Group {
 		this.isCustomGreeting = isCustomGreeting;
 		this.greetingId = greetingId;
 	}
-	
+
 	public Group(String id, String name, boolean isCustomForwarding,
 			DisabledForwardingId[] disabledForwardingIdsNeu,
 			boolean isCustomDirectConnect, boolean directConnect,
@@ -59,21 +63,20 @@ public class Group {
 		this.isCustomGreeting = isCustomGreeting;
 		this.greetingId = greetingId;
 	}
-	
+
 	/**
 	 * @param jsonObject
-	 * @throws JSONException 
 	 */
-	public Group(JSONObject jsonObject) throws JSONException {
-		if(!saveMode || saveMode && jsonObject.has("id")) id = jsonObject.getString("id");
-		if(!saveMode || saveMode && jsonObject.has("name")) name = jsonObject.getString("name");
-		if(!saveMode || saveMode && jsonObject.has("isCustomForwarding")) isCustomForwarding = jsonObject.getBoolean("isCustomForwarding");
-		if(!saveMode || saveMode && jsonObject.has("isCustomGreeting")) isCustomGreeting = jsonObject.getBoolean("isCustomGreeting");
-		if(!saveMode || saveMode && jsonObject.has("isCustomDirectConnect")) isCustomDirectConnect = jsonObject.getBoolean("isCustomDirectConnect");
-		if(!saveMode || saveMode && jsonObject.has("directConnect")) directConnect = jsonObject.getBoolean("directConnect");
-		if(!saveMode || saveMode && jsonObject.has("greetingId")) greetingId = jsonObject.getInt("greetingId");
+	public Group(JsonObject jsonObject)  {
+		if(!saveMode || saveMode && jsonObject.has("id")) id = jsonObject.get("id").getAsString();
+		if(!saveMode || saveMode && jsonObject.has("name")) name = jsonObject.get("name").getAsString();
+		if(!saveMode || saveMode && jsonObject.has("isCustomForwarding")) isCustomForwarding = jsonObject.get("isCustomForwarding").getAsBoolean();
+		if(!saveMode || saveMode && jsonObject.has("isCustomGreeting")) isCustomGreeting = jsonObject.get("isCustomGreeting").getAsBoolean();
+		if(!saveMode || saveMode && jsonObject.has("isCustomDirectConnect")) isCustomDirectConnect = jsonObject.get("isCustomDirectConnect").getAsBoolean();
+		if(!saveMode || saveMode && jsonObject.has("directConnect")) directConnect = jsonObject.get("directConnect").getAsBoolean();
+		if(!saveMode || saveMode && jsonObject.has("greetingId")) greetingId = jsonObject.get("greetingId").getAsInt();
 		if(!saveMode || saveMode && jsonObject.has("disabledForwardingIds")) {
-			JSONObject disabledForwardingIdsObject = jsonObject.getJSONObject("disabledForwardingIds");
+			JsonElement disabledForwardingIdsObject = jsonObject.get("disabledForwardingIds");
 			disabledForwardingIds = DisabledForwardingId.createDisabledForwardingIdListFromJsonPartResponse(disabledForwardingIdsObject.toString());
 		}
 	}
@@ -84,10 +87,10 @@ public class Group {
 	 */
 	public final static List<Group> createGroupSettingsFromJsonResponse(String json) {
 		List<Group> result = new ArrayList<Group>();
-		
+
 		json = ParsingUtil.removeUninterestingParts(json, "\"groups\":{", ",\"groupList\"", false);
 		json = json.replaceAll("\\},\"isCustomForwarding\"", "!,\"isCustomForwarding\"");
-		
+
 		String[] groupsStrings = json.split(Pattern.quote("},"));
 
 		for (int i = 0; i < groupsStrings.length; i++) {
@@ -99,19 +102,19 @@ public class Group {
 			boolean directConnect 			= Boolean.parseBoolean(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"directConnect\":", ",", false));
 			int greetingId 					= Integer.parseInt(ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"greetingId\":", ",", false));
 			String disabledForwardingIdsStr	= ParsingUtil.removeUninterestingParts(groupsStrings[i], "\"disabledForwardingIds\":{", "!,\"", false);
-			
+
 			List<DisabledForwardingId> disabledForwardingIds = new ArrayList<DisabledForwardingId>();
 			if(disabledForwardingIdsStr!=null &! disabledForwardingIdsStr.equals("")) {
 				disabledForwardingIds = DisabledForwardingId.createDisabledForwardingIdListFromJsonPartResponse(disabledForwardingIdsStr);
 			}
-			
+
 			result.add(new Group(id, name, isCustomForwarding, disabledForwardingIds, isCustomDirectConnect, directConnect, isCustomGreeting, greetingId));
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -122,32 +125,18 @@ public class Group {
 		ret+="name="+name+";";
 		ret+="isCustomDirectConnect="+isCustomDirectConnect+";";
 		ret+="directConnect="+directConnect+";";
-		ret+="isCustomGreeting="+isCustomGreeting+";";	
+		ret+="isCustomGreeting="+isCustomGreeting+";";
 		ret+="isCustomForwarding="+isCustomForwarding+";";
 		ret+="greetingId="+greetingId+";";
 		ret+="disabledForwardingIds="+disabledForwardingIds+"}";
 		return ret;
 	}
-	public String toJson(){	
-		return toJsonObject().toString();
+	public String toJson(){
+		return gson.toJson(this);
 	}
-	
-	public JSONObject toJsonObject(){
-		JSONObject resultO = new JSONObject();
-		try { 		
-			resultO.putOpt("id", id);
-			resultO.putOpt("name", name);
-			resultO.putOpt("isCustomForwarding", isCustomForwarding);
-		   	resultO.accumulate("disabledForwardingIds", DisabledForwardingId.arrayToJsonObject(disabledForwardingIds)); 
-		   	resultO.putOpt("isCustomDirectConnect", isCustomDirectConnect);
-		   	resultO.putOpt("directConnect", directConnect);
-		   	resultO.putOpt("greetingId", greetingId);
-		   	resultO.putOpt("isCustomGreeting", isCustomGreeting);
-		} catch (JSONException e) {
-			return null;
-		}
-		
-		return resultO;
+
+	public JsonObject toJsonObject(){
+		return gson.toJsonTree(this).getAsJsonObject();
 	}
 	/*
 	public String toJson(){
@@ -240,8 +229,8 @@ public class Group {
 	public boolean isCustomGreeting() {
 		return isCustomGreeting;
 	}
-	
-	
+
+
 
 	/**
 	 * @return the greetingId
@@ -308,34 +297,39 @@ public class Group {
 	}
 
 
-	//TODO dotn create list first, direct transform
-	public final static Group[] createArrayFromJsonObject(JSONObject groupsJSON) throws JSONException { 
-		JSONArray groupNames = groupsJSON.names();
-		Group[] result = new Group[groupsJSON.length()];
-		for (int i = 0; i < groupNames.length(); i++) {
-			result[i] = new Group(groupsJSON.getJSONObject(groupNames.getString(i)));
+	public static Group[] createArrayFromJsonObject(JsonElement groupsJSON) {
+		List<String> names = ParsingUtil.names(groupsJSON.getAsJsonObject());
+		List<Group> groups = Lists.newArrayList();
+
+		for(String name : names) {
+			JsonElement element = groupsJSON.getAsJsonObject().get(name);
+			groups.add(new Group(element.getAsJsonObject()));
+
 		}
-		return result;
+		return groups.toArray(new Group[0]);
+
 	}
-	
-	public final static JSONObject[] createJSONObjectArrayFromJsonObject(JSONObject settingsJSON) throws JSONException { 
-		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
-		JSONObject[] result = new JSONObject[lGroupsArray.length];
-		for (int i = 0; i < lGroupsArray.length; i++) {
-			result[i] = new JSONObject();
-			result[i].put(lGroupsArray[i].getId(), lGroupsArray[i]);
-		}
-		return result;
+
+	public final static JsonObject[] createJSONObjectArrayFromJsonObject(JsonObject settingsJSON)  {
+//		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
+//		JsonObject[] result = new JsonObject[lGroupsArray.length];
+//		for (int i = 0; i < lGroupsArray.length; i++) {
+//			result[i] = new JsonObject();
+//			result[i].put(lGroupsArray[i].getId(), lGroupsArray[i]);
+//		}
+//		return result;
+		throw new NotImplementedException();
 	}
-	
-	public final static JSONObject createJSONObjectFromJsonObject(JSONObject settingsJSON) throws JSONException { 
-		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
-		JSONObject result = new JSONObject();
-		for (int i = 0; i < lGroupsArray.length; i++) {
-			result = new JSONObject();
-			result.put(lGroupsArray[i].getId(), lGroupsArray[i]);
-		}
-		return result;
+
+	public final static JsonObject createJSONObjectFromJsonObject(JsonObject settingsJSON) {
+//		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
+//		JSONObject result = new JSONObject();
+//		for (int i = 0; i < lGroupsArray.length; i++) {
+//			result = new JSONObject();
+//			result.put(lGroupsArray[i].getId(), lGroupsArray[i]);
+//		}
+//		return result;
+		throw new NotImplementedException();
 	}
 
 	/**
@@ -343,14 +337,10 @@ public class Group {
 	 *
 	 * @param groups the groups
 	 * @return the object
-	 * @throws JSONException the jSON exception
 	 */
-	public static Object groupsArrayToJsonObject(Group[] groups) throws JSONException {
-		JSONObject groupO = new JSONObject();
-		for (int i = 0; i < groups.length; i++) {
-			groupO.put(groups[i].getId()+"",groups[i].toJsonObject());
-		}
-		return groupO;
+	public static JsonObject groupsArrayToJsonObject(Group[] groups) {
+		Gson gson = new Gson();
+		return gson.toJsonTree(groups).getAsJsonObject();
 	}
 
 	/**
@@ -377,5 +367,5 @@ public class Group {
  		}
  		return ret;
    	}
-		
+
 }
