@@ -1,7 +1,6 @@
 package test.datatypes;
 
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,6 +8,7 @@ import com.techventus.server.voice.datatypes.Phone;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +32,7 @@ public class PhoneTest {
 
 	@Before
 	public void setUp() {
-		Map map = Maps.newHashMap();
+		Map map = new HashMap<>();
 
 		map.put("id", 2);
 		map.put("name", "testPhone1");

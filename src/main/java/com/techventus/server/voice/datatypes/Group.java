@@ -6,13 +6,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.techventus.server.voice.util.ParsingUtil;
-import org.apache.commons.lang.NotImplementedException;
 
 /**
  *
@@ -299,7 +296,7 @@ public class Group {
 
 	public static Group[] createArrayFromJsonObject(JsonElement groupsJSON) {
 		List<String> names = ParsingUtil.names(groupsJSON.getAsJsonObject());
-		List<Group> groups = Lists.newArrayList();
+		List<Group> groups = new ArrayList<>();
 
 		for(String name : names) {
 			JsonElement element = groupsJSON.getAsJsonObject().get(name);
@@ -308,28 +305,6 @@ public class Group {
 		}
 		return groups.toArray(new Group[0]);
 
-	}
-
-	public final static JsonObject[] createJSONObjectArrayFromJsonObject(JsonObject settingsJSON)  {
-//		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
-//		JsonObject[] result = new JsonObject[lGroupsArray.length];
-//		for (int i = 0; i < lGroupsArray.length; i++) {
-//			result[i] = new JsonObject();
-//			result[i].put(lGroupsArray[i].getId(), lGroupsArray[i]);
-//		}
-//		return result;
-		throw new NotImplementedException();
-	}
-
-	public final static JsonObject createJSONObjectFromJsonObject(JsonObject settingsJSON) {
-//		Group[] lGroupsArray = Group.createArrayFromJsonObject(settingsJSON);
-//		JSONObject result = new JSONObject();
-//		for (int i = 0; i < lGroupsArray.length; i++) {
-//			result = new JSONObject();
-//			result.put(lGroupsArray[i].getId(), lGroupsArray[i]);
-//		}
-//		return result;
-		throw new NotImplementedException();
 	}
 
 	/**

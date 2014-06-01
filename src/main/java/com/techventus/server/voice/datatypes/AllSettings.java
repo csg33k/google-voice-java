@@ -2,11 +2,10 @@ package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -19,7 +18,6 @@ public class AllSettings{
    	private Setting settings;
 
 
-	@VisibleForTesting
 	public AllSettings(JsonObject jsonObject) {
 	   	phoneList = ParsingUtil.jsonIntArrayToIntArray(jsonObject.get("phoneList").getAsJsonArray());
 
@@ -42,7 +40,7 @@ public class AllSettings{
    	}
 
    	public JsonObject toJsonObject() {
-	    Map map = Maps.newHashMap();
+	    Map map = new HashMap<>();
 
 	    if(phoneList != null)
 		    map.put("phoneList", phoneList);

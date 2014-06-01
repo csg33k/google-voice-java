@@ -2,13 +2,12 @@
 package com.techventus.server.voice.datatypes;
 
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.techventus.server.voice.util.ParsingUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -140,7 +139,7 @@ public class Phone implements Comparable<Phone>{
 	 * @return Json Object
 	 */
 	public static Object phonesArrayToJsonObject(Phone[] phones) {
-		Map<String, Phone> map = Maps.newHashMap();
+		Map<String, Phone> map = new HashMap<>();
 		Gson lgson = new Gson();
 
 		for (Phone phone : phones) {

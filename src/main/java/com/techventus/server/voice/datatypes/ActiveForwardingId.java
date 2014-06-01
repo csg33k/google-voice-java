@@ -5,21 +5,16 @@ package com.techventus.server.voice.datatypes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import com.techventus.server.voice.util.ParsingUtil;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
  */
 public class ActiveForwardingId {
-	private Gson gson = new Gson();
 	String id;
 	boolean disabled;
 
@@ -35,12 +30,12 @@ public class ActiveForwardingId {
 	public final static List<ActiveForwardingId> createActiveForwardingIdListFromJsonPartResponse(String jsonPart){
 		//TODO do with json parser
 		List<ActiveForwardingId> activeForwardingIds = new ArrayList<>();
-		if(StringUtils.isNotEmpty(jsonPart)) {
+		if(!ParsingUtil.isJsonEmpty(jsonPart)) {
 			jsonPart = jsonPart.replaceAll(",\"", ",#");
 			String[] activeForwardingIdsStrings = jsonPart.split(Pattern.quote(","));
-			for (int j = 0; j < activeForwardingIdsStrings.length; j++) {
-				String gId = ParsingUtil.removeUninterestingParts(activeForwardingIdsStrings[j], "\"", "\"", false);
-				boolean gState = Boolean.parseBoolean(activeForwardingIdsStrings[j].substring(activeForwardingIdsStrings[j].indexOf(":")+1));
+			for (String activeForwardingIdsString : activeForwardingIdsStrings) {
+				String gId = ParsingUtil.removeUninterestingParts(activeForwardingIdsString, "\"", "\"", false);
+				boolean gState = Boolean.parseBoolean(activeForwardingIdsString.substring(activeForwardingIdsString.indexOf(":") + 1));
 				activeForwardingIds.add(new ActiveForwardingId(gId, gState));
 			}
 		}

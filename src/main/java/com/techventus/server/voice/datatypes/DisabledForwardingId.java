@@ -3,14 +3,13 @@
  */
 package com.techventus.server.voice.datatypes;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.techventus.server.voice.util.ParsingUtil;
-import sun.net.www.ParseUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +34,9 @@ public class DisabledForwardingId {
 	}
 	public static List<DisabledForwardingId> createDisabledForwardingIdListFromJsonPartResponse(String jsonPart) {
 		if(ParsingUtil.isJsonEmpty(jsonPart))
-			return ImmutableList.of();
+			return Collections.EMPTY_LIST;
 
-		List<DisabledForwardingId> disabledForwardingIds = Lists.newArrayList();
+		List<DisabledForwardingId> disabledForwardingIds = new ArrayList<>();
 		try {
 			Gson gson = new Gson();
 			String[] ids = gson.fromJson(jsonPart, String[].class);
@@ -70,7 +69,7 @@ public class DisabledForwardingId {
 
 	// needs to be {"2": true,"3": true}
 	public static Object arrayToJsonObject(List<DisabledForwardingId> disabledForwardingIds) {
-		Map<String, Boolean> map = Maps.newHashMap();
+		Map<String, Boolean> map = new HashMap<>();
 		for (int i = 0; i < disabledForwardingIds.size(); i++) {
 			map.put(disabledForwardingIds.get(i).getId()+"",disabledForwardingIds.get(i).isDisabled());
 		}

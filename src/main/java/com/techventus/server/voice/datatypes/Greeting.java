@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -79,7 +78,7 @@ public class Greeting implements Comparable<Greeting> {
         ],
 	 */
 	public static List<Greeting> createListFromJsonObject(JsonObject settingsJSON) throws IllegalStateException {
-		List<Greeting> greetingss = Lists.newArrayList();
+		List<Greeting> greetingss = new ArrayList<>();
 		if(settingsJSON.has("greetings")) {
 			JsonElement greetingObject = settingsJSON.get("greetings");
 

@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Collection of useful html parsing methods
@@ -86,7 +83,7 @@ public abstract class ParsingUtil {
 	}
 
 	public static boolean isJsonEmpty(String value) {
-		return StringUtils.isEmpty(value) || "{}".equals(value);
+		return value == null || value.length() == 0 || "{}".equals(value);
 	}
 
 	/**
@@ -107,7 +104,7 @@ public abstract class ParsingUtil {
 	public static List<String> names(JsonObject object) {
 
 		Set<Map.Entry<String, JsonElement>> set = object.entrySet();
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<>();
 		for(Map.Entry<String, JsonElement> entry : set) {
 			list.add(entry.getKey());
 		}
