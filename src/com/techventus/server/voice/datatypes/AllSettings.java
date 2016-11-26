@@ -38,7 +38,7 @@ public class AllSettings{
    	 *
    	 * Query disabled status - if id not found, then it returned false, which normally means enabled.
    	 * @param phoneId
-   	 * @return
+   	 * @return true if the Phone is Disabled. Otherwise it return false.
    	 */
    	public boolean isPhoneDisabled(int phoneId) {
    		boolean ret = false;
@@ -58,6 +58,58 @@ public class AllSettings{
  		}
  		return ret;
    	}
+   	
+   	public void setPhoneDisabled(int phoneId) {
+   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
+			if(lDisId.getId().equals(phoneId+"")) {
+				lDisId.setDisabled(true);
+				return;
+			}
+		}
+   		// if not in array we create a new one
+   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];	
+   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+		}
+   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", true);
+   		settings.setmDisabledIdList(lNewDisabledList);
+   	}
+   	
+	public void setPhoneEnabled(int phoneId) {
+   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
+			if(lDisId.getId().equals(phoneId+"")) {
+				lDisId.setDisabled(false);
+				return;
+			}
+		}
+   		// if not in array we create a new one
+   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];
+   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+		}
+   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", false);
+   		settings.setmDisabledIdList(lNewDisabledList);
+   	}
+	
+	/**
+  	 *
+  	 * Query smsEnabled status - if id not found, then it returnes false
+  	 * @param phoneId
+  	 * @return true if the Phone is smsEnabled. Otherwise it returns false.
+  	 */
+  	public boolean isPhoneSmsEnabled(int phoneId) {
+  		boolean ret = false;
+  		try {
+			for (int i = 0; i < phones.length; i++) {
+				if(phones[i].getId() == phoneId) {
+					ret = phones[i].getSmsEnabled();
+				}
+			}
+		} catch (NullPointerException e) {
+			ret = false;
+		}
+		return ret;
+  	}
 
 	/**
 	 * @return the phoneList

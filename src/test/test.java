@@ -6,19 +6,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import gvjava.org.json.JSONException;
 import gvjava.org.json.JSONObject;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.AllSettings;
+import com.techventus.server.voice.datatypes.Contact;
 import com.techventus.server.voice.datatypes.DisabledForwardingId;
 import com.techventus.server.voice.datatypes.Group;
 import com.techventus.server.voice.datatypes.Phone;
 import com.techventus.server.voice.datatypes.Greeting;
+import com.techventus.server.voice.datatypes.records.SMS;
+import com.techventus.server.voice.datatypes.records.SMSThread;
 import com.techventus.server.voice.exception.CaptchaRequiredException;
 import com.techventus.server.voice.util.ParsingUtil;
 
@@ -109,7 +114,7 @@ public class test {
 	 */
 	private static void listTests() {
 		System.out.println("Availible Tests for "+userName);
-		System.out.println("0: Exit");  
+		System.out.println("0: Exit (or any other invalid entry)");  
 		System.out.println("1: Multi phone enable / disable");
 		System.out.println("2: Inbox paging");
 		System.out.println("3: Call Announcement Settings (Presentation)");
@@ -125,6 +130,12 @@ public class test {
 		System.out.println("13: List Default Phones and Enabled/Disabled Setting");
 		System.out.println("14: Send SMS");
 		System.out.println("15: Captcha Test");
+		System.out.println("16: List SMS");
+		System.out.println("17. List Unread Conversations. Mark Selected Conversations as Read.");
+		System.out.println("18. List Starred Conversations. ");
+		System.out.println("19. View SMSThread Info");
+		System.out.println("20. SMS to Existing Conversation");
+		System.out.println("21. Phone SMS enable/disable");
 		
 		int testNr = 0;
 		try {
@@ -157,68 +168,73 @@ public class test {
 
 					switch (testNr) {
 						case 1: // 1: Multi phone enable / disable 
-							System.out.println("******** Starting Test "+testNr+" ********");
-							Phone[] phones = voice.getSettings(false).getPhones();
-							// create int Array from all phone ids
-							int[] phonesToChangeStatus = new int[phones.length];
-							
-							System.out.println("Current phone status:");
-							for (int j = 0; j < phones.length; j++) {
-								phonesToChangeStatus[j] = phones[j].getId();
-								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
+							{
+								System.out.println("******** Starting Test "+testNr+" ********");
+								Phone[] phones = voice.getSettings(false).getPhones();
+								// create int Array from all phone ids
+								int[] phonesToChangeStatus = new int[phones.length];
+								
+								System.out.println("Current phone status:");
+								for (int j = 0; j < phones.length; j++) {
+									phonesToChangeStatus[j] = phones[j].getId();
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
+								}
+								
+								//Disable all phones
+								for (int j = 0; j < phones.length; j++) {
+									voice.phoneDisable(phones[j].getId());
+								}
+								
+								
+								phones = voice.getSettings(true).getPhones();
+								// Output
+								System.out.println("After deactivate multi:");
+								for (int j = 0; j < phones.length; j++) {
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
+								}
+								
+								//Enable all phones 
+								for (int j = 0; j < phones.length; j++) {
+									voice.phoneEnable(phones[j].getId());
+								}
+								
+								// Output
+								phones = voice.getSettings(true).getPhones();
+								System.out.println("After activate multi:");
+								for (int j = 0; j < phones.length; j++) {
+									System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()) );
+								}
+								
+								System.out.println("******** Finished Test "+testNr+" ********");
 							}
-							
-							//Disable all phones
-							for (int j = 0; j < phones.length; j++) {
-								voice.phoneDisable(phones[j].getId());
-							}
-							
-							
-							phones = voice.getSettings(true).getPhones();
-							// Output
-							System.out.println("After deactivate multi:");
-							for (int j = 0; j < phones.length; j++) {
-								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
-							}
-							
-							//Enable all phones 
-							for (int j = 0; j < phones.length; j++) {
-								voice.phoneEnable(phones[j].getId());
-							}
-							
-							// Output
-							phones = voice.getSettings(true).getPhones();
-							System.out.println("After activate multi:");
-							for (int j = 0; j < phones.length; j++) {
-								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + !voice.getSettings(false).isPhoneDisabled(phones[j].getId()));
-							}
-							
-							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
 						case 2: // 2: Inbox paging
-							System.out.println("******** Starting Test "+testNr+" ********");
-//							Thread.sleep(2000);
-							System.out.println(voice.getInboxPage(1000));
-							System.out.println("******** Finished Test "+testNr+" ********");
+							{
+								System.out.println("******** Starting Test "+testNr+" ********");
+								System.out.println(voice.getInboxPage(1000));
+								System.out.println("******** Finished Test "+testNr+" ********");
+							}
 							break;
 							
 						case 3: // 3: Call Announcement settings (Presentation)
-							System.out.println("******** Starting Test "+testNr+" ********");
-							System.out.println("Type 'true' for enable, 'false' for disable");
-							boolean choice = false;
-							try {
-								choice = Boolean.parseBoolean(br.readLine());
-							} catch (Exception e) {
-								System.out.println("Error trying to read the choice!"+e.getMessage());
-								System.exit(1);
+							{
+								System.out.println("******** Starting Test "+testNr+" ********");
+								System.out.println("Type 'true' for enable, 'false' for disable");
+								boolean choice = false;
+								try {
+									choice = Boolean.parseBoolean(br.readLine());
+								} catch (Exception e) {
+									System.out.println("Error trying to read the choice!"+e.getMessage());
+									System.exit(1);
+								}
+	//							Thread.sleep(2000);
+								System.out.println(voice.setCallPresentation(choice));
+								System.out.println("******** Finished Test "+testNr+" ********");
+								break;
 							}
-//							Thread.sleep(2000);
-							System.out.println(voice.setCallPresentation(choice));
-							System.out.println("******** Finished Test "+testNr+" ********");
-							break;
-							
 						case 4: // 4: Caller ID in
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							for (Iterator<Greeting> iterator = voice.getVoicemailList(true).iterator(); iterator.hasNext();) {
 								Greeting type = (Greeting) iterator.next();
@@ -236,8 +252,9 @@ public class test {
 							voice.setVoicemailGreetingId(voicemailNr);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 5: // 5: Do not disturb
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							System.out.println("Type 'true' for enable, 'false' for disable");
 							boolean dndChoice = false;
@@ -250,8 +267,9 @@ public class test {
 							voice.setDoNotDisturb(dndChoice);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 6: // 6: Group settings
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							Group[] groups1 = voice.getSettings(false).getSettings().getGroups();
 							String jsonGroups="";
@@ -261,20 +279,23 @@ public class test {
 							System.out.println("All to json:"+jsonGroups);
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 7: // 7: Read all settings - cached
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							System.out.println(voice.getSettings(false).getSettings().toJson());
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 8: // 8: Read all settings - uncached
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							System.out.println(voice.getSettings(true).getSettings().toJson());
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 9: // 9: Read all settings - pure json driven
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							try {
 								System.out.println("******** Original JSON Data ********");
@@ -294,28 +315,29 @@ public class test {
 							}
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 10: // 10: Read all settings - pure json driven - account data
 							System.out.println("******** Starting Test "+testNr+" ********");
-							try {
-								System.out.println("******** Original JSON Data ********");
-								String lJson = ParsingUtil.removeUninterestingParts(voice.getONLYFORTEST("https://www.google.com/voice/settings/tab/groups"), "<json><![CDATA[", "]]></json>", false);
-								JSONObject origSettings = new JSONObject(lJson);
-								System.out.println(origSettings.toString(4));
-								
-								System.out.println("******* JsonObject from AllSettings ******");
-								AllSettings settings2 = new AllSettings(lJson);
-								JSONObject objFromAllSettings = settings2.toJsonObject();
-								System.out.println(objFromAllSettings.toString(4));
-								
-								System.out.println("******* Creating new AllSettings from old JSON ******");
-								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
-								System.out.println(settings3.toJsonObject().toString(4));
-								
-							} catch (JSONException e) {
-								System.out.println("Error displaying json:"+e.getLocalizedMessage());
-								e.printStackTrace();
-							}
+//							try {
+								System.out.println("******** Test REMOVED FOR NOW ********");
+//								System.out.println("******** Original JSON Data ********");
+//								String lJson = ParsingUtil.removeUninterestingParts(voice.getONLYFORTEST("https://www.google.com/voice/settings/tab/groups"), "<json><![CDATA[", "]]></json>", false);
+//								JSONObject origSettings = new JSONObject(lJson);
+//								System.out.println(origSettings.toString(4));
+//								
+//								System.out.println("******* JsonObject from AllSettings ******");
+//								AllSettings settings2 = new AllSettings(lJson);
+//								JSONObject objFromAllSettings = settings2.toJsonObject();
+//								System.out.println(objFromAllSettings.toString(4));
+//								
+//								System.out.println("******* Creating new AllSettings from old JSON ******");
+//								AllSettings settings3 = new AllSettings(objFromAllSettings.toString());
+//								System.out.println(settings3.toJsonObject().toString(4));
+//								
+//							} catch (JSONException e) {
+//								System.out.println("Error displaying json:"+e.getLocalizedMessage());
+//								e.printStackTrace();
+//							}
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
 							
@@ -374,6 +396,7 @@ public class test {
 							break;
 							
 						case 12: // 12: Group isPhoneEnabled Tests
+						{
 							System.out.println("******** Starting Test "+testNr+" ********");
 							try {
 								AllSettings settings3 = voice.getSettings(true);
@@ -392,8 +415,9 @@ public class test {
 							}
 							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
-							
+						}
 						case 13: // 13: List Default Phones and Enabled/Disabled Setting
+						{
 							System.out.println("*********Starting Test "+testNr+" *******");
 							
 							AllSettings settings3 = voice.getSettings(true);
@@ -417,16 +441,21 @@ public class test {
 //							
 //							settings3.getSettings().getGroups()[0].
 //							}
+							System.out.println("******** Finished Test "+testNr+" ********");
+							
 							break;
-						
+						}
 						case 14:
+						{
 							System.out.println("*********Starting Test "+testNr+" SEND SMS*******");
 							System.out.println("\n\rEnter Number to Send SMS:");
 							String number = br.readLine();
 							System.out.println("Enter Message:");
 							String txt = br.readLine();
 							voice.sendSMS(number, txt);
+							System.out.println("******** Finished Test "+testNr+" ********");
 							break;
+						}
 						case 15: // 15: Captcha Test
 							System.out.println("*********Starting Test "+testNr+" *******");
 							System.out.println("Enter Fake Password:");
@@ -454,76 +483,226 @@ public class test {
 									tryAgain = false;
 								} catch (IOException e) {
 									System.out.println("IO error creating voice! - "+e.getLocalizedMessage());
-									
-									//System.out.println("Try Again? (Y/N):");
-									//tryAgain = br.readLine().equalsIgnoreCase("Y");
-									//System.out.println();
 								}
 							
 							}
+							System.out.println("******** Finished Test "+testNr+" ********");
 							
-							
-							
-							
-//							voice = null;
-//							voice = new Voice(userName, tempPass,"GoogleVoiceJavaUnitTests",true,Voice.GOOGLE);
-							
-							System.out.println("");
 							break;
+							
+						case 16:
+							System.out.println("*********Starting Test "+testNr+" LIST SMS *******");
+							String smsString = voice.getSMS();
+							  //remove whitespaces
+							  //StringTokenizer st = new StringTokenizer(smsString," ",false);
+							  //String t="";
+							  //while (st.hasMoreElements()) t += st.nextElement();
+							  //remove newLine
+							  StringTokenizer st2 = new StringTokenizer(smsString,"\n",false);
+							  String t2="";
+							  while (st2.hasMoreElements()) t2 += st2.nextElement();
+							System.out.println(t2);
+							break;
+							
+							
+						case 17:
+							System.out.println("*********Starting Test "+testNr+" List Unread SMS, Mark one as read. *******");
+							
+							Collection<SMSThread> collection = voice.getSMSThreads(voice.getUnreadSMS());
+							
+							int i = 0;
+							
+							for(SMSThread t:collection){
+								System.out.println("index "+i+" id "+t.getId());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								//t.
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i++;
+		
+								
+								
+							}
+							
+							List<SMSThread> smsList = new ArrayList<SMSThread>(collection);
+							try{
+								System.out.println("Please Enter an Integer corresponding to one of the above Indeces to \n\rMark the SMS Conversation as Read");
+								int index = Integer.parseInt(br.readLine());
+								voice.markAsRead(smsList.get(index).getId());
+							}catch(Exception j){
+								System.out.println("Error: Did you enter an invalid Non-Negative Integer?");
+								j.printStackTrace();
+							}
+							
+							break;
+						
+						case 18:
+							System.out.println("*********Starting Test "+testNr+" List Starred Conversations. *******");
+
+							Collection<SMSThread> collection18 = voice.getSMSThreads(voice.getStarred());
+							
+							int i18 = 0;
+							
+							for(SMSThread t:collection18){
+								System.out.println("index "+i18+" id "+t.getId());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								//t.
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i18++;
+		
+								
+								
+							}
+							break;
+							
+						case 19:
+							System.out.println("*********Starting Test "+testNr+" View SMSThread Info. *******");
+							String unreads = voice.getUnreadSMS();
+							Collection<SMSThread> collection19 = voice.getSMSThreads(unreads);
+							
+							int i19 = 0;
+							
+							for(SMSThread t:collection19){
+								System.out.println("index "+i19+" id "+t.getId());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i19++;
+							}
+							
+							
+
+							List<SMSThread> smsList19 = new ArrayList<SMSThread>(collection19);
+							try{
+								System.out.println("Please Enter an Integer corresponding to one of the above Indeces to \n\rView SMS Conversation (SMSThread) Details");
+								int index = Integer.parseInt(br.readLine());
+								System.out.println(smsList19.get(index).toString());
+								//voice.markAsRead(smsList19.get(index).getId());
+							}catch(Exception j){
+								System.out.println("Error: Did you enter an invalid Non-Negative Integer?");
+								j.printStackTrace();
+							}
+							break;
+							
+							
+							
+						case 20:
+							System.out.println("*********Starting Test "+testNr+" Send SMS as Part of Existing Conversation (SMSThread). *******");
+							
+							Collection<SMSThread> collection20 = voice.getSMSThreads(voice.getUnreadSMS());
+							
+							int i20 = 0;
+							
+							for(SMSThread t:collection20){
+								System.out.println("index "+i20+" id "+t.getId());
+								System.out.println(t.getContact().getName());
+								System.out.println(t.getContact().getNumber());
+								Contact cont = t.getContact();
+								//System.out.println(t.getNote());
+								Collection<SMS> allsms = t.getAllSMS();
+								
+								for(SMS smsind:allsms){
+									System.out.println(smsind.getFrom()+" "+smsind.getContent());
+									
+								}
+								System.out.println("Contact Name "+cont.getName());
+								i20++;
+							}
+							
+							
+
+							List<SMSThread> smsList20 = new ArrayList<SMSThread>(collection20);
+							try{
+								System.out.println("Please Enter an Integer corresponding to one of the above Indeces to \n\rAdd to the Conversation:");
+								int index20 = Integer.parseInt(br.readLine());
+								System.out.println("Please Enter an SMS Text:");
+								String txt = br.readLine();
+								
+								String destinationNumber = smsList20.get(index20).getContact().getNumber();
+								
+								voice.sendSMS(destinationNumber, txt, smsList20.get(index20));
+								
+								//voice.markAsRead(smsList19.get(index).getId());
+							}catch(Exception j){
+								System.out.println("Error: Did you enter an invalid Non-Negative Integer?");
+								j.printStackTrace();
+							}
+							break;
+							
+						case 21: // 1: phone smsEnable
+						{
+							System.out.println("******** Starting Test "+testNr+" ********");
+							Phone[] phones = voice.getSettings(false).getPhones();
+							// create int Array from all phone ids
+							int[] phonesToChangeStatus = new int[phones.length];
+							
+							System.out.println("Current phone status:");
+							for (int j = 0; j < phones.length; j++) {
+								phonesToChangeStatus[j] = phones[j].getId();
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("Disable sms all phones:");
+							for (int j = 0; j < phones.length; j++) {
+								voice.setSmsEnabled(false,phones[j].getId());
+							}
+							
+							
+							phones = voice.getSettings(true).getPhones();
+							// Output
+							System.out.println("After deactivate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("Enable sms all phones:");
+							for (int j = 0; j < phones.length; j++) {
+								voice.setSmsEnabled(true,phones[j].getId());
+							}
+							
+							// Output
+							phones = voice.getSettings(true).getPhones();
+							System.out.println("After activate multi:");
+							for (int j = 0; j < phones.length; j++) {
+								System.out.println(phones[j].getName() + " " + phones[j].getId() + " " + " SmsEnabled?="+phones[j].getSmsEnabled());
+							}
+							
+							System.out.println("******** Finished Test "+testNr+" ********");
+						}
+						break;
+							
+							
+							
 						default: 						
 							System.out.println("Test "+testNr+" not found, exiting.");
 							System.exit(1);
 							break;
 					}
 					
-					
-//				Thread.sleep(2000);
-				
-				//System.out.println(voice.getSMS());
-				//System.out.println(voice.getInbox());
-//				System.out.println(voice.getInboxPage(1000));
-				//System.out.println(voice.getInboxPage(100));
-				/*
-				System.out.println(voice.getInbox());
-				Thread.sleep(2000);
-				System.out.println(voice.phoneDisable(6));
-				
-				
-				System.out.println(voice.getInbox());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getMissed());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getPlaced());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getReceived());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				
-				System.out.println("**********************************");
-				System.out.println(voice.getRecorded());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getSMS());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getSpam());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				System.out.println(voice.getStarred());
-				Thread.sleep(2000);
-				System.out.println("**********************************");
-				*/
-		
-//			} catch (InterruptedException e) {			
-//				e.printStackTrace();
-//			}		
+	
 		} catch (IOException e) {	
 			e.printStackTrace();
+			System.exit(1);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		listTests(); // List the Tests again
 	}
@@ -535,19 +714,7 @@ public class test {
      * @throws IOException
      */
     private static Properties load(String propsFile) throws IOException {
-//        Properties props = new Properties();
-//
-//        ResourceBundle.getBundle(propsFile);
-//        final ResourceBundle rb = ResourceBundle.getBundle(propsFile, Locale.getDefault (), ClassLoader.getSystemClassLoader());
-//        for (Enumeration keys = rb.getKeys (); keys.hasMoreElements ();)
-//        {
-//            final String key = (String) keys.nextElement ();
-//            final String value = rb.getString (key);
-//            
-//            props.put (key, value);
-//        } 
-//        return props;
-    	
+
     	Properties result = null;
         InputStream in = null;
          
