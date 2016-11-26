@@ -1,185 +1,185 @@
 package com.techventus.server.voice.datatypes;
 
+import com.techventus.server.voice.util.ParsingUtil;
+import gvjava.org.json.JSONException;
+import gvjava.org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import gvjava.org.json.JSONException;
-import gvjava.org.json.JSONObject;
+public class AllSettings {
 
-import com.techventus.server.voice.util.ParsingUtil;
+    private int[] phoneList;
+    private Phone[] phones;
+    private Setting settings;
 
-public class AllSettings{
+    public AllSettings(String json) throws JSONException {
+        JSONObject lObj = new JSONObject(json);
 
-	private int[] phoneList;
-   	private Phone[] phones;
-   	private Setting settings;
-	
-   	public AllSettings(String json) throws JSONException {
-   		JSONObject lObj = new JSONObject(json);
-   		
-   		phoneList = ParsingUtil.jsonIntArrayToIntArray(lObj.getJSONArray("phoneList"));
-   		
-   		phones  = Phone.createArrayFromJsonObject(lObj.getJSONObject("phones"));
+        phoneList = ParsingUtil.jsonIntArrayToIntArray(lObj.getJSONArray("phoneList"));
 
-   		settings  = new Setting(lObj.getJSONObject("settings"));
-   	}
-   	
-   	public JSONObject toJsonObject() throws JSONException {
-   		JSONObject lObj = new JSONObject();
-   		lObj.put("phoneList",phoneList);
-   		lObj.put("phones",Phone.phonesArrayToJsonObject(phones));
-   		lObj.put("settings",settings.toJsonObject());
-   		return lObj;
-   	}
-   	
-   	//TODO Perhaps this should throw an Exception rather than return false
-   	/**
-   	 *
-   	 * Query disabled status - if id not found, then it returned false, which normally means enabled.
-   	 * @param phoneId
-   	 * @return true if the Phone is Disabled. Otherwise it return false.
-   	 */
-   	public boolean isPhoneDisabled(int phoneId) {
-   		boolean ret = false;
-   		try {
- 			if(settings.getmDisabledIdList()!=null) {
-	   			for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
-	 				if(settings.getmDisabledIdList()[i].getId().equals(phoneId+"")) {
-	 					ret = true;
-	 				}
-				}
- 			} else {
- 				// list is empty, we will return false
- 				ret = false;
- 			}
- 		} catch (NullPointerException e) {
- 			ret = false;
- 		}
- 		return ret;
-   	}
-   	
-   	public void setPhoneDisabled(int phoneId) {
-   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
-			if(lDisId.getId().equals(phoneId+"")) {
-				lDisId.setDisabled(true);
-				return;
-			}
-		}
-   		// if not in array we create a new one
-   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];	
-   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
-   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
-		}
-   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", true);
-   		settings.setmDisabledIdList(lNewDisabledList);
-   	}
-   	
-	public void setPhoneEnabled(int phoneId) {
-   		for (DisabledId lDisId : settings.getmDisabledIdList()) {
-			if(lDisId.getId().equals(phoneId+"")) {
-				lDisId.setDisabled(false);
-				return;
-			}
-		}
-   		// if not in array we create a new one
-   		DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length+1];
-   		for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
-   			lNewDisabledList[i] = settings.getmDisabledIdList()[i];
-		}
-   		lNewDisabledList[lNewDisabledList.length-1] = new DisabledId(phoneId+"", false);
-   		settings.setmDisabledIdList(lNewDisabledList);
-   	}
-	
-	/**
-  	 *
-  	 * Query smsEnabled status - if id not found, then it returnes false
-  	 * @param phoneId
-  	 * @return true if the Phone is smsEnabled. Otherwise it returns false.
-  	 */
-  	public boolean isPhoneSmsEnabled(int phoneId) {
-  		boolean ret = false;
-  		try {
-			for (int i = 0; i < phones.length; i++) {
-				if(phones[i].getId() == phoneId) {
-					ret = phones[i].getSmsEnabled();
-				}
-			}
-		} catch (NullPointerException e) {
-			ret = false;
-		}
-		return ret;
-  	}
+        phones = Phone.createArrayFromJsonObject(lObj.getJSONObject("phones"));
 
-	/**
-	 * @return the phoneList
-	 */
-	public int[] getPhoneList() {
-		return phoneList;
-	}
-	
-	/**
-	 * @return the phoneList sorted
-	 */
-	public int[] getPhoneListSorted() {
-		Arrays.sort(phoneList);
-		return phoneList;
-	}
-	
-	/**
-	 * @return the phoneList as List<Integer>
-	 */
-	public List<Integer> getPhoneListAsList() {
-		List<Integer> lresult = new ArrayList<Integer>();
-		for (int i = 0; i < phoneList.length; i++) {
-			lresult.add(phoneList[i]);
-		}
-		return lresult;
-	}
+        settings = new Setting(lObj.getJSONObject("settings"));
+    }
 
-	/**
-	 * @return the phones
-	 */
-	public Phone[] getPhones() {
-		return phones;
-	}
-	
-	/**
-	 * @return the phones sorted by their id number
-	 */
-	public Phone[] getPhonesSorted() {
-		Arrays.sort(phones);
-		return phones;
-	}
+    /**
+     * @return the phoneList
+     */
+    public int[] getPhoneList() {
+        return phoneList;
+    }
 
-	/**
-	 * @return the settings
-	 */
-	public Setting getSettings() {
-		return settings;
-	}
+    //TODO Perhaps this should throw an Exception rather than return false
 
-	/**
-	 * @param phoneList the phoneList to set
-	 */
-	public void setPhoneList(int[] phoneList) {
-		this.phoneList = phoneList;
-	}
+    /**
+     * @param phoneList the phoneList to set
+     */
+    public void setPhoneList(int[] phoneList) {
+        this.phoneList = phoneList;
+    }
 
-	/**
-	 * @param phones the phones to set
-	 */
-	public void setPhones(Phone[] phones) {
-		this.phones = phones;
-	}
+    /**
+     * @return the phoneList as List
+     */
+    public List<Integer> getPhoneListAsList() {
+        List<Integer> lresult = new ArrayList<Integer>();
+        for (int i = 0; i < phoneList.length; i++) {
+            lresult.add(phoneList[i]);
+        }
+        return lresult;
+    }
 
-	/**
-	 * @param settings the settings to set
-	 */
-	public void setSettings(Setting settings) {
-		this.settings = settings;
-	}
-   	
+    /**
+     * @return the phoneList sorted
+     */
+    public int[] getPhoneListSorted() {
+        Arrays.sort(phoneList);
+        return phoneList;
+    }
+
+    /**
+     * @return the phones
+     */
+    public Phone[] getPhones() {
+        return phones;
+    }
+
+    /**
+     * @param phones the phones to set
+     */
+    public void setPhones(Phone[] phones) {
+        this.phones = phones;
+    }
+
+    /**
+     * @return the phones sorted by their id number
+     */
+    public Phone[] getPhonesSorted() {
+        Arrays.sort(phones);
+        return phones;
+    }
+
+    /**
+     * @return the settings
+     */
+    public Setting getSettings() {
+        return settings;
+    }
+
+    /**
+     * @param settings the settings to set
+     */
+    public void setSettings(Setting settings) {
+        this.settings = settings;
+    }
+
+    /**
+     * Query disabled status - if id not found, then it returned false, which normally means enabled.
+     *
+     * @param phoneId
+     * @return true if the Phone is Disabled. Otherwise it return false.
+     */
+    public boolean isPhoneDisabled(int phoneId) {
+        boolean ret = false;
+        try {
+            if (settings.getmDisabledIdList() != null) {
+                for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+                    if (settings.getmDisabledIdList()[i].getId().equals(phoneId + "")) {
+                        ret = true;
+                    }
+                }
+            } else {
+                // list is empty, we will return false
+                ret = false;
+            }
+        } catch (NullPointerException e) {
+            ret = false;
+        }
+        return ret;
+    }
+
+    /**
+     * Query smsEnabled status - if id not found, then it returnes false
+     *
+     * @param phoneId
+     * @return true if the Phone is smsEnabled. Otherwise it returns false.
+     */
+    public boolean isPhoneSmsEnabled(int phoneId) {
+        boolean ret = false;
+        try {
+            for (int i = 0; i < phones.length; i++) {
+                if (phones[i].getId() == phoneId) {
+                    ret = phones[i].getSmsEnabled();
+                }
+            }
+        } catch (NullPointerException e) {
+            ret = false;
+        }
+        return ret;
+    }
+
+    public void setPhoneDisabled(int phoneId) {
+        for (DisabledId lDisId : settings.getmDisabledIdList()) {
+            if (lDisId.getId().equals(phoneId + "")) {
+                lDisId.setDisabled(true);
+                return;
+            }
+        }
+        // if not in array we create a new one
+        DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length + 1];
+        for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+            lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+        }
+        lNewDisabledList[lNewDisabledList.length - 1] = new DisabledId(phoneId + "", true);
+        settings.setmDisabledIdList(lNewDisabledList);
+    }
+
+    public void setPhoneEnabled(int phoneId) {
+        for (DisabledId lDisId : settings.getmDisabledIdList()) {
+            if (lDisId.getId().equals(phoneId + "")) {
+                lDisId.setDisabled(false);
+                return;
+            }
+        }
+        // if not in array we create a new one
+        DisabledId[] lNewDisabledList = new DisabledId[settings.getmDisabledIdList().length + 1];
+        for (int i = 0; i < settings.getmDisabledIdList().length; i++) {
+            lNewDisabledList[i] = settings.getmDisabledIdList()[i];
+        }
+        lNewDisabledList[lNewDisabledList.length - 1] = new DisabledId(phoneId + "", false);
+        settings.setmDisabledIdList(lNewDisabledList);
+    }
+
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject lObj = new JSONObject();
+        lObj.put("phoneList", phoneList);
+        lObj.put("phones", Phone.phonesArrayToJsonObject(phones));
+        lObj.put("settings", settings.toJsonObject());
+        return lObj;
+    }
+
 	
    	
    	
@@ -386,6 +386,6 @@ public class AllSettings{
 }
 
 	*/
-   	
-   	
+
+
 }

@@ -35,7 +35,7 @@ public class TranscriptElement {
 	
 	/**
 	 * Creates a TranscriptElement based on the html, for example:
-	 * <span id="0-33" class="gc-word-med1">Hello World!</span>
+	 * <span>Hello World!</span>
 	 * @param html
 	 */
 	public static TranscriptElement extractTransscriptElement(String html) {

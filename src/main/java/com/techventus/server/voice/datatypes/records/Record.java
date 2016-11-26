@@ -68,7 +68,7 @@ public abstract class Record {
 		return title;
 	}
 	/**
-	 * @param title the title to set
+	 * @param pTitle the title to set
 	 */
 	public void setTitle(String pTitle) {
 		title = pTitle;
@@ -80,7 +80,7 @@ public abstract class Record {
 		return date;
 	}
 	/**
-	 * @param date the date to set
+	 * @param pDate the date to set
 	 */
 	public void setDate(Date pDate) {
 		date = pDate;
@@ -94,8 +94,8 @@ public abstract class Record {
 	/**
 	 * @param contact the contact to set
 	 */
-	public void setContact(Contact pContact) {
-		contact = pContact;
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 	/** Returns a String representation **/
 	public abstract String toString();

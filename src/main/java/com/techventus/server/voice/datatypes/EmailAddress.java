@@ -44,7 +44,7 @@ public class EmailAddress {
 	/**
 	 * 
 	 * @param jsonPart
-	 * @return List<EmailAddress>
+	 * @return List of EmailAddress
 	 */
 	public final static List<EmailAddress> createEmailAddressListFromJsonPartResponse(String jsonPart) { 
 		List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();

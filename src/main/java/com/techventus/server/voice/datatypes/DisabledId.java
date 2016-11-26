@@ -50,7 +50,7 @@ public class DisabledId {
 	/**
 	 * 
 	 * @param jsonPart
-	 * @return List<DisabledId>
+	 * @return List of Disabled Ids
 	 */
 	public final static List<DisabledId> createDisabledIdListFromJsonPartResponse(String jsonPart) { 
 		List<DisabledId> disabledIds = new ArrayList<DisabledId>();
@@ -69,7 +69,7 @@ public class DisabledId {
 	/**
 	 * 
 	 * @param disabledIdMapJSON
-	 * @return List<DisabledId>
+	 * @return List of Disabled Ids
 	 * @throws JSONException
 	 */
 	public final static List<DisabledId> createListFromJsonObject(JSONObject disabledIdMapJSON) throws JSONException { 

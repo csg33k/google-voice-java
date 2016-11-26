@@ -262,7 +262,7 @@ public class Setting {
 	}
 	
 	/**
-	 * @return the groupList as List<String>
+	 * @return the groupList as List
 	 */
 	public List<String> getGroupListAsList() {
 		List<String> lresult = new ArrayList<String>();
@@ -400,7 +400,7 @@ public class Setting {
 	}
 
 	/**
-	 * @param mDisabledIdMap the mDisabledIdMap to set
+	 * @param mDisabledIdList the mDisabledIdMap to set
 	 */
 	public void setmDisabledIdList(DisabledId[] mDisabledIdList) {
 		this.mDisabledIdMap = mDisabledIdList;

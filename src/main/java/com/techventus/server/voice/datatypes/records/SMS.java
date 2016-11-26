@@ -26,7 +26,7 @@ public class SMS implements Comparable<SMS> {
 	 * 
 	 * @param from
 	 *            the contact that sent the message
-	 * @param the
+	 * @param content
 	 *            message's content
 	 * @param dateTime
 	 *            the message's timestamp

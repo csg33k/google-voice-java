@@ -28,12 +28,15 @@ import java.util.Iterator;
 
 /**
  * Convert an HTTP header to a JSONObject and back.
+ *
  * @author JSON.org
  * @version 2008-09-18
  */
 public class HTTP {
 
-    /** Carriage return/line feed. */
+    /**
+     * Carriage return/line feed.
+     */
     public static final String CRLF = "\r\n";
 
     /**
@@ -51,27 +54,36 @@ public class HTTP {
      *    "Reason-Phrase": "OK" (for example)
      * }</pre>
      * In addition, the other parameters in the header will be captured, using
-     * the HTTP field names as JSON names, so that <pre>
+     * the HTTP field names as JSON names, so that
+     * <p>
+     * <pre>
+     * {@code
      *    Date: Sun, 26 May 2002 18:06:04 GMT
      *    Cookie: Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s
-     *    Cache-Control: no-cache</pre>
+     *    Cache-Control: no-cache
+     * }
+     * </pre>
      * become
-     * <pre>{...
+     * <pre>
+     *  {@code
      *    Date: "Sun, 26 May 2002 18:06:04 GMT",
      *    Cookie: "Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s",
      *    "Cache-Control": "no-cache",
-     * ...}</pre>
+     * }
+     *
+     * </pre>
      * It does no further checking or conversion. It does not parse dates.
      * It does not do '%' transforms on URLs.
+     *
      * @param string An HTTP header string.
      * @return A JSONObject containing the elements and attributes
      * of the XML string.
      * @throws JSONException
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
-        JSONObject     o = new JSONObject();
-        HTTPTokener    x = new HTTPTokener(string);
-        String         t;
+        JSONObject o = new JSONObject();
+        HTTPTokener x = new HTTPTokener(string);
+        String t;
 
         t = x.nextToken();
         if (t.toUpperCase().startsWith("HTTP")) {
@@ -119,14 +131,15 @@ public class HTTP {
      * }</pre>
      * Any other members of the JSONObject will be output as HTTP fields.
      * The result will end with two CRLF pairs.
+     *
      * @param o A JSONObject
      * @return An HTTP header string.
      * @throws JSONException if the object does not contain enough
-     *  information.
+     *                       information.
      */
     public static String toString(JSONObject o) throws JSONException {
-        Iterator     keys = o.keys();
-        String       s;
+        Iterator keys = o.keys();
+        String s;
         StringBuffer sb = new StringBuffer();
         if (o.has("Status-Code") && o.has("Reason-Phrase")) {
             sb.append(o.getString("HTTP-Version"));
@@ -148,9 +161,9 @@ public class HTTP {
         sb.append(CRLF);
         while (keys.hasNext()) {
             s = keys.next().toString();
-            if (!s.equals("HTTP-Version")      && !s.equals("Status-Code") &&
+            if (!s.equals("HTTP-Version") && !s.equals("Status-Code") &&
                     !s.equals("Reason-Phrase") && !s.equals("Method") &&
-                    !s.equals("Request-URI")   && !o.isNull(s)) {
+                    !s.equals("Request-URI") && !o.isNull(s)) {
                 sb.append(s);
                 sb.append(": ");
                 sb.append(o.getString(s));

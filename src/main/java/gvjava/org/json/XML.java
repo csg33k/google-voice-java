@@ -1,75 +1,40 @@
 package gvjava.org.json;
 
-/*
-Copyright (c) 2002 JSON.org
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
 import java.util.Iterator;
 
 
 /**
- * This provides static methods to convert an XML text into a JSONObject,
- * and to covert a JSONObject into an XML text.
+ * @see org.json.XML
  * @author JSON.org
  * @version 2009-12-12
  */
 public class XML {
 
-    /** The Character '&'. */
-    public static final Character AMP   = new Character('&');
+    public static final Character AMP   = '&';
 
     /** The Character '''. */
-    public static final Character APOS  = new Character('\'');
+    public static final Character APOS  = '\'';
 
     /** The Character '!'. */
-    public static final Character BANG  = new Character('!');
+    public static final Character BANG  = '!';
 
     /** The Character '='. */
-    public static final Character EQ    = new Character('=');
+    public static final Character EQ    = '=';
 
-    /** The Character '>'. */
-    public static final Character GT    = new Character('>');
+    public static final Character GT    = '>';
 
-    /** The Character '<'. */
-    public static final Character LT    = new Character('<');
+    public static final Character LT    = '<';
 
     /** The Character '?'. */
-    public static final Character QUEST = new Character('?');
+    public static final Character QUEST = '?';
 
     /** The Character '"'. */
-    public static final Character QUOT  = new Character('"');
+    public static final Character QUOT  = '"';
 
     /** The Character '/'. */
-    public static final Character SLASH = new Character('/');
+    public static final Character SLASH = '/';
 
     /**
-     * Replace special characters with XML escapes:
-     * <pre>
-     * &amp; <small>(ampersand)</small> is replaced by &amp;amp;
-     * &lt; <small>(less than)</small> is replaced by &amp;lt;
-     * &gt; <small>(greater than)</small> is replaced by &amp;gt;
-     * &quot; <small>(double quote)</small> is replaced by &amp;quot;
-     * </pre>
      * @param string The string to be escaped.
      * @return The escaped string.
      */
@@ -290,7 +255,6 @@ public class XML {
      * does not like to distinguish between elements and attributes.
      * Sequences of similar elements are represented as JSONArrays. Content
      * text may be placed in a "content" member. Comments, prologs, DTDs, and
-     * <code>&lt;[ [ ]]></code> are ignored.
      * @param string The source string.
      * @return A JSONObject containing the structured data from the XML string.
      * @throws JSONException
@@ -321,10 +285,8 @@ public class XML {
      * @param o A JSONObject.
      * @param tagName The optional name of the enclosing tag.
      * @return A string.
-     * @throws JSONException
      */
-    public static String toString(Object o, String tagName)
-            throws JSONException {
+    public static String toString(Object o, String tagName) throws JSONException {
         StringBuffer b = new StringBuffer();
         int          i;
         JSONArray    ja;
