@@ -5,7 +5,7 @@
     <groupId>com.esamir.osalt</groupId>
     <artifactId>google-voice-java</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <name>Unofficial Google Voice API Library</name>
 
     <description>An Unofficial Java API for Google Voice</description>
@@ -28,7 +28,7 @@
         <connection>scm:git:git@github.com:safaci2000/google-voice-java.git</connection>
         <url>scm:git:git@github.com:safaci2000/google-voice-java.git</url>
         <developerConnection>scm:git:git@github.com:safaci2000/google-voice-java.git</developerConnection>
-      <tag>google-voice-java-1.0.3</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <organization>
