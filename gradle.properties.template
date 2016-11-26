@@ -1,0 +1,8 @@
+// GPG Settings
+signing.keyId=63AAAAAA
+signing.password=
+signing.secretKeyRingFile=/Users/user/.gnupg/secring.gpg
+
+// Sonatype OSS settings
+ossrhUsername=
+ossrhPassword=

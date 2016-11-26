@@ -3,3 +3,6 @@ target
 *.iml
 src/test/resources/privateTestData.properties
 pom.xml.versionsBackup
+gradle.properties
+.gradle
+build
