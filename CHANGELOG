@@ -2,7 +2,7 @@ CHANGELOG:
 
 
 
-1.0.2:
+1.0.3:
 
 This version was released for historical purposes.  The new API is not
 functional and needs some updates to OAuth 2.0 in order to work correctly.
