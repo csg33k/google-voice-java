@@ -4,4 +4,4 @@ jdk:
           - oraclejdk7
           - oraclejdk8
 
-script: mvn clean install javadoc:javadoc -Dmaven.compiler.target=1.7 -Dmaven.compiler.source=1.7 
+script: mvn clean package -Dmaven.compiler.target=1.7 -Dmaven.compiler.source=1.7 
